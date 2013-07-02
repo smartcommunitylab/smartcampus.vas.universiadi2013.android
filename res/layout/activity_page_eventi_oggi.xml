@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PageEventiOggi" >
+
+    <ImageView
+        android:id="@+id/image_sfondo_evento"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY" />
+
+    <ImageView
+        android:id="@+id/image_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/slide_mask" />
+
+    <smartcampus.android.template.standalone.FontTextView
+        android:id="@+id/text_ora_evento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-7dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="34dp"
+        android:text="10:30 PM"
+        android:textColor="#FFF"
+        android:textSize="20sp" />
+
+    <smartcampus.android.template.standalone.FontTextView
+        android:id="@+id/text_today"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/text_ora_evento"
+        android:layout_alignParentLeft="false"
+        android:layout_alignRight="@+id/text_ora_evento"
+        android:layout_below="@+id/text_ora_evento"
+        android:text="TODAY"
+        android:textColor="#54AF30"
+        android:textSize="30sp" />
+
+    <smartcampus.android.template.standalone.FontTextView
+        android:id="@+id/text_nome_evento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/text_today"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="false"
+        android:layout_alignRight="@+id/text_today"
+        android:layout_below="@+id/text_today"
+        android:layout_marginTop="-5dp"
+        android:text="SKI JUMP"
+        android:textColor="#3293AC"
+        android:textSize="40sp" />
+
+</RelativeLayout>

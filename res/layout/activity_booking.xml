@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Booking" >
+
+    <fragment
+        android:id="@+id/mappa"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0" />
+
+    <ImageView
+        android:id="@+id/image_button_poi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:adjustViewBounds="true"
+        android:src="@drawable/button_poi_up" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.48" >
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/container_select"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.72" >
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

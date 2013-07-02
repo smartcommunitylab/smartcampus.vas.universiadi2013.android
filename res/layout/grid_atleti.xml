@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true" >
+
+        <ImageView
+            android:id="@+id/image_atleta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sc_logo" />
+
+        <smartcampus.android.template.standalone.FontTextView
+            android:id="@+id/text_nome_cognome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/text_nazionalita"
+            android:layout_alignParentTop="false"
+            android:layout_alignTop="@+id/text_nazionalita"
+            android:text="FontTextView" />
+
+        <smartcampus.android.template.standalone.FontTextView
+            android:id="@+id/text_nazionalita"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/image_atleta"
+            android:text="FontTextView" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
