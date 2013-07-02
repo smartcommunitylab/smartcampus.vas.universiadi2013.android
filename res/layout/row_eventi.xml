@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:layout_weight="0.3" >
 
-        <smartcampus.android.template.standalone.FontTextView
+        <smartcampus.android.template.standalone.Utilities.FontTextView
             android:id="@+id/text_orario"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
             android:textColor="#3293AC"
             android:textSize="15dp" />
 
-        <smartcampus.android.template.standalone.FontTextView
+        <smartcampus.android.template.standalone.Utilities.FontTextView
             android:id="@+id/text_nome_evento"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             android:textColor="#9BC61E"
             android:textSize="25dp" />
 
-        <smartcampus.android.template.standalone.FontTextView
+        <smartcampus.android.template.standalone.Utilities.FontTextView
             android:id="@+id/text_tipo_gara"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

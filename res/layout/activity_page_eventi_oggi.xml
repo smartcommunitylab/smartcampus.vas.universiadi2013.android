@@ -17,7 +17,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/slide_mask" />
 
-    <smartcampus.android.template.standalone.FontTextView
+    <smartcampus.android.template.standalone.Utilities.FontTextView
         android:id="@+id/text_ora_evento"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
         android:textColor="#FFF"
         android:textSize="20sp" />
 
-    <smartcampus.android.template.standalone.FontTextView
+    <smartcampus.android.template.standalone.Utilities.FontTextView
         android:id="@+id/text_today"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
         android:textColor="#54AF30"
         android:textSize="30sp" />
 
-    <smartcampus.android.template.standalone.FontTextView
+    <smartcampus.android.template.standalone.Utilities.FontTextView
         android:id="@+id/text_nome_evento"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

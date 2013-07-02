@@ -38,7 +38,7 @@
             android:background="#FFFFFFFF"
             android:gravity="center" >
 
-            <smartcampus.android.template.standalone.FontTextView
+            <smartcampus.android.template.standalone.Utilities.FontTextView
                 android:id="@+id/text_descrizione"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

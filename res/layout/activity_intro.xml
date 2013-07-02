@@ -25,6 +25,12 @@
             android:layout_weight="0.5"
             android:src="@drawable/logo_home" />
 
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:text="TextView" />
+
         <ImageView
             android:id="@+id/image_guest"
             android:layout_width="match_parent"

@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/sc_logo" />
 
-        <smartcampus.android.template.standalone.FontTextView
+        <smartcampus.android.template.standalone.Utilities.FontTextView
             android:id="@+id/text_nome_cognome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
             android:layout_alignTop="@+id/text_nazionalita"
             android:text="FontTextView" />
 
-        <smartcampus.android.template.standalone.FontTextView
+        <smartcampus.android.template.standalone.Utilities.FontTextView
             android:id="@+id/text_nazionalita"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
