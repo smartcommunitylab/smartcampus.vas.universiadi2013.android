@@ -8,6 +8,7 @@ import android.util.Log;
 import de.greenrobot.dao.AbstractDaoMaster;
 import de.greenrobot.dao.IdentityScopeType;
 
+import android.smartcampus.template.standalone.UserDao;
 import android.smartcampus.template.standalone.EventoDao;
 import android.smartcampus.template.standalone.AtletaDao;
 import android.smartcampus.template.standalone.SportDao;
@@ -21,6 +22,7 @@ public class DaoMaster extends AbstractDaoMaster {
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {
+        UserDao.createTable(db, ifNotExists);
         EventoDao.createTable(db, ifNotExists);
         AtletaDao.createTable(db, ifNotExists);
         SportDao.createTable(db, ifNotExists);
@@ -28,6 +30,7 @@ public class DaoMaster extends AbstractDaoMaster {
     
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(SQLiteDatabase db, boolean ifExists) {
+        UserDao.dropTable(db, ifExists);
         EventoDao.dropTable(db, ifExists);
         AtletaDao.dropTable(db, ifExists);
         SportDao.dropTable(db, ifExists);
@@ -62,6 +65,7 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(SQLiteDatabase db) {
         super(db, SCHEMA_VERSION);
+        registerDaoClass(UserDao.class);
         registerDaoClass(EventoDao.class);
         registerDaoClass(AtletaDao.class);
         registerDaoClass(SportDao.class);

@@ -219,6 +219,8 @@ int menu page_info_sport 0x7f0b000a
 int menu profile 0x7f0b000b
 int menu select_booking 0x7f0b000c
 int menu sport 0x7f0b000d
+int string AUTH_TOKEN 0x7f060039
+int string URL_BACKEND 0x7f06003a
 int string action_settings 0x7f06002b
 int string app_name 0x7f06001d
 int string app_uid_label 0x7f06001c

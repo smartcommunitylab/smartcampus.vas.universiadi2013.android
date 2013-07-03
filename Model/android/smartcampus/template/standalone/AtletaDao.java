@@ -1,6 +1,5 @@
 package android.smartcampus.template.standalone;
 
-import java.util.List;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -8,8 +7,6 @@ import android.database.sqlite.SQLiteStatement;
 import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.DaoConfig;
 import de.greenrobot.dao.Property;
-import de.greenrobot.dao.Query;
-import de.greenrobot.dao.QueryBuilder;
 
 import android.smartcampus.template.standalone.Atleta;
 
@@ -30,12 +27,8 @@ public class AtletaDao extends AbstractDao<Atleta, Long> {
         public final static Property Nome = new Property(1, String.class, "nome", false, "NOME");
         public final static Property Cognome = new Property(2, String.class, "cognome", false, "COGNOME");
         public final static Property Nazionalita = new Property(3, String.class, "nazionalita", false, "NAZIONALITA");
-        public final static Property Partecipanti = new Property(4, Long.class, "partecipanti", false, "PARTECIPANTI");
-        public final static Property Atleti = new Property(5, Long.class, "atleti", false, "ATLETI");
     };
 
-    private Query<Atleta> evento_AtletaListQuery;
-    private Query<Atleta> sport_AtletaListQuery;
 
     public AtletaDao(DaoConfig config) {
         super(config);
@@ -49,12 +42,10 @@ public class AtletaDao extends AbstractDao<Atleta, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'ATLETA' (" + //
-                "'_id' INTEGER PRIMARY KEY ," + // 0: id
+                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
                 "'NOME' TEXT," + // 1: nome
                 "'COGNOME' TEXT," + // 2: cognome
-                "'NAZIONALITA' TEXT," + // 3: nazionalita
-                "'PARTECIPANTI' INTEGER," + // 4: partecipanti
-                "'ATLETI' INTEGER);"); // 5: atleti
+                "'NAZIONALITA' TEXT);"); // 3: nazionalita
     }
 
     /** Drops the underlying database table. */
@@ -139,28 +130,4 @@ public class AtletaDao extends AbstractDao<Atleta, Long> {
         return true;
     }
     
-    /** Internal query to resolve the "atletaList" to-many relationship of Evento. */
-    public synchronized List<Atleta> _queryEvento_AtletaList(Long partecipanti) {
-        if (evento_AtletaListQuery == null) {
-            QueryBuilder<Atleta> queryBuilder = queryBuilder();
-            queryBuilder.where(Properties.Partecipanti.eq(partecipanti));
-            evento_AtletaListQuery = queryBuilder.build();
-        } else {
-            evento_AtletaListQuery.setParameter(0, partecipanti);
-        }
-        return evento_AtletaListQuery.list();
-    }
-
-    /** Internal query to resolve the "atletaList" to-many relationship of Sport. */
-    public synchronized List<Atleta> _querySport_AtletaList(Long atleti) {
-        if (sport_AtletaListQuery == null) {
-            QueryBuilder<Atleta> queryBuilder = queryBuilder();
-            queryBuilder.where(Properties.Atleti.eq(atleti));
-            sport_AtletaListQuery = queryBuilder.build();
-        } else {
-            sport_AtletaListQuery.setParameter(0, atleti);
-        }
-        return sport_AtletaListQuery.list();
-    }
-
 }

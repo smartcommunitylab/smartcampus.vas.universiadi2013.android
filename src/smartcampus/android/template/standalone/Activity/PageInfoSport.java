@@ -89,9 +89,9 @@ public class PageInfoSport extends Fragment {
 			mContainerEventi.setVisibility(View.GONE);
 			mContainerAtleti.setVisibility(View.VISIBLE);
 			
-			ListView mGrigliaAtleti = (ListView)mView.findViewById(R.id.list_atleti);
-			mGrigliaAtleti.setAdapter(new ListSportArrayAdapter(mView.getContext(),
-					(ArrayList<Atleta>)mSport.getAtletaList()));
+//			ListView mGrigliaAtleti = (ListView)mView.findViewById(R.id.list_atleti);
+//			mGrigliaAtleti.setAdapter(new ListSportArrayAdapter(mView.getContext(),
+//					(ArrayList<Atleta>)mSport.getAtletaList()));
 			break;
 		}
 		

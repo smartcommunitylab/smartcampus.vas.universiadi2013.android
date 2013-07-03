@@ -23,18 +23,17 @@ public class EventoDao extends AbstractDao<Evento, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
+        public final static Property ID = new Property(0, Long.class, "ID", true, "ID");
         public final static Property Nome = new Property(1, String.class, "nome", false, "NOME");
         public final static Property Data = new Property(2, java.util.Date.class, "data", false, "DATA");
         public final static Property Immagine = new Property(3, byte[].class, "immagine", false, "IMMAGINE");
         public final static Property LatGPS = new Property(4, Double.class, "latGPS", false, "LAT_GPS");
         public final static Property LngGPS = new Property(5, Double.class, "lngGPS", false, "LNG_GPS");
-        public final static Property Prezzo = new Property(6, String.class, "prezzo", false, "PREZZO");
-        public final static Property Tipologia = new Property(7, String.class, "tipologia", false, "TIPOLOGIA");
-        public final static Property Partecipanti = new Property(8, Long.class, "partecipanti", false, "PARTECIPANTI");
+        public final static Property Indirizzo = new Property(6, String.class, "indirizzo", false, "INDIRIZZO");
+        public final static Property Descrizione = new Property(7, String.class, "descrizione", false, "DESCRIZIONE");
+        public final static Property Ruolo = new Property(8, Integer.class, "ruolo", false, "RUOLO");
+        public final static Property Ambito = new Property(9, String.class, "ambito", false, "AMBITO");
     };
-
-    private DaoSession daoSession;
 
 
     public EventoDao(DaoConfig config) {
@@ -43,22 +42,22 @@ public class EventoDao extends AbstractDao<Evento, Long> {
     
     public EventoDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
-        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'EVENTO' (" + //
-                "'_id' INTEGER PRIMARY KEY ," + // 0: id
+                "'ID' INTEGER PRIMARY KEY ," + // 0: ID
                 "'NOME' TEXT," + // 1: nome
                 "'DATA' INTEGER," + // 2: data
                 "'IMMAGINE' BLOB," + // 3: immagine
                 "'LAT_GPS' REAL," + // 4: latGPS
                 "'LNG_GPS' REAL," + // 5: lngGPS
-                "'PREZZO' TEXT," + // 6: prezzo
-                "'TIPOLOGIA' TEXT," + // 7: tipologia
-                "'PARTECIPANTI' INTEGER);"); // 8: partecipanti
+                "'INDIRIZZO' TEXT," + // 6: indirizzo
+                "'DESCRIZIONE' TEXT," + // 7: descrizione
+                "'RUOLO' INTEGER," + // 8: ruolo
+                "'AMBITO' TEXT);"); // 9: ambito
     }
 
     /** Drops the underlying database table. */
@@ -72,9 +71,9 @@ public class EventoDao extends AbstractDao<Evento, Long> {
     protected void bindValues(SQLiteStatement stmt, Evento entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
-        if (id != null) {
-            stmt.bindLong(1, id);
+        Long ID = entity.getID();
+        if (ID != null) {
+            stmt.bindLong(1, ID);
         }
  
         String nome = entity.getNome();
@@ -102,26 +101,25 @@ public class EventoDao extends AbstractDao<Evento, Long> {
             stmt.bindDouble(6, lngGPS);
         }
  
-        String prezzo = entity.getPrezzo();
-        if (prezzo != null) {
-            stmt.bindString(7, prezzo);
+        String indirizzo = entity.getIndirizzo();
+        if (indirizzo != null) {
+            stmt.bindString(7, indirizzo);
         }
  
-        String tipologia = entity.getTipologia();
-        if (tipologia != null) {
-            stmt.bindString(8, tipologia);
+        String descrizione = entity.getDescrizione();
+        if (descrizione != null) {
+            stmt.bindString(8, descrizione);
         }
  
-        Long partecipanti = entity.getPartecipanti();
-        if (partecipanti != null) {
-            stmt.bindLong(9, partecipanti);
+        Integer ruolo = entity.getRuolo();
+        if (ruolo != null) {
+            stmt.bindLong(9, ruolo);
         }
-    }
-
-    @Override
-    protected void attachEntity(Evento entity) {
-        super.attachEntity(entity);
-        entity.__setDaoSession(daoSession);
+ 
+        String ambito = entity.getAmbito();
+        if (ambito != null) {
+            stmt.bindString(10, ambito);
+        }
     }
 
     /** @inheritdoc */
@@ -134,15 +132,16 @@ public class EventoDao extends AbstractDao<Evento, Long> {
     @Override
     public Evento readEntity(Cursor cursor, int offset) {
         Evento entity = new Evento( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // ID
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // nome
             cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)), // data
             cursor.isNull(offset + 3) ? null : cursor.getBlob(offset + 3), // immagine
             cursor.isNull(offset + 4) ? null : cursor.getDouble(offset + 4), // latGPS
             cursor.isNull(offset + 5) ? null : cursor.getDouble(offset + 5), // lngGPS
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // prezzo
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // tipologia
-            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8) // partecipanti
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // indirizzo
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // descrizione
+            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // ruolo
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // ambito
         );
         return entity;
     }
@@ -150,21 +149,22 @@ public class EventoDao extends AbstractDao<Evento, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, Evento entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
+        entity.setID(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setNome(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setData(cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)));
         entity.setImmagine(cursor.isNull(offset + 3) ? null : cursor.getBlob(offset + 3));
         entity.setLatGPS(cursor.isNull(offset + 4) ? null : cursor.getDouble(offset + 4));
         entity.setLngGPS(cursor.isNull(offset + 5) ? null : cursor.getDouble(offset + 5));
-        entity.setPrezzo(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setTipologia(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setPartecipanti(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
+        entity.setIndirizzo(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setDescrizione(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setRuolo(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
+        entity.setAmbito(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
      }
     
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(Evento entity, long rowId) {
-        entity.setId(rowId);
+        entity.setID(rowId);
         return rowId;
     }
     
@@ -172,7 +172,7 @@ public class EventoDao extends AbstractDao<Evento, Long> {
     @Override
     public Long getKey(Evento entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.getID();
         } else {
             return null;
         }

@@ -53,8 +53,9 @@ public class Intro extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_intro);
-		new AsyncRequest().execute(new Void[1]);
+//		setContentView(R.layout.activity_intro);
+		startActivity(new Intent(getApplicationContext(), Home.class));
+//		new AsyncRequest().execute(new Void[1]);
 		// try {
 		// Constants.setAuthUrl(getApplicationContext(),
 		// "https://ac.smartcampuslab.it/accesstoken-provider-dev/ac");

@@ -24,14 +24,10 @@ public class SportDao extends AbstractDao<Sport, Long> {
     */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property LatGPS = new Property(1, Double.class, "latGPS", false, "LAT_GPS");
-        public final static Property LngGPS = new Property(2, Double.class, "lngGPS", false, "LNG_GPS");
-        public final static Property Immagine = new Property(3, byte[].class, "immagine", false, "IMMAGINE");
-        public final static Property Descrizione = new Property(4, String.class, "descrizione", false, "DESCRIZIONE");
-        public final static Property Atleti = new Property(5, Long.class, "atleti", false, "ATLETI");
+        public final static Property Nome = new Property(1, String.class, "nome", false, "NOME");
+        public final static Property Immagine = new Property(2, byte[].class, "immagine", false, "IMMAGINE");
+        public final static Property Descrizione = new Property(3, String.class, "descrizione", false, "DESCRIZIONE");
     };
-
-    private DaoSession daoSession;
 
 
     public SportDao(DaoConfig config) {
@@ -40,19 +36,16 @@ public class SportDao extends AbstractDao<Sport, Long> {
     
     public SportDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
-        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'SPORT' (" + //
-                "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'LAT_GPS' REAL," + // 1: latGPS
-                "'LNG_GPS' REAL," + // 2: lngGPS
-                "'IMMAGINE' BLOB," + // 3: immagine
-                "'DESCRIZIONE' TEXT," + // 4: descrizione
-                "'ATLETI' INTEGER);"); // 5: atleti
+                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
+                "'NOME' TEXT," + // 1: nome
+                "'IMMAGINE' BLOB," + // 2: immagine
+                "'DESCRIZIONE' TEXT);"); // 3: descrizione
     }
 
     /** Drops the underlying database table. */
@@ -71,36 +64,20 @@ public class SportDao extends AbstractDao<Sport, Long> {
             stmt.bindLong(1, id);
         }
  
-        Double latGPS = entity.getLatGPS();
-        if (latGPS != null) {
-            stmt.bindDouble(2, latGPS);
-        }
- 
-        Double lngGPS = entity.getLngGPS();
-        if (lngGPS != null) {
-            stmt.bindDouble(3, lngGPS);
+        String nome = entity.getNome();
+        if (nome != null) {
+            stmt.bindString(2, nome);
         }
  
         byte[] immagine = entity.getImmagine();
         if (immagine != null) {
-            stmt.bindBlob(4, immagine);
+            stmt.bindBlob(3, immagine);
         }
  
         String descrizione = entity.getDescrizione();
         if (descrizione != null) {
-            stmt.bindString(5, descrizione);
+            stmt.bindString(4, descrizione);
         }
- 
-        Long atleti = entity.getAtleti();
-        if (atleti != null) {
-            stmt.bindLong(6, atleti);
-        }
-    }
-
-    @Override
-    protected void attachEntity(Sport entity) {
-        super.attachEntity(entity);
-        entity.__setDaoSession(daoSession);
     }
 
     /** @inheritdoc */
@@ -114,11 +91,9 @@ public class SportDao extends AbstractDao<Sport, Long> {
     public Sport readEntity(Cursor cursor, int offset) {
         Sport entity = new Sport( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getDouble(offset + 1), // latGPS
-            cursor.isNull(offset + 2) ? null : cursor.getDouble(offset + 2), // lngGPS
-            cursor.isNull(offset + 3) ? null : cursor.getBlob(offset + 3), // immagine
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // descrizione
-            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5) // atleti
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // nome
+            cursor.isNull(offset + 2) ? null : cursor.getBlob(offset + 2), // immagine
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // descrizione
         );
         return entity;
     }
@@ -127,11 +102,9 @@ public class SportDao extends AbstractDao<Sport, Long> {
     @Override
     public void readEntity(Cursor cursor, Sport entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setLatGPS(cursor.isNull(offset + 1) ? null : cursor.getDouble(offset + 1));
-        entity.setLngGPS(cursor.isNull(offset + 2) ? null : cursor.getDouble(offset + 2));
-        entity.setImmagine(cursor.isNull(offset + 3) ? null : cursor.getBlob(offset + 3));
-        entity.setDescrizione(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setAtleti(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
+        entity.setNome(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setImmagine(cursor.isNull(offset + 2) ? null : cursor.getBlob(offset + 2));
+        entity.setDescrizione(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
      }
     
     /** @inheritdoc */

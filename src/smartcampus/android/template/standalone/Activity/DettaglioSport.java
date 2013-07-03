@@ -66,12 +66,12 @@ public class DettaglioSport extends FragmentActivity implements LocationListener
 	
 		mMappa.setMyLocationEnabled(true);
     
-		if (mSport.getLatGPS() != null && mSport.getLngGPS() != null)
-		{
-			mMarker = new LatLng(mSport.getLatGPS(), mSport.getLngGPS());
-			mMappa.addMarker(new MarkerOptions().position(mMarker));
-			mMappa.animateCamera(CameraUpdateFactory.newLatLngZoom(mMarker, 10));
-		}
+//		if (mSport.get != null && mSport.getLngGPS() != null)
+//		{
+//			mMarker = new LatLng(mSport.getLatGPS(), mSport.getLngGPS());
+//			mMappa.addMarker(new MarkerOptions().position(mMarker));
+//			mMappa.animateCamera(CameraUpdateFactory.newLatLngZoom(mMarker, 10));
+//		}
 	
 		//Otteniamo il riferimento al LocationManager
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);

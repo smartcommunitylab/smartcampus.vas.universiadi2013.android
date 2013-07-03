@@ -9,10 +9,12 @@ import de.greenrobot.dao.DaoConfig;
 import de.greenrobot.dao.AbstractDaoSession;
 import de.greenrobot.dao.IdentityScopeType;
 
+import android.smartcampus.template.standalone.User;
 import android.smartcampus.template.standalone.Evento;
 import android.smartcampus.template.standalone.Atleta;
 import android.smartcampus.template.standalone.Sport;
 
+import android.smartcampus.template.standalone.UserDao;
 import android.smartcampus.template.standalone.EventoDao;
 import android.smartcampus.template.standalone.AtletaDao;
 import android.smartcampus.template.standalone.SportDao;
@@ -26,10 +28,12 @@ import android.smartcampus.template.standalone.SportDao;
  */
 public class DaoSession extends AbstractDaoSession {
 
+    private final DaoConfig userDaoConfig;
     private final DaoConfig eventoDaoConfig;
     private final DaoConfig atletaDaoConfig;
     private final DaoConfig sportDaoConfig;
 
+    private final UserDao userDao;
     private final EventoDao eventoDao;
     private final AtletaDao atletaDao;
     private final SportDao sportDao;
@@ -37,6 +41,9 @@ public class DaoSession extends AbstractDaoSession {
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
         super(db);
+
+        userDaoConfig = daoConfigMap.get(UserDao.class).clone();
+        userDaoConfig.initIdentityScope(type);
 
         eventoDaoConfig = daoConfigMap.get(EventoDao.class).clone();
         eventoDaoConfig.initIdentityScope(type);
@@ -47,19 +54,26 @@ public class DaoSession extends AbstractDaoSession {
         sportDaoConfig = daoConfigMap.get(SportDao.class).clone();
         sportDaoConfig.initIdentityScope(type);
 
+        userDao = new UserDao(userDaoConfig, this);
         eventoDao = new EventoDao(eventoDaoConfig, this);
         atletaDao = new AtletaDao(atletaDaoConfig, this);
         sportDao = new SportDao(sportDaoConfig, this);
 
+        registerDao(User.class, userDao);
         registerDao(Evento.class, eventoDao);
         registerDao(Atleta.class, atletaDao);
         registerDao(Sport.class, sportDao);
     }
     
     public void clear() {
+        userDaoConfig.getIdentityScope().clear();
         eventoDaoConfig.getIdentityScope().clear();
         atletaDaoConfig.getIdentityScope().clear();
         sportDaoConfig.getIdentityScope().clear();
+    }
+
+    public UserDao getUserDao() {
+        return userDao;
     }
 
     public EventoDao getEventoDao() {
