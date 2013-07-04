@@ -1,10 +1,13 @@
 package smartcampus.android.template.standalone.Activity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.concurrent.ExecutionException;
@@ -18,6 +21,7 @@ import smartcampus.android.template.standalone.R.anim;
 import smartcampus.android.template.standalone.R.drawable;
 import smartcampus.android.template.standalone.R.id;
 import smartcampus.android.template.standalone.R.layout;
+import smartcampus.android.template.standalone.Activity.Model.DBManager;
 import smartcampus.android.template.standalone.Utilities.RestRequest;
 
 import eu.trentorise.smartcampus.ac.authenticator.AMSCAccessProvider;
@@ -37,6 +41,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.smartcampus.template.standalone.Evento;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -44,6 +49,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -81,46 +87,7 @@ public class Home extends FragmentActivity {
 	private static int countPage = -1;
 	private boolean goUp = true;
 
-	private RestRequest request;
-
-	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		FragmentManager manager = this.getSupportFragmentManager();
-		if (manager.findFragmentByTag("info") == null) {
-
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Allert");
-			builder.setMessage("Are you sure to quit and logout?");
-			builder.setCancelable(true);
-			builder.setPositiveButton("Logout",
-					new DialogInterface.OnClickListener() {
-
-						public void onClick(DialogInterface dialog, int id) {
-
-							(new AMSCAccessProvider()).invalidateToken(
-									getApplicationContext(), "unitn");
-							startActivity(new Intent(getApplicationContext(),
-									Intro.class));
-							dialog.dismiss();
-						}
-					});
-			builder.setNegativeButton("Cancel",
-					new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface arg0, int arg1) {
-							// TODO Auto-generated method stub
-							arg0.dismiss();
-						}
-
-					});
-			AlertDialog alert = builder.create();
-			alert.show();
-		} else {
-			manager.popBackStack();
-		}
-	}
+	private DBManager database;
 
 	@Override
 	protected void onResume() {
@@ -128,59 +95,39 @@ public class Home extends FragmentActivity {
 		super.onResume();
 
 		setContentView(R.layout.activity_home);
-
+		database = DBManager.getInstance(getApplicationContext());
 		setupButton();
-		
-		Log.i("Now", Long.toString(Calendar.getInstance().getTimeInMillis()));
 
 		mPager = (ViewPager) findViewById(R.id.pager_sport);
 
-		request = new RestRequest(getApplicationContext());
-		request.execute(new String[] {
-				getApplicationContext().getString(R.string.AUTH_TOKEN),
-				"evento"});
-		
-		JSONArray response = null;
-		try {
-			response = request.get();
-			for (int i = 0; i < response.length(); i++) {
+		ArrayList<Evento> mListaEventi = (ArrayList<Evento>) database
+				.getEventoPerAmbitoERuolo("", -1);
+		List<Fragment> fragments = new ArrayList<Fragment>();
+		for (int i = 0; i < mListaEventi.size(); i++) {
 
-				Log.i("Nome " + response.getJSONObject(i).getString("id"),
-						response.getJSONObject(i).getString("nome"));
-				Log.i("Descrizione "
-						+ response.getJSONObject(i).getString("id"),
-						response.getJSONObject(i).getString("descrizione"));
-				Log.i("Data " + response.getJSONObject(i).getString("id"),
-						response.getJSONObject(i).getString("data"));
-			}
-		} catch (InterruptedException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (ExecutionException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.i("Evento", mListaEventi.get(i).toString());
+			fragments.add(new PageEventiOggi(mListaEventi.get(i), i));
 		}
-//		try
-//		{
-//			
-//		}
-//		catch(JSONException e)
-//		{
-//			try {
-//				Log.i("Nome " + response.getString("id"),
-//						response.getString("nome"));
-//				Log.i("Descrizione " + response.getString("id"),
-//						response.getString("descrizione"));
-//				Log.i("Data " + response.getString("id"),
-//						response.getString("data"));
-//			} catch (JSONException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-//		}
+		mPager.setAdapter(new PagerAdapter(getSupportFragmentManager(),
+				fragments));
+		// try
+		// {
+		//
+		// }
+		// catch(JSONException e)
+		// {
+		// try {
+		// Log.i("Nome " + response.getString("id"),
+		// response.getString("nome"));
+		// Log.i("Descrizione " + response.getString("id"),
+		// response.getString("descrizione"));
+		// Log.i("Data " + response.getString("id"),
+		// response.getString("data"));
+		// } catch (JSONException e1) {
+		// // TODO Auto-generated catch block
+		// e1.printStackTrace();
+		// }
+		// }
 
 		//
 		// rotateTimer = new Timer();
@@ -269,6 +216,44 @@ public class Home extends FragmentActivity {
 			}
 
 		});
+	}
+
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		FragmentManager manager = this.getSupportFragmentManager();
+		if (manager.findFragmentByTag("info") == null) {
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Allert");
+			builder.setMessage("Are you sure to quit and logout?");
+			builder.setCancelable(true);
+			builder.setPositiveButton("Logout",
+					new DialogInterface.OnClickListener() {
+
+						public void onClick(DialogInterface dialog, int id) {
+
+							// (new AMSCAccessProvider()).invalidateToken(
+							// getApplicationContext(), "unitn");
+							dialog.dismiss();
+							finish();
+						}
+					});
+			builder.setNegativeButton("Cancel",
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							// TODO Auto-generated method stub
+							arg0.dismiss();
+						}
+
+					});
+			AlertDialog alert = builder.create();
+			alert.show();
+		} else {
+			manager.popBackStack();
+		}
 	}
 
 	private void setupButton() {
@@ -476,51 +461,5 @@ public class Home extends FragmentActivity {
 			return POSITION_NONE;
 		}
 	}
-
-	// private class DownloadEventiOggiAsync extends AsyncTask<Void, Integer,
-	// JSONArray>
-	// {
-	// private ViewPager mPager;
-	//
-	// public DownloadEventiOggiAsync(ViewPager pager)
-	// {
-	// mPager = pager;
-	// }
-	//
-	// @Override
-	// protected JSONArray doInBackground(Void... arg0) {
-	// // TODO Auto-generated method stub
-	//
-	// return null;
-	// }
-	//
-	// @Override
-	// protected void onPostExecute(JSONArray result) {
-	// // TODO Auto-generated method stub
-	// super.onPostExecute(result);
-	//
-	// Collection<List<?>> a = result.values();
-	// Iterator<List<?>> it = a.iterator();
-	// ArrayList<Fragment> fragment = new ArrayList<Fragment>();
-	//
-	// while(it.hasNext())
-	// {
-	// List<?> tmp = it.next();
-	// for (int i=0; i<tmp.size(); i++)
-	// {
-	// if (((EventObject)tmp.get(i)).getToTime() == null)
-	// fragment.add(new PageEventiOggi((EventObject) tmp.get(i), i));
-	// else if (((EventObject)tmp.get(i)).getFromTime() <=
-	// ((EventObject)tmp.get(i)).getToTime())
-	// fragment.add(new PageEventiOggi((EventObject) tmp.get(i), i));
-	// }
-	// }
-	//
-	// mAdapter = new PagerAdapter(getSupportFragmentManager(), fragment);
-	// mPager.setAdapter(mAdapter);
-	// mAdapter.notifyDataSetChanged();
-	// }
-	//
-	// }
 
 }

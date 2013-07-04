@@ -16,6 +16,7 @@
 -->
 <resources>
 
+    <string name="googleMapsKey">AIzaSyAoTbDQ_wJDKW_cILKs_X9Dwha0ahucxyw</string>
     <string name="app_uid_label">SmartCampus</string>
     <string name="app_name">Universiade 2013</string>
     <string name="hello_world">Hello world!</string>

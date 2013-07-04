@@ -8,8 +8,7 @@ import smartcampus.android.template.standalone.R.drawable;
 import smartcampus.android.template.standalone.R.id;
 import smartcampus.android.template.standalone.R.layout;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
-
-import eu.trentorise.smartcampus.dt.model.EventObject;
+import android.smartcampus.template.standalone.*;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
@@ -29,10 +28,10 @@ import android.widget.TextView;
 @SuppressLint("ValidFragment")
 public class PageEventiOggi extends Fragment {
 
-	private EventObject mEvento;
+	private android.smartcampus.template.standalone.Evento mEvento;
 	private int mPos;
 	
-	public PageEventiOggi(EventObject evento, int position)
+	public PageEventiOggi(android.smartcampus.template.standalone.Evento evento, int position)
 	{
 		mEvento = evento;
 		mPos = position;
@@ -43,7 +42,7 @@ public class PageEventiOggi extends Fragment {
 		this(null, 0);
 	}
 	
-	public EventObject getEvento()
+	public android.smartcampus.template.standalone.Evento getEvento()
 	{
 		return mEvento;
 	}
@@ -55,23 +54,24 @@ public class PageEventiOggi extends Fragment {
 		View mView = inflater.inflate(R.layout.activity_page_eventi_oggi, null);
 		
 		FontTextView mNome = (FontTextView)mView.findViewById(R.id.text_nome_evento);
-		mNome.setText(mEvento.getTitle().toUpperCase());
+		mNome.setText(mEvento.getNome().toUpperCase());
 		
+		String[] dataTokenized = mEvento.getData().split("/");
 		FontTextView mOra = (FontTextView)mView.findViewById(R.id.text_ora_evento);
-		Calendar mHour = Calendar.getInstance();
-		mHour.setTimeInMillis(mEvento.getFromTime());
-		String ora = null;
+//		Calendar mHour = Calendar.getInstance();
+//		mHour.setTimeInMillis(mEvento.getData().getTime());
+//		String ora = null;
+//		
+//		if (mHour.get(Calendar.MINUTE) < 10)
+//			ora = mHour.get(Calendar.HOUR)+":0"+mHour.get(Calendar.MINUTE);
+//		else
+//			ora = mHour.get(Calendar.HOUR)+":"+mHour.get(Calendar.MINUTE);
+//		if (mHour.get(Calendar.AM_PM) == Calendar.AM)
+//			ora = ora + " AM";
+//		else
+//			ora = ora + " PM";
 		
-		if (mHour.get(Calendar.MINUTE) < 10)
-			ora = mHour.get(Calendar.HOUR)+":0"+mHour.get(Calendar.MINUTE);
-		else
-			ora = mHour.get(Calendar.HOUR)+":"+mHour.get(Calendar.MINUTE);
-		if (mHour.get(Calendar.AM_PM) == Calendar.AM)
-			ora = ora + " AM";
-		else
-			ora = ora + " PM";
-		
-		mOra.setText(ora);
+		mOra.setText(dataTokenized[1]);
 		
 		ImageView mImgSfondo = (ImageView)mView.findViewById(R.id.image_sfondo_evento);
 		int randomNum = (new Random()).nextInt(5);

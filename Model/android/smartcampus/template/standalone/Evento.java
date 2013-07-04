@@ -8,7 +8,7 @@ public class Evento {
 
     private Long ID;
     private String nome;
-    private java.util.Date data;
+    private String data;
     private byte[] immagine;
     private Double latGPS;
     private Double lngGPS;
@@ -16,6 +16,7 @@ public class Evento {
     private String descrizione;
     private Integer ruolo;
     private String ambito;
+    private String tipoSport;
 
     public Evento() {
     }
@@ -24,7 +25,7 @@ public class Evento {
         this.ID = ID;
     }
 
-    public Evento(Long ID, String nome, java.util.Date data, byte[] immagine, Double latGPS, Double lngGPS, String indirizzo, String descrizione, Integer ruolo, String ambito) {
+    public Evento(Long ID, String nome, String data, byte[] immagine, Double latGPS, Double lngGPS, String indirizzo, String descrizione, Integer ruolo, String ambito, String tipoSport) {
         this.ID = ID;
         this.nome = nome;
         this.data = data;
@@ -35,6 +36,7 @@ public class Evento {
         this.descrizione = descrizione;
         this.ruolo = ruolo;
         this.ambito = ambito;
+        this.tipoSport = tipoSport;
     }
 
     public Long getID() {
@@ -53,11 +55,11 @@ public class Evento {
         this.nome = nome;
     }
 
-    public java.util.Date getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(java.util.Date data) {
+    public void setData(String data) {
         this.data = data;
     }
 
@@ -115,6 +117,14 @@ public class Evento {
 
     public void setAmbito(String ambito) {
         this.ambito = ambito;
+    }
+
+    public String getTipoSport() {
+        return tipoSport;
+    }
+
+    public void setTipoSport(String tipoSport) {
+        this.tipoSport = tipoSport;
     }
 
 }

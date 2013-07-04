@@ -33,14 +33,14 @@ import android.view.ViewGroup;
 @SuppressLint("ValidFragment")
 public class InfoEventi extends Fragment implements LocationListener{
 
-	private EventObject mEvento;
+	private android.smartcampus.template.standalone.Evento mEvento;
 	private FragmentManager manager;
 	
 	private LatLng mMarker;
 	private GoogleMap mMappa;
 	private LocationManager locationManager;
 	
-	public InfoEventi(EventObject evento, FragmentManager fm)
+	public InfoEventi(android.smartcampus.template.standalone.Evento evento, FragmentManager fm)
 	{
 		mEvento = evento;
 		manager = fm;
@@ -58,8 +58,8 @@ public class InfoEventi extends Fragment implements LocationListener{
 		View mView = inflater.inflate(R.layout.activity_info_eventi, null);
 		
 		FontTextView mDesc = (FontTextView)mView.findViewById(R.id.text_descrizione);
-		if (mEvento.getDescription() != null)
-			mDesc.setText(mEvento.getDescription());
+		if (mEvento.getDescrizione() != null)
+			mDesc.setText(mEvento.getDescrizione());
 		mDesc.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
 		mDesc.setMovementMethod(new ScrollingMovementMethod());
 		
@@ -74,9 +74,9 @@ public class InfoEventi extends Fragment implements LocationListener{
 		
         mMappa.setMyLocationEnabled(true);
         
-        if (mEvento.getLocation() != null)
+        if (mEvento.getLatGPS() != 0 && mEvento.getLngGPS() != 0)
         {
-            mMarker = new LatLng(mEvento.getLocation()[0], mEvento.getLocation()[1]);
+            mMarker = new LatLng(mEvento.getLatGPS(), mEvento.getLngGPS());
             mMappa.addMarker(new MarkerOptions().position(mMarker));
             mMappa.animateCamera(CameraUpdateFactory.newLatLngZoom(mMarker, 10));
         }

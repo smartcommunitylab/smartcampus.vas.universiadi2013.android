@@ -25,7 +25,7 @@ public class EventoDao extends AbstractDao<Evento, Long> {
     public static class Properties {
         public final static Property ID = new Property(0, Long.class, "ID", true, "ID");
         public final static Property Nome = new Property(1, String.class, "nome", false, "NOME");
-        public final static Property Data = new Property(2, java.util.Date.class, "data", false, "DATA");
+        public final static Property Data = new Property(2, String.class, "data", false, "DATA");
         public final static Property Immagine = new Property(3, byte[].class, "immagine", false, "IMMAGINE");
         public final static Property LatGPS = new Property(4, Double.class, "latGPS", false, "LAT_GPS");
         public final static Property LngGPS = new Property(5, Double.class, "lngGPS", false, "LNG_GPS");
@@ -33,6 +33,7 @@ public class EventoDao extends AbstractDao<Evento, Long> {
         public final static Property Descrizione = new Property(7, String.class, "descrizione", false, "DESCRIZIONE");
         public final static Property Ruolo = new Property(8, Integer.class, "ruolo", false, "RUOLO");
         public final static Property Ambito = new Property(9, String.class, "ambito", false, "AMBITO");
+        public final static Property TipoSport = new Property(10, String.class, "tipoSport", false, "TIPO_SPORT");
     };
 
 
@@ -50,14 +51,15 @@ public class EventoDao extends AbstractDao<Evento, Long> {
         db.execSQL("CREATE TABLE " + constraint + "'EVENTO' (" + //
                 "'ID' INTEGER PRIMARY KEY ," + // 0: ID
                 "'NOME' TEXT," + // 1: nome
-                "'DATA' INTEGER," + // 2: data
+                "'DATA' TEXT," + // 2: data
                 "'IMMAGINE' BLOB," + // 3: immagine
                 "'LAT_GPS' REAL," + // 4: latGPS
                 "'LNG_GPS' REAL," + // 5: lngGPS
                 "'INDIRIZZO' TEXT," + // 6: indirizzo
                 "'DESCRIZIONE' TEXT," + // 7: descrizione
                 "'RUOLO' INTEGER," + // 8: ruolo
-                "'AMBITO' TEXT);"); // 9: ambito
+                "'AMBITO' TEXT," + // 9: ambito
+                "'TIPO_SPORT' TEXT);"); // 10: tipoSport
     }
 
     /** Drops the underlying database table. */
@@ -81,9 +83,9 @@ public class EventoDao extends AbstractDao<Evento, Long> {
             stmt.bindString(2, nome);
         }
  
-        java.util.Date data = entity.getData();
+        String data = entity.getData();
         if (data != null) {
-            stmt.bindLong(3, data.getTime());
+            stmt.bindString(3, data);
         }
  
         byte[] immagine = entity.getImmagine();
@@ -120,6 +122,11 @@ public class EventoDao extends AbstractDao<Evento, Long> {
         if (ambito != null) {
             stmt.bindString(10, ambito);
         }
+ 
+        String tipoSport = entity.getTipoSport();
+        if (tipoSport != null) {
+            stmt.bindString(11, tipoSport);
+        }
     }
 
     /** @inheritdoc */
@@ -134,14 +141,15 @@ public class EventoDao extends AbstractDao<Evento, Long> {
         Evento entity = new Evento( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // ID
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // nome
-            cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)), // data
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // data
             cursor.isNull(offset + 3) ? null : cursor.getBlob(offset + 3), // immagine
             cursor.isNull(offset + 4) ? null : cursor.getDouble(offset + 4), // latGPS
             cursor.isNull(offset + 5) ? null : cursor.getDouble(offset + 5), // lngGPS
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // indirizzo
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // descrizione
             cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // ruolo
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // ambito
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // ambito
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10) // tipoSport
         );
         return entity;
     }
@@ -151,7 +159,7 @@ public class EventoDao extends AbstractDao<Evento, Long> {
     public void readEntity(Cursor cursor, Evento entity, int offset) {
         entity.setID(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setNome(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setData(cursor.isNull(offset + 2) ? null : new java.util.Date(cursor.getLong(offset + 2)));
+        entity.setData(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setImmagine(cursor.isNull(offset + 3) ? null : cursor.getBlob(offset + 3));
         entity.setLatGPS(cursor.isNull(offset + 4) ? null : cursor.getDouble(offset + 4));
         entity.setLngGPS(cursor.isNull(offset + 5) ? null : cursor.getDouble(offset + 5));
@@ -159,6 +167,7 @@ public class EventoDao extends AbstractDao<Evento, Long> {
         entity.setDescrizione(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setRuolo(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
         entity.setAmbito(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setTipoSport(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
      }
     
     /** @inheritdoc */
