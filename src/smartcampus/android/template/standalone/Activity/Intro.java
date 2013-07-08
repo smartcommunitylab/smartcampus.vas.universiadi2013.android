@@ -56,36 +56,41 @@ public class Intro extends Activity {
 	private AMSCAccessProvider mAccessProvider;
 	public static String mToken;
 
+	public static boolean needDWN = true;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_intro);
-		
-//		DBManager.getInstance(getApplicationContext()).upgradeVersion();
-		final DownloadManager downloadRequest = new DownloadManager(this);
-		downloadRequest.execute(new String[][] { new String[] {
-				getString(R.string.AUTH_TOKEN), "evento" } });
-		
-		new Thread(new Runnable() {
-	        public void run() {
-	        	while (true)
-				{
-					try {
-						if (downloadRequest.get())
-						{
-							startUsingApp();
-							break;
-						}
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (ExecutionException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-	        }
-	    }).start();
+
+		// DBManager.getInstance(getApplicationContext()).upgradeVersion();
+		if (needDWN) {
+			final DownloadManager downloadRequest = new DownloadManager(this);
+			downloadRequest.execute(new String[][] { new String[] {
+					getString(R.string.AUTH_TOKEN), "evento" } });
+		}
+		startUsingApp();
+
+		// new Thread(new Runnable() {
+		// public void run() {
+		// while (true)
+		// {
+		// try {
+		// if (downloadRequest.get())
+		// {
+		// startUsingApp();
+		// break;
+		// }
+		// } catch (InterruptedException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (ExecutionException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// }
+		// }
+		// }).start();
 	}
 
 	private void startUsingApp() {

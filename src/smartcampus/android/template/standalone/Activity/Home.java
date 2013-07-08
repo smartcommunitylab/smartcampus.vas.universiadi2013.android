@@ -21,7 +21,8 @@ import smartcampus.android.template.standalone.R.anim;
 import smartcampus.android.template.standalone.R.drawable;
 import smartcampus.android.template.standalone.R.id;
 import smartcampus.android.template.standalone.R.layout;
-import smartcampus.android.template.standalone.Activity.Model.DBManager;
+import smartcampus.android.template.standalone.Activity.Interface.EventoUpdateListener;
+import smartcampus.android.template.standalone.Activity.Model.*;
 import smartcampus.android.template.standalone.Utilities.RestRequest;
 
 import eu.trentorise.smartcampus.ac.authenticator.AMSCAccessProvider;
@@ -64,7 +65,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class Home extends FragmentActivity {
+public class Home extends FragmentActivity implements EventoUpdateListener {
 
 	private ImageView mEventi;
 	private ImageView mEventiLogoUp;
@@ -89,6 +90,8 @@ public class Home extends FragmentActivity {
 
 	private DBManager database;
 
+	List<Fragment> fragments = new ArrayList<Fragment>();
+
 	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
@@ -99,17 +102,25 @@ public class Home extends FragmentActivity {
 		setupButton();
 
 		mPager = (ViewPager) findViewById(R.id.pager_sport);
+		mAdapter = new PagerAdapter(getSupportFragmentManager(),
+				fragments);
 
-		ArrayList<Evento> mListaEventi = (ArrayList<Evento>) database
-				.getEventoPerAmbitoERuolo("", -1);
-		List<Fragment> fragments = new ArrayList<Fragment>();
-		for (int i = 0; i < mListaEventi.size(); i++) {
+		// if (Intro.needDWN) {
+		DownloadManager dwnManager = new DownloadManager(
+				getApplicationContext());
+		dwnManager.registerListener(this);
+		// } else {
+//		ArrayList<Evento> mLista = (ArrayList<Evento>) database
+//				.getEventoPerAmbitoERuolo("", -1);
+//		for (Evento evento : mLista)
+//			fragments.add(new PageEventiOggi(evento, fragments.size() - 1));
+//		mPager.setAdapter(new PagerAdapter(getSupportFragmentManager(),
+//				fragments));
+		// }
 
-			Log.i("Evento", mListaEventi.get(i).toString());
-			fragments.add(new PageEventiOggi(mListaEventi.get(i), i));
-		}
-		mPager.setAdapter(new PagerAdapter(getSupportFragmentManager(),
-				fragments));
+		// ArrayList<Evento> mListaEventi = (ArrayList<Evento>) database
+		// .getEventoPerAmbitoERuolo("", -1);
+
 		// try
 		// {
 		//
@@ -156,41 +167,41 @@ public class Home extends FragmentActivity {
 		// }
 		// }, 0, 5000);
 
-		class TapGestureListener extends
-				GestureDetector.SimpleOnGestureListener {
-
-			@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-			@Override
-			public boolean onSingleTapConfirmed(MotionEvent e) {
-				FragmentManager fragmentManager = getSupportFragmentManager();
-				if (fragmentManager.findFragmentByTag("info") == null) {
-					FragmentTransaction fragmentTransaction = fragmentManager
-							.beginTransaction();
-					fragmentTransaction.setCustomAnimations(
-							R.anim.slide_in_bottom, R.anim.slide_out_bottom,
-							R.anim.slide_in_bottom, R.anim.slide_out_bottom);
-					fragmentTransaction.addToBackStack(null);
-					fragmentTransaction.add(
-							R.id.container_bottoni,
-							new InfoEventi(((PageEventiOggi) mAdapter
-									.getItem(mPager.getCurrentItem()))
-									.getEvento(), fragmentManager), "info");
-					fragmentTransaction.commit();
-				} else
-					fragmentManager.popBackStack();
-				return true;
-			}
-		}
-
-		final GestureDetector tapGestureDetector = new GestureDetector(this,
-				new TapGestureListener());
-
-		mPager.setOnTouchListener(new OnTouchListener() {
-			public boolean onTouch(View v, MotionEvent event) {
-				tapGestureDetector.onTouchEvent(event);
-				return false;
-			}
-		});
+		// class TapGestureListener extends
+		// GestureDetector.SimpleOnGestureListener {
+		//
+		// @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+		// @Override
+		// public boolean onSingleTapConfirmed(MotionEvent e) {
+		// FragmentManager fragmentManager = getSupportFragmentManager();
+		// if (fragmentManager.findFragmentByTag("info") == null) {
+		// FragmentTransaction fragmentTransaction = fragmentManager
+		// .beginTransaction();
+		// fragmentTransaction.setCustomAnimations(
+		// R.anim.slide_in_bottom, R.anim.slide_out_bottom,
+		// R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+		// fragmentTransaction.addToBackStack(null);
+		// fragmentTransaction.add(
+		// R.id.container_bottoni,
+		// new InfoEventi(((PageEventiOggi) mAdapter
+		// .getItem(mPager.getCurrentItem()))
+		// .getEvento(), fragmentManager), "info");
+		// fragmentTransaction.commit();
+		// } else
+		// fragmentManager.popBackStack();
+		// return true;
+		// }
+		// }
+		//
+		// final GestureDetector tapGestureDetector = new GestureDetector(this,
+		// new TapGestureListener());
+		//
+		// mPager.setOnTouchListener(new OnTouchListener() {
+		// public boolean onTouch(View v, MotionEvent event) {
+		// tapGestureDetector.onTouchEvent(event);
+		// return false;
+		// }
+		// });
 
 		final FragmentManager manager = this.getSupportFragmentManager();
 
@@ -216,6 +227,12 @@ public class Home extends FragmentActivity {
 			}
 
 		});
+	}
+
+	@Override
+	public void onEventiUpdate(Evento evento) {
+		// TODO Auto-generated method stub
+		mAdapter.fragments.add(new PageEventiOggi(evento, fragments.size() - 1));
 	}
 
 	@Override
