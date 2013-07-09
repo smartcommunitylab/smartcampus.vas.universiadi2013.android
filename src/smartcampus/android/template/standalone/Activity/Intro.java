@@ -22,6 +22,7 @@ import smartcampus.android.template.standalone.R.id;
 import smartcampus.android.template.standalone.R.layout;
 import smartcampus.android.template.standalone.Activity.Model.DBManager;
 import smartcampus.android.template.standalone.Activity.Model.DownloadManager;
+import smartcampus.android.template.standalone.Utilities.SaveDBService;
 
 import eu.trentorise.smartcampus.ac.ACService;
 import eu.trentorise.smartcampus.ac.AcServiceException;
@@ -42,6 +43,7 @@ import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
@@ -58,39 +60,16 @@ public class Intro extends Activity {
 
 	public static boolean needDWN = true;
 
+	private Context mContext = this;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_intro);
 
-		// DBManager.getInstance(getApplicationContext()).upgradeVersion();
-		if (needDWN) {
-			final DownloadManager downloadRequest = new DownloadManager(this);
-			downloadRequest.execute(new String[][] { new String[] {
-					getString(R.string.AUTH_TOKEN), "evento" } });
-		}
-		startUsingApp();
+//		(DBManager.getInstance(getApplicationContext())).upgradeVersion();
 
-		// new Thread(new Runnable() {
-		// public void run() {
-		// while (true)
-		// {
-		// try {
-		// if (downloadRequest.get())
-		// {
-		// startUsingApp();
-		// break;
-		// }
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (ExecutionException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// }
-		// }
-		// }).start();
+		startUsingApp();
 	}
 
 	private void startUsingApp() {
@@ -123,13 +102,6 @@ public class Intro extends Activity {
 					mGuest.setImageResource(R.drawable.button_guest_down);
 					return true;
 				}
-				if (event.getAction() == MotionEvent.ACTION_UP) {
-					mGuest.setImageResource(R.drawable.button_guest_up);
-					startActivity(new Intent(getApplicationContext(),
-							HomeGuest.class));
-					// getLoginRequest("google");
-					return true;
-				}
 				return false;
 			}
 
@@ -147,8 +119,27 @@ public class Intro extends Activity {
 				}
 				if (arg1.getAction() == MotionEvent.ACTION_UP) {
 					mLogin.setImageResource(R.drawable.button_login_up);
-					startActivity(new Intent(getApplicationContext(),
-							Home.class));
+//					(new DownloadManager(mContext))
+//							.execute(new String[][] { new String[] {
+//									getString(R.string.AUTH_TOKEN), "evento" } });
+//
+//					new Thread(new Runnable() {
+//						public void run() {
+//							while (true) {
+//								if (DownloadManager.isReady()) {
+//									startActivity(new Intent(
+//											getApplicationContext(), Home.class));
+//									Intent mService = new Intent(
+//											getApplicationContext(),
+//											SaveDBService.class);
+//									startService(mService);
+//									break;
+//								}
+//							}
+//						}
+//					}).start();
+					startActivity(new Intent(
+					getApplicationContext(), Home.class));
 					// getLoginRequest("unitn");
 					return true;
 				}

@@ -67,7 +67,7 @@
             android:value="SmartCampus Android Template" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyCRcQA43IFbA_lm1XAjCB08ojkh1nVKaYs" />
+            android:value="AIzaSyDXfK2wlNhpJjZq6Y7xDAiyZVN-jp9OU1M" />
 
         <activity
             android:name="eu.trentorise.smartcampus.storage.dropbox.DropboxAuth"
@@ -99,6 +99,7 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
+        <service android:name="smartcampus.android.template.standalone.Utilities.SaveDBService" />
 
         <activity
             android:name="smartcampus.android.template.standalone.Activity.Home"
@@ -163,8 +164,6 @@
         <activity
             android:name="smartcampus.android.template.standalone.Activity.Profile"
             android:label="@string/title_activity_profile" >
-        </activity>
-        <activity android:name="smartcampus.android.template.standalone.Profile" >
         </activity>
     </application>
 

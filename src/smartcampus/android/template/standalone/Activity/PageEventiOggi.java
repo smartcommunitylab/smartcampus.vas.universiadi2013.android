@@ -74,10 +74,10 @@ public class PageEventiOggi extends Fragment {
 		mOra.setText(dataTokenized[1]);
 		
 		ImageView mImgSfondo = (ImageView)mView.findViewById(R.id.image_sfondo_evento);
-		int randomNum = (new Random()).nextInt(5);
-		while (randomNum == 0)
-			randomNum = (new Random()).nextInt(5);
-		mImgSfondo.setImageResource(getResources().getIdentifier("cover"+randomNum, "drawable", "smartcampus.android.template.standalone"));
+//		int randomNum = (new Random()).nextInt(5);
+//		while (randomNum == 0)
+//			randomNum = (new Random()).nextInt(5);
+		mImgSfondo.setImageResource(getResources().getIdentifier("cover1", "drawable", "smartcampus.android.template.standalone"));
 //		FontTextView mToday = (FontTextView)mView.findViewById(R.id.text_today);
 //		Calendar mCal = Calendar.getInstance();
 //		mCal.setTimeInMillis(mEvento.getFromTime());

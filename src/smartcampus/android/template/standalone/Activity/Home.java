@@ -21,7 +21,6 @@ import smartcampus.android.template.standalone.R.anim;
 import smartcampus.android.template.standalone.R.drawable;
 import smartcampus.android.template.standalone.R.id;
 import smartcampus.android.template.standalone.R.layout;
-import smartcampus.android.template.standalone.Activity.Interface.EventoUpdateListener;
 import smartcampus.android.template.standalone.Activity.Model.*;
 import smartcampus.android.template.standalone.Utilities.RestRequest;
 
@@ -42,12 +41,16 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.smartcampus.template.standalone.Evento;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.format.DateFormat;
@@ -65,7 +68,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class Home extends FragmentActivity implements EventoUpdateListener {
+public class Home extends FragmentActivity /* implements EventoUpdateListener */{
 
 	private ImageView mEventi;
 	private ImageView mEventiLogoUp;
@@ -99,23 +102,34 @@ public class Home extends FragmentActivity implements EventoUpdateListener {
 
 		setContentView(R.layout.activity_home);
 		database = DBManager.getInstance(getApplicationContext());
-		setupButton();
-
 		mPager = (ViewPager) findViewById(R.id.pager_sport);
 		mAdapter = new PagerAdapter(getSupportFragmentManager(),
 				fragments);
+		mPager.setAdapter(mAdapter);
+
+		setupButton();
+
+//		ArrayList<Evento> mLista = (ArrayList<Evento>) DownloadManager
+//				.getmLista();
+//		for (Evento evento : mLista)
+		Evento evento = new Evento();
+		evento.setData("1.1.1 / 11:11");
+		evento.setDescrizione("Desc");
+		evento.setLatGPS(45.517534);
+		evento.setLngGPS(11.686299);
+		evento.setNome("Mio");
+			mAdapter.fragments.add(new PageEventiOggi(evento, fragments.size() - 1));
+		mPager.setAdapter(mAdapter);
 
 		// if (Intro.needDWN) {
-		DownloadManager dwnManager = new DownloadManager(
-				getApplicationContext());
-		dwnManager.registerListener(this);
+
 		// } else {
-//		ArrayList<Evento> mLista = (ArrayList<Evento>) database
-//				.getEventoPerAmbitoERuolo("", -1);
-//		for (Evento evento : mLista)
-//			fragments.add(new PageEventiOggi(evento, fragments.size() - 1));
-//		mPager.setAdapter(new PagerAdapter(getSupportFragmentManager(),
-//				fragments));
+		// ArrayList<Evento> mLista = (ArrayList<Evento>) database
+		// .getEventoPerAmbitoERuolo("", -1);
+		// for (Evento evento : mLista)
+		// mAdapter.fragments.add(new PageEventiOggi(evento, fragments.size() -
+		// 1));
+		// mPager.setAdapter(mAdapter);
 		// }
 
 		// ArrayList<Evento> mListaEventi = (ArrayList<Evento>) database
@@ -167,41 +181,41 @@ public class Home extends FragmentActivity implements EventoUpdateListener {
 		// }
 		// }, 0, 5000);
 
-		// class TapGestureListener extends
-		// GestureDetector.SimpleOnGestureListener {
-		//
-		// @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-		// @Override
-		// public boolean onSingleTapConfirmed(MotionEvent e) {
-		// FragmentManager fragmentManager = getSupportFragmentManager();
-		// if (fragmentManager.findFragmentByTag("info") == null) {
-		// FragmentTransaction fragmentTransaction = fragmentManager
-		// .beginTransaction();
-		// fragmentTransaction.setCustomAnimations(
-		// R.anim.slide_in_bottom, R.anim.slide_out_bottom,
-		// R.anim.slide_in_bottom, R.anim.slide_out_bottom);
-		// fragmentTransaction.addToBackStack(null);
-		// fragmentTransaction.add(
-		// R.id.container_bottoni,
-		// new InfoEventi(((PageEventiOggi) mAdapter
-		// .getItem(mPager.getCurrentItem()))
-		// .getEvento(), fragmentManager), "info");
-		// fragmentTransaction.commit();
-		// } else
-		// fragmentManager.popBackStack();
-		// return true;
-		// }
-		// }
-		//
-		// final GestureDetector tapGestureDetector = new GestureDetector(this,
-		// new TapGestureListener());
-		//
-		// mPager.setOnTouchListener(new OnTouchListener() {
-		// public boolean onTouch(View v, MotionEvent event) {
-		// tapGestureDetector.onTouchEvent(event);
-		// return false;
-		// }
-		// });
+		class TapGestureListener extends
+				GestureDetector.SimpleOnGestureListener {
+
+			@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+			@Override
+			public boolean onSingleTapConfirmed(MotionEvent e) {
+				FragmentManager fragmentManager = getSupportFragmentManager();
+				if (fragmentManager.findFragmentByTag("info") == null) {
+					FragmentTransaction fragmentTransaction = fragmentManager
+							.beginTransaction();
+					fragmentTransaction.setCustomAnimations(
+							R.anim.slide_in_bottom, R.anim.slide_out_bottom,
+							R.anim.slide_in_bottom, R.anim.slide_out_bottom);
+					fragmentTransaction.addToBackStack(null);
+					fragmentTransaction.add(
+							R.id.container_bottoni,
+							new InfoEventi(((PageEventiOggi) mAdapter
+									.getItem(mPager.getCurrentItem()))
+									.getEvento(), fragmentManager), "info");
+					fragmentTransaction.commit();
+				} else
+					fragmentManager.popBackStack();
+				return true;
+			}
+		}
+
+		final GestureDetector tapGestureDetector = new GestureDetector(this,
+				new TapGestureListener());
+
+		mPager.setOnTouchListener(new OnTouchListener() {
+			public boolean onTouch(View v, MotionEvent event) {
+				tapGestureDetector.onTouchEvent(event);
+				return false;
+			}
+		});
 
 		final FragmentManager manager = this.getSupportFragmentManager();
 
@@ -229,11 +243,13 @@ public class Home extends FragmentActivity implements EventoUpdateListener {
 		});
 	}
 
-	@Override
-	public void onEventiUpdate(Evento evento) {
-		// TODO Auto-generated method stub
-		mAdapter.fragments.add(new PageEventiOggi(evento, fragments.size() - 1));
-	}
+	// @Override
+	// public void onEventiUpdate(Evento evento) {
+	// // TODO Auto-generated method stub
+	// mAdapter.fragments
+	// .add(new PageEventiOggi(evento, fragments.size() - 1));
+	// mAdapter.notifyDataSetChanged();
+	// }
 
 	@Override
 	public void onBackPressed() {
@@ -459,6 +475,18 @@ public class Home extends FragmentActivity implements EventoUpdateListener {
 		public PagerAdapter(FragmentManager fm, List<Fragment> fragments) {
 			super(fm);
 			this.fragments = fragments;
+		}
+
+		@Override
+		public void notifyDataSetChanged() {
+			// TODO Auto-generated method stub
+			super.notifyDataSetChanged();
+		}
+
+		@Override
+		public void registerDataSetObserver(DataSetObserver observer) {
+			// TODO Auto-generated method stub
+			super.registerDataSetObserver(observer);
 		}
 
 		// return access to fragment from position, required override
