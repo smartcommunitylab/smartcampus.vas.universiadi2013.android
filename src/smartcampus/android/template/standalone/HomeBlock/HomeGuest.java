@@ -1,4 +1,4 @@
-package smartcampus.android.template.standalone.Activity;
+package smartcampus.android.template.standalone.HomeBlock;
 
 import android.support.v4.app.FragmentActivity;
 //

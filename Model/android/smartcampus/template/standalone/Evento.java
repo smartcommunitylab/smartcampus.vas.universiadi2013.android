@@ -9,6 +9,7 @@ public class Evento {
     private Long ID;
     private String nome;
     private String data;
+    private String ora;
     private byte[] immagine;
     private Double latGPS;
     private Double lngGPS;
@@ -25,10 +26,11 @@ public class Evento {
         this.ID = ID;
     }
 
-    public Evento(Long ID, String nome, String data, byte[] immagine, Double latGPS, Double lngGPS, String indirizzo, String descrizione, Integer ruolo, String ambito, String tipoSport) {
+    public Evento(Long ID, String nome, String data, String ora, byte[] immagine, Double latGPS, Double lngGPS, String indirizzo, String descrizione, Integer ruolo, String ambito, String tipoSport) {
         this.ID = ID;
         this.nome = nome;
         this.data = data;
+        this.ora = ora;
         this.immagine = immagine;
         this.latGPS = latGPS;
         this.lngGPS = lngGPS;
@@ -61,6 +63,14 @@ public class Evento {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public String getOra() {
+        return ora;
+    }
+
+    public void setOra(String ora) {
+        this.ora = ora;
     }
 
     public byte[] getImmagine() {

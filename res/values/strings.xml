@@ -47,5 +47,7 @@
     <string name="title_activity_batch">Batch</string>
     <string name="AUTH_TOKEN">aee58a92-d42d-42e8-b55e-12e4289586fc</string>
     <string name="URL_BACKEND">http://smartcampusvasuniversiadi2013web.app.smartcampuslab.it/</string>
+    <string name="title_activity_row_desc_route">RowDescRoute</string>
+    <string name="title_activity_page_info_eventi">PageInfoEventi</string>
 
 </resources>

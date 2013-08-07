@@ -26,14 +26,15 @@ public class EventoDao extends AbstractDao<Evento, Long> {
         public final static Property ID = new Property(0, Long.class, "ID", true, "ID");
         public final static Property Nome = new Property(1, String.class, "nome", false, "NOME");
         public final static Property Data = new Property(2, String.class, "data", false, "DATA");
-        public final static Property Immagine = new Property(3, byte[].class, "immagine", false, "IMMAGINE");
-        public final static Property LatGPS = new Property(4, Double.class, "latGPS", false, "LAT_GPS");
-        public final static Property LngGPS = new Property(5, Double.class, "lngGPS", false, "LNG_GPS");
-        public final static Property Indirizzo = new Property(6, String.class, "indirizzo", false, "INDIRIZZO");
-        public final static Property Descrizione = new Property(7, String.class, "descrizione", false, "DESCRIZIONE");
-        public final static Property Ruolo = new Property(8, Integer.class, "ruolo", false, "RUOLO");
-        public final static Property Ambito = new Property(9, String.class, "ambito", false, "AMBITO");
-        public final static Property TipoSport = new Property(10, String.class, "tipoSport", false, "TIPO_SPORT");
+        public final static Property Ora = new Property(3, String.class, "ora", false, "ORA");
+        public final static Property Immagine = new Property(4, byte[].class, "immagine", false, "IMMAGINE");
+        public final static Property LatGPS = new Property(5, Double.class, "latGPS", false, "LAT_GPS");
+        public final static Property LngGPS = new Property(6, Double.class, "lngGPS", false, "LNG_GPS");
+        public final static Property Indirizzo = new Property(7, String.class, "indirizzo", false, "INDIRIZZO");
+        public final static Property Descrizione = new Property(8, String.class, "descrizione", false, "DESCRIZIONE");
+        public final static Property Ruolo = new Property(9, Integer.class, "ruolo", false, "RUOLO");
+        public final static Property Ambito = new Property(10, String.class, "ambito", false, "AMBITO");
+        public final static Property TipoSport = new Property(11, String.class, "tipoSport", false, "TIPO_SPORT");
     };
 
 
@@ -52,14 +53,15 @@ public class EventoDao extends AbstractDao<Evento, Long> {
                 "'ID' INTEGER PRIMARY KEY ," + // 0: ID
                 "'NOME' TEXT," + // 1: nome
                 "'DATA' TEXT," + // 2: data
-                "'IMMAGINE' BLOB," + // 3: immagine
-                "'LAT_GPS' REAL," + // 4: latGPS
-                "'LNG_GPS' REAL," + // 5: lngGPS
-                "'INDIRIZZO' TEXT," + // 6: indirizzo
-                "'DESCRIZIONE' TEXT," + // 7: descrizione
-                "'RUOLO' INTEGER," + // 8: ruolo
-                "'AMBITO' TEXT," + // 9: ambito
-                "'TIPO_SPORT' TEXT);"); // 10: tipoSport
+                "'ORA' TEXT," + // 3: ora
+                "'IMMAGINE' BLOB," + // 4: immagine
+                "'LAT_GPS' REAL," + // 5: latGPS
+                "'LNG_GPS' REAL," + // 6: lngGPS
+                "'INDIRIZZO' TEXT," + // 7: indirizzo
+                "'DESCRIZIONE' TEXT," + // 8: descrizione
+                "'RUOLO' INTEGER," + // 9: ruolo
+                "'AMBITO' TEXT," + // 10: ambito
+                "'TIPO_SPORT' TEXT);"); // 11: tipoSport
     }
 
     /** Drops the underlying database table. */
@@ -88,44 +90,49 @@ public class EventoDao extends AbstractDao<Evento, Long> {
             stmt.bindString(3, data);
         }
  
+        String ora = entity.getOra();
+        if (ora != null) {
+            stmt.bindString(4, ora);
+        }
+ 
         byte[] immagine = entity.getImmagine();
         if (immagine != null) {
-            stmt.bindBlob(4, immagine);
+            stmt.bindBlob(5, immagine);
         }
  
         Double latGPS = entity.getLatGPS();
         if (latGPS != null) {
-            stmt.bindDouble(5, latGPS);
+            stmt.bindDouble(6, latGPS);
         }
  
         Double lngGPS = entity.getLngGPS();
         if (lngGPS != null) {
-            stmt.bindDouble(6, lngGPS);
+            stmt.bindDouble(7, lngGPS);
         }
  
         String indirizzo = entity.getIndirizzo();
         if (indirizzo != null) {
-            stmt.bindString(7, indirizzo);
+            stmt.bindString(8, indirizzo);
         }
  
         String descrizione = entity.getDescrizione();
         if (descrizione != null) {
-            stmt.bindString(8, descrizione);
+            stmt.bindString(9, descrizione);
         }
  
         Integer ruolo = entity.getRuolo();
         if (ruolo != null) {
-            stmt.bindLong(9, ruolo);
+            stmt.bindLong(10, ruolo);
         }
  
         String ambito = entity.getAmbito();
         if (ambito != null) {
-            stmt.bindString(10, ambito);
+            stmt.bindString(11, ambito);
         }
  
         String tipoSport = entity.getTipoSport();
         if (tipoSport != null) {
-            stmt.bindString(11, tipoSport);
+            stmt.bindString(12, tipoSport);
         }
     }
 
@@ -142,14 +149,15 @@ public class EventoDao extends AbstractDao<Evento, Long> {
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // ID
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // nome
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // data
-            cursor.isNull(offset + 3) ? null : cursor.getBlob(offset + 3), // immagine
-            cursor.isNull(offset + 4) ? null : cursor.getDouble(offset + 4), // latGPS
-            cursor.isNull(offset + 5) ? null : cursor.getDouble(offset + 5), // lngGPS
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // indirizzo
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // descrizione
-            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // ruolo
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // ambito
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10) // tipoSport
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // ora
+            cursor.isNull(offset + 4) ? null : cursor.getBlob(offset + 4), // immagine
+            cursor.isNull(offset + 5) ? null : cursor.getDouble(offset + 5), // latGPS
+            cursor.isNull(offset + 6) ? null : cursor.getDouble(offset + 6), // lngGPS
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // indirizzo
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // descrizione
+            cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // ruolo
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // ambito
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11) // tipoSport
         );
         return entity;
     }
@@ -160,14 +168,15 @@ public class EventoDao extends AbstractDao<Evento, Long> {
         entity.setID(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setNome(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setData(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setImmagine(cursor.isNull(offset + 3) ? null : cursor.getBlob(offset + 3));
-        entity.setLatGPS(cursor.isNull(offset + 4) ? null : cursor.getDouble(offset + 4));
-        entity.setLngGPS(cursor.isNull(offset + 5) ? null : cursor.getDouble(offset + 5));
-        entity.setIndirizzo(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setDescrizione(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setRuolo(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
-        entity.setAmbito(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setTipoSport(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setOra(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setImmagine(cursor.isNull(offset + 4) ? null : cursor.getBlob(offset + 4));
+        entity.setLatGPS(cursor.isNull(offset + 5) ? null : cursor.getDouble(offset + 5));
+        entity.setLngGPS(cursor.isNull(offset + 6) ? null : cursor.getDouble(offset + 6));
+        entity.setIndirizzo(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setDescrizione(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setRuolo(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
+        entity.setAmbito(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setTipoSport(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
      }
     
     /** @inheritdoc */

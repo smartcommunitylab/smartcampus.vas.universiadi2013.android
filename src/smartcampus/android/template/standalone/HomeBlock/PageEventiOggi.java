@@ -1,4 +1,4 @@
-package smartcampus.android.template.standalone.Activity;
+package smartcampus.android.template.standalone.HomeBlock;
 
 import java.util.Calendar;
 import java.util.Random;
@@ -56,7 +56,6 @@ public class PageEventiOggi extends Fragment {
 		FontTextView mNome = (FontTextView)mView.findViewById(R.id.text_nome_evento);
 		mNome.setText(mEvento.getNome().toUpperCase());
 		
-		String[] dataTokenized = mEvento.getData().split("/");
 		FontTextView mOra = (FontTextView)mView.findViewById(R.id.text_ora_evento);
 //		Calendar mHour = Calendar.getInstance();
 //		mHour.setTimeInMillis(mEvento.getData().getTime());
@@ -71,7 +70,7 @@ public class PageEventiOggi extends Fragment {
 //		else
 //			ora = ora + " PM";
 		
-		mOra.setText(dataTokenized[1]);
+		mOra.setText(mEvento.getOra());
 		
 		ImageView mImgSfondo = (ImageView)mView.findViewById(R.id.image_sfondo_evento);
 //		int randomNum = (new Random()).nextInt(5);

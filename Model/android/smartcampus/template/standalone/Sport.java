@@ -6,7 +6,6 @@ package android.smartcampus.template.standalone;
  */
 public class Sport {
 
-    private Long id;
     private String nome;
     private byte[] immagine;
     private String descrizione;
@@ -14,23 +13,14 @@ public class Sport {
     public Sport() {
     }
 
-    public Sport(Long id) {
-        this.id = id;
+    public Sport(String nome) {
+        this.nome = nome;
     }
 
-    public Sport(Long id, String nome, byte[] immagine, String descrizione) {
-        this.id = id;
+    public Sport(String nome, byte[] immagine, String descrizione) {
         this.nome = nome;
         this.immagine = immagine;
         this.descrizione = descrizione;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getNome() {

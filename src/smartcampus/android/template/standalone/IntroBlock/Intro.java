@@ -1,4 +1,4 @@
-package smartcampus.android.template.standalone.Activity;
+package smartcampus.android.template.standalone.IntroBlock;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,7 +14,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import smartcampus.android.template.standalone.R;
 import smartcampus.android.template.standalone.R.drawable;
@@ -22,6 +21,7 @@ import smartcampus.android.template.standalone.R.id;
 import smartcampus.android.template.standalone.R.layout;
 import smartcampus.android.template.standalone.Activity.Model.DBManager;
 import smartcampus.android.template.standalone.Activity.Model.DownloadManager;
+import smartcampus.android.template.standalone.HomeBlock.Home;
 import smartcampus.android.template.standalone.Utilities.SaveDBService;
 
 import eu.trentorise.smartcampus.ac.ACService;
@@ -67,7 +67,7 @@ public class Intro extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_intro);
 
-//		(DBManager.getInstance(getApplicationContext())).upgradeVersion();
+		(DBManager.getInstance(getApplicationContext())).upgradeVersion();
 
 		startUsingApp();
 	}
@@ -119,27 +119,27 @@ public class Intro extends Activity {
 				}
 				if (arg1.getAction() == MotionEvent.ACTION_UP) {
 					mLogin.setImageResource(R.drawable.button_login_up);
-//					(new DownloadManager(mContext))
-//							.execute(new String[][] { new String[] {
-//									getString(R.string.AUTH_TOKEN), "evento" } });
-//
-//					new Thread(new Runnable() {
-//						public void run() {
-//							while (true) {
+					(new DownloadManager(mContext))
+							.execute(new String[][] { new String[] {
+									getString(R.string.AUTH_TOKEN), "evento" } });
+
+					new Thread(new Runnable() {
+						public void run() {
+							while (true) {
 //								if (DownloadManager.isReady()) {
-//									startActivity(new Intent(
-//											getApplicationContext(), Home.class));
-//									Intent mService = new Intent(
-//											getApplicationContext(),
-//											SaveDBService.class);
-//									startService(mService);
-//									break;
-//								}
-//							}
-//						}
-//					}).start();
-					startActivity(new Intent(
-					getApplicationContext(), Home.class));
+									startActivity(new Intent(
+											getApplicationContext(), Home.class));
+									Intent mService = new Intent(
+											getApplicationContext(),
+											SaveDBService.class);
+									startService(mService);
+									break;
+								}
+							//}
+						}
+					}).start();
+//					startActivity(new Intent(
+//					getApplicationContext(), Home.class));
 					// getLoginRequest("unitn");
 					return true;
 				}

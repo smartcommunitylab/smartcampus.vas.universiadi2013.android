@@ -28,7 +28,6 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitEnd"
                 android:src="@drawable/map_bottom_over" />
-
         </RelativeLayout>
 
         <RelativeLayout
@@ -38,15 +37,13 @@
             android:background="#FFFFFFFF"
             android:gravity="center" >
 
-            <smartcampus.android.template.standalone.Utilities.FontTextView
-                android:id="@+id/text_descrizione"
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager_info_eventi"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:scrollbars="horizontal"
-                android:text="TextView"
-                android:textColor="#3293AC" />
-
+                android:layout_weight="0.8"
+                android:clickable="true" >
+            </android.support.v4.view.ViewPager>
         </RelativeLayout>
     </LinearLayout>
 

@@ -14,7 +14,7 @@ import android.smartcampus.template.standalone.Sport;
 /** 
  * DAO for table SPORT.
 */
-public class SportDao extends AbstractDao<Sport, Long> {
+public class SportDao extends AbstractDao<Sport, String> {
 
     public static final String TABLENAME = "SPORT";
 
@@ -23,10 +23,9 @@ public class SportDao extends AbstractDao<Sport, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Nome = new Property(1, String.class, "nome", false, "NOME");
-        public final static Property Immagine = new Property(2, byte[].class, "immagine", false, "IMMAGINE");
-        public final static Property Descrizione = new Property(3, String.class, "descrizione", false, "DESCRIZIONE");
+        public final static Property Nome = new Property(0, String.class, "nome", true, "NOME");
+        public final static Property Immagine = new Property(1, byte[].class, "immagine", false, "IMMAGINE");
+        public final static Property Descrizione = new Property(2, String.class, "descrizione", false, "DESCRIZIONE");
     };
 
 
@@ -42,10 +41,9 @@ public class SportDao extends AbstractDao<Sport, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'SPORT' (" + //
-                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "'NOME' TEXT," + // 1: nome
-                "'IMMAGINE' BLOB," + // 2: immagine
-                "'DESCRIZIONE' TEXT);"); // 3: descrizione
+                "'NOME' TEXT PRIMARY KEY NOT NULL ," + // 0: nome
+                "'IMMAGINE' BLOB," + // 1: immagine
+                "'DESCRIZIONE' TEXT);"); // 2: descrizione
     }
 
     /** Drops the underlying database table. */
@@ -59,41 +57,35 @@ public class SportDao extends AbstractDao<Sport, Long> {
     protected void bindValues(SQLiteStatement stmt, Sport entity) {
         stmt.clearBindings();
  
-        Long id = entity.getId();
-        if (id != null) {
-            stmt.bindLong(1, id);
-        }
- 
         String nome = entity.getNome();
         if (nome != null) {
-            stmt.bindString(2, nome);
+            stmt.bindString(1, nome);
         }
  
         byte[] immagine = entity.getImmagine();
         if (immagine != null) {
-            stmt.bindBlob(3, immagine);
+            stmt.bindBlob(2, immagine);
         }
  
         String descrizione = entity.getDescrizione();
         if (descrizione != null) {
-            stmt.bindString(4, descrizione);
+            stmt.bindString(3, descrizione);
         }
     }
 
     /** @inheritdoc */
     @Override
-    public Long readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+    public String readKey(Cursor cursor, int offset) {
+        return cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public Sport readEntity(Cursor cursor, int offset) {
         Sport entity = new Sport( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // nome
-            cursor.isNull(offset + 2) ? null : cursor.getBlob(offset + 2), // immagine
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3) // descrizione
+            cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // nome
+            cursor.isNull(offset + 1) ? null : cursor.getBlob(offset + 1), // immagine
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2) // descrizione
         );
         return entity;
     }
@@ -101,24 +93,22 @@ public class SportDao extends AbstractDao<Sport, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, Sport entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setNome(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setImmagine(cursor.isNull(offset + 2) ? null : cursor.getBlob(offset + 2));
-        entity.setDescrizione(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setNome(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
+        entity.setImmagine(cursor.isNull(offset + 1) ? null : cursor.getBlob(offset + 1));
+        entity.setDescrizione(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
      }
     
     /** @inheritdoc */
     @Override
-    protected Long updateKeyAfterInsert(Sport entity, long rowId) {
-        entity.setId(rowId);
-        return rowId;
+    protected String updateKeyAfterInsert(Sport entity, long rowId) {
+        return entity.getNome();
     }
     
     /** @inheritdoc */
     @Override
-    public Long getKey(Sport entity) {
+    public String getKey(Sport entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.getNome();
         } else {
             return null;
         }

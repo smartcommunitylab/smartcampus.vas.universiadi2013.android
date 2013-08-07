@@ -102,12 +102,14 @@
         <service android:name="smartcampus.android.template.standalone.Utilities.SaveDBService" />
 
         <activity
-            android:name="smartcampus.android.template.standalone.Activity.Home"
-            android:label="@string/app_name" >
+            android:name="smartcampus.android.template.standalone.HomeBlock.Home"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="smartcampus.android.template.standalone.Activity.Intro"
-            android:label="@string/title_activity_file" >
+            android:name="smartcampus.android.template.standalone.IntroBlock.Intro"
+            android:label="@string/title_activity_file"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -118,52 +120,93 @@
             android:name="eu.trentorise.smartcampus.ac.authenticator.AuthenticatorActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name="smartcampus.android.template.standalone.Activity.HomeGuest"
-            android:label="@string/title_activity_home_guest" >
+            android:name="smartcampus.android.template.standalone.HomeBlock.HomeGuest"
+            android:label="@string/title_activity_home_guest"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="smartcampus.android.template.standalone.Activity.Evento"
-            android:label="@string/title_activity_evento" >
+            android:name="smartcampus.android.template.standalone.Activity.EventiBlock.Evento"
+            android:label="@string/title_activity_evento"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="smartcampus.android.template.standalone.Activity.Sport"
-            android:label="@string/title_activity_sport" >
+            android:name="smartcampus.android.template.standalone.Activity.SportBlock.Sport"
+            android:label="@string/title_activity_sport"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="smartcampus.android.template.standalone.Activity.Facilities"
-            android:label="@string/title_activity_facilities" >
+            android:label="@string/title_activity_facilities"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="smartcampus.android.template.standalone.Activity.Booking"
-            android:label="@string/title_activity_booking" >
+            android:name="smartcampus.android.template.standalone.Activity.FacilitiesBlock.Booking"
+            android:label="@string/title_activity_booking"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="smartcampus.android.template.standalone.Activity.PageEventiOggi"
-            android:label="@string/title_activity_page_eventi_oggi" >
+            android:name="smartcampus.android.template.standalone.HomeBlock.PageEventiOggi"
+            android:label="@string/title_activity_page_eventi_oggi"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="smartcampus.android.template.standalone.InfoEventi"
-            android:label="" >
+            android:name="smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi"
+            android:label="" 
+            android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name="smartcampus.android.template.standalone.DettaglioEvento"
-            android:label="@string/title_activity_dettaglio_evento" >
+            android:name="smartcampus.android.template.standalone.Activity.EventiBlock.DettaglioEvento"
+            android:label="@string/title_activity_dettaglio_evento"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="smartcampus.android.template.standalone.Activity.DettaglioSport"
-            android:label="" >
+            android:name="smartcampus.android.template.standalone.Activity.SportBlock.DettaglioSport"
+            android:label=""
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="smartcampus.android.template.standalone.PageInfoSport"
-            android:label="@string/title_activity_page_info_sport" >
+            android:label="@string/title_activity_page_info_sport"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="smartcampus.android.template.standalone.Activity.SelectBooking"
-            android:label="" >
+            android:name="smartcampus.android.template.standalone.Activity.FacilitiesBlock.SelectBooking"
+            android:label=""
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="smartcampus.android.template.standalone.Activity.Profile"
-            android:label="@string/title_activity_profile" >
+            android:name="smartcampus.android.template.standalone.Activity.ProfileBlock.Profile"
+            android:label="@string/title_activity_profile"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="smartcampus.android.template.standalone.Activity.RowDescRoute"
+            android:label="@string/title_activity_row_desc_route"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="smartcampus.android.template.standalone.Activity.EventiBlock.PageInfoEventi"
+            android:label="@string/title_activity_page_info_eventi"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FilterCalendarioActivity"
+            android:label="@string/title_activity_home_guest"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.Calendario"
+            android:label="@string/title_activity_home_guest" >
+        </activity>
+        <activity
+            android:name="smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock.Problema"
+            android:label="@string/title_activity_home_guest"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock.FAQ"
+            android:label="@string/title_activity_home_guest"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

@@ -1,43 +1,20 @@
-package smartcampus.android.template.standalone.Activity;
+package smartcampus.android.template.standalone.HomeBlock;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Timer;
-import java.util.concurrent.ExecutionException;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import smartcampus.android.template.standalone.R;
-import smartcampus.android.template.standalone.R.anim;
-import smartcampus.android.template.standalone.R.drawable;
-import smartcampus.android.template.standalone.R.id;
-import smartcampus.android.template.standalone.R.layout;
+import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
+import smartcampus.android.template.standalone.Activity.FacilitiesBlock.Booking;
 import smartcampus.android.template.standalone.Activity.Model.*;
-import smartcampus.android.template.standalone.Utilities.RestRequest;
+import smartcampus.android.template.standalone.Activity.ProfileBlock.Profile;
+import smartcampus.android.template.standalone.Activity.SportBlock.Sport;
 
-import eu.trentorise.smartcampus.ac.authenticator.AMSCAccessProvider;
-import eu.trentorise.smartcampus.ac.model.UserData;
-import eu.trentorise.smartcampus.discovertrento.DiscoverTrentoConnector;
-import eu.trentorise.smartcampus.discovertrento.DiscoverTrentoConnectorException;
-import eu.trentorise.smartcampus.dt.model.EventObject;
-import eu.trentorise.smartcampus.dt.model.ObjectFilter;
-import eu.trentorise.smartcampus.profileservice.ProfileService;
-import eu.trentorise.smartcampus.profileservice.ProfileServiceException;
-import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,25 +25,17 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 public class Home extends FragmentActivity /* implements EventoUpdateListener */{
 
@@ -95,30 +64,45 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 	List<Fragment> fragments = new ArrayList<Fragment>();
 
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
+	// @Override
+	// public void onEventiUpdate(Evento evento) {
+	// // TODO Auto-generated method stub
+	// mAdapter.fragments
+	// .add(new PageEventiOggi(evento, fragments.size() - 1));
+	// mAdapter.notifyDataSetChanged();
+	// }
 
+	@Override
+	protected void onCreate(Bundle arg0) {
+		// TODO Auto-generated method stub
+		super.onCreate(arg0);
 		setContentView(R.layout.activity_home);
+
+//		Log.i("Today",
+//				Long.toString(Calendar.getInstance().getTimeInMillis() / 3600 * 1000 * 24));
+//		Log.i("Tommorrow", Long.toString((Calendar.getInstance()
+//				.getTimeInMillis() / 3600 * 1000 * 24) + (3600 * 1000 * 24)));
+//		Log.i("To-Tommorrow",
+//				Long.toString((Calendar.getInstance()
+//						.getTimeInMillis() / 3600 * 1000 * 24) + 2*(3600 * 1000 * 24)));
 		database = DBManager.getInstance(getApplicationContext());
-		mPager = (ViewPager) findViewById(R.id.pager_sport);
-		mAdapter = new PagerAdapter(getSupportFragmentManager(),
-				fragments);
+		mPager = (ViewPager) findViewById(R.id.pager_info_eventi);
+		mAdapter = new PagerAdapter(getSupportFragmentManager(), fragments);
 		mPager.setAdapter(mAdapter);
 
 		setupButton();
 
-//		ArrayList<Evento> mLista = (ArrayList<Evento>) DownloadManager
-//				.getmLista();
-//		for (Evento evento : mLista)
-		Evento evento = new Evento();
-		evento.setData("1.1.1 / 11:11");
-		evento.setDescrizione("Desc");
-		evento.setLatGPS(45.517534);
-		evento.setLngGPS(11.686299);
-		evento.setNome("Mio");
-			mAdapter.fragments.add(new PageEventiOggi(evento, fragments.size() - 1));
+		ArrayList<Evento> mLista = (ArrayList<Evento>) DownloadManager
+				.getmLista();
+		for (Evento evento : mLista)
+			// Evento evento = new Evento();
+			// evento.setData("1.1.1 / 11:11");
+			// evento.setDescrizione("Desc");
+			// evento.setLatGPS(45.0);
+			// evento.setLngGPS(11.0);
+			// evento.setNome("Mio");
+			mAdapter.fragments.add(new PageEventiOggi(evento,
+					fragments.size() - 1));
 		mPager.setAdapter(mAdapter);
 
 		// if (Intro.needDWN) {
@@ -187,22 +171,9 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 			@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 			@Override
 			public boolean onSingleTapConfirmed(MotionEvent e) {
-				FragmentManager fragmentManager = getSupportFragmentManager();
-				if (fragmentManager.findFragmentByTag("info") == null) {
-					FragmentTransaction fragmentTransaction = fragmentManager
-							.beginTransaction();
-					fragmentTransaction.setCustomAnimations(
-							R.anim.slide_in_bottom, R.anim.slide_out_bottom,
-							R.anim.slide_in_bottom, R.anim.slide_out_bottom);
-					fragmentTransaction.addToBackStack(null);
-					fragmentTransaction.add(
-							R.id.container_bottoni,
-							new InfoEventi(((PageEventiOggi) mAdapter
-									.getItem(mPager.getCurrentItem()))
-									.getEvento(), fragmentManager), "info");
-					fragmentTransaction.commit();
-				} else
-					fragmentManager.popBackStack();
+				Intent mCaller = new Intent(getApplication(), InfoEventi.class);
+				mCaller.putExtra("index", mPager.getCurrentItem());
+				startActivity(mCaller);
 				return true;
 			}
 		}
@@ -242,14 +213,6 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 		});
 	}
-
-	// @Override
-	// public void onEventiUpdate(Evento evento) {
-	// // TODO Auto-generated method stub
-	// mAdapter.fragments
-	// .add(new PageEventiOggi(evento, fragments.size() - 1));
-	// mAdapter.notifyDataSetChanged();
-	// }
 
 	@Override
 	public void onBackPressed() {
@@ -334,7 +297,9 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					return true;
 				}
 				if (arg1.getAction() == MotionEvent.ACTION_UP) {
-					startActivity(new Intent(arg0.getContext(), Evento.class));
+					startActivity(new Intent(
+							arg0.getContext(),
+							smartcampus.android.template.standalone.Activity.EventiBlock.Evento.class));
 					return true;
 				}
 				return false;
