@@ -15,7 +15,7 @@ import smartcampus.android.template.standalone.R.layout;
 import smartcampus.android.template.standalone.Activity.Model.DBManager;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
 
-import eu.trentorise.smartcampus.ac.authenticator.AMSCAccessProvider;
+//import eu.trentorise.smartcampus.ac.authenticator.AMSCAccessProvider;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.accounts.AuthenticatorException;

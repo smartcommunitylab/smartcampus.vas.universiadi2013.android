@@ -1,6 +1,7 @@
 package smartcampus.android.template.standalone.Activity.ProfileBlock;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -16,11 +17,11 @@ import smartcampus.android.template.standalone.Utilities.FontTextView;
 import smartcampus.android.template.standalone.Utilities.Users;
 import smartcampus.android.template.standalone.Utilities.Utente;
 
-import eu.trentorise.smartcampus.ac.ACService;
-import eu.trentorise.smartcampus.ac.AcServiceException;
-import eu.trentorise.smartcampus.ac.authenticator.AMSCAccessProvider;
-import eu.trentorise.smartcampus.ac.model.Attribute;
-import eu.trentorise.smartcampus.ac.model.UserData;
+//import eu.trentorise.smartcampus.ac.ACService;
+//import eu.trentorise.smartcampus.ac.AcServiceException;
+//import eu.trentorise.smartcampus.ac.authenticator.AMSCAccessProvider;
+//import eu.trentorise.smartcampus.ac.model.Attribute;
+//import eu.trentorise.smartcampus.ac.model.UserData;
 import eu.trentorise.smartcampus.profileservice.ProfileService;
 import eu.trentorise.smartcampus.profileservice.ProfileServiceException;
 import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
@@ -54,14 +55,15 @@ public class Profile extends Activity {
 
 		final Activity mThis = this;
 
-		((TextView) findViewById(R.id.text_nome_user)).setText(Users
-				.returnMyName().getmNome());
-		((TextView) findViewById(R.id.text_role)).setText(Users.returnMyName()
+		((TextView) findViewById(R.id.text_nome_user)).setText(Users.returnMe()
+				.getmNome());
+		((TextView) findViewById(R.id.text_role)).setText(Users.returnMe()
 				.getmCategoria());
 
 		((ListView) findViewById(R.id.lista_superiori))
 				.setAdapter(new RowVolontario(getApplicationContext(), Users
-						.returnUtenti()));
+						.returnUtentiDirettiSuperiori(Users.returnMe()
+								.getmCategoria(), Users.returnMe().getmRuolo())));
 		((ListView) findViewById(R.id.lista_superiori))
 				.setOnItemClickListener(new OnItemClickListener() {
 
@@ -70,24 +72,29 @@ public class Profile extends Activity {
 							int arg2, long arg3) {
 						// TODO Auto-generated method stub
 						final Utente mUtente = Users.returnUtenti()[arg2];
-						
+
 						AlertDialog.Builder builder = new AlertDialog.Builder(
 								mThis);
 						builder.setTitle("Contatto");
-						builder.setMessage("Vuoi chiamare "+mUtente.getmNome()+" al numero "+mUtente.getmTelefono());
+						builder.setMessage("Vuoi chiamare "
+								+ mUtente.getmNome() + " al numero "
+								+ mUtente.getmTelefono());
 						builder.setCancelable(false);
-						builder.setPositiveButton("Chiama",
+						builder.setPositiveButton(
+								"Chiama",
 								new android.content.DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int id) {
 										dialog.dismiss();
-										Intent intent = new Intent(Intent.ACTION_CALL);
+										Intent intent = new Intent(
+												Intent.ACTION_CALL);
 										intent.setData(Uri.parse("tel:"
 												+ mUtente.getmTelefono()));
 										startActivityForResult(intent, 0);
 									}
 								});
-						builder.setNegativeButton("Chiudi",
+						builder.setNegativeButton(
+								"Chiudi",
 								new android.content.DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,
 											int id) {
@@ -98,38 +105,6 @@ public class Profile extends Activity {
 					}
 				});
 
-		((ImageView) findViewById(R.id.button_calendario))
-				.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						startActivity(new Intent(getApplicationContext(),
-								Problema.class));
-					}
-				});
-
-		((ImageView) findViewById(R.id.button_risolutore))
-				.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						startActivity(new Intent(getApplicationContext(),
-								FilterCalendarioActivity.class));
-					}
-				});
-
-		((ImageView) findViewById(R.id.button_faq))
-				.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						startActivity(new Intent(getApplicationContext(),
-								FAQ.class));
-					}
-				});
 		/*
 		 * ((FontTextView)findViewById(R.id.text_nome_user)).setText("Mario Rossi"
 		 * );
@@ -169,9 +144,9 @@ public class Profile extends Activity {
 
 	private class RowVolontario extends ArrayAdapter<Utente> {
 		private final Context context;
-		private final Utente[] values;
+		private final ArrayList<Utente> values;
 
-		public RowVolontario(Context context, Utente[] values) {
+		public RowVolontario(Context context, ArrayList<Utente> values) {
 			super(context, R.layout.row_volontari, values);
 			this.context = context;
 			this.values = values;
@@ -187,11 +162,12 @@ public class Profile extends Activity {
 					false);
 
 			((TextView) rowView.findViewById(R.id.text_anagrafiche_volontario))
-					.setText(values[position].getmNome());
+					.setText(values.get(position).getmNome());
 			((TextView) rowView.findViewById(R.id.text_categoria_volontario))
-					.setText("Categoria: " + values[position].getmCategoria());
+					.setText("Categoria: "
+							+ values.get(position).getmCategoria());
 			((TextView) rowView.findViewById(R.id.text_ruolo_volontario))
-					.setText("Ruolo: " + values[position].getmRuolo());
+					.setText("Ruolo: " + values.get(position).getmRuolo());
 
 			return rowView;
 		}

@@ -88,7 +88,7 @@ public class PageEventiOggi extends Fragment {
 		if (mPos % 2 == 0)
 		{
 			Bitmap sprite = BitmapFactory.decodeResource(this.getResources(),
-			        R.drawable.slide_mask);
+			        R.drawable.scroll_main);
 			Matrix rotateRight = new Matrix();
 			rotateRight.preScale(-1.0f, 1.0f);
 			Bitmap rSprite = Bitmap.createBitmap(sprite, 0, 0,

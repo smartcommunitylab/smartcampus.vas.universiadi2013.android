@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import smartcampus.android.template.standalone.R;
 import smartcampus.android.template.standalone.Activity.Model.DBManager;
+import smartcampus.android.template.standalone.Activity.Model.DownloadManager;
 import smartcampus.android.template.standalone.R.id;
 import smartcampus.android.template.standalone.R.layout;
 import smartcampus.android.template.standalone.Utilities.*;
@@ -96,12 +97,14 @@ public class InfoEventi extends FragmentActivity implements LocationListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_info_eventi);
 
-		mEvento = (DBManager.getInstance(getApplicationContext()))
-				.getEventiSportivi().get(getIntent().getIntExtra("index", -1));
+		// mEvento = (DBManager.getInstance(getApplicationContext()))
+		// .getEventiSportivi().get(getIntent().getIntExtra("index", -1));
+		mEvento = DownloadManager.getmLista().get(
+				getIntent().getIntExtra("index", -1));
 
 		mPager = (ViewPager) findViewById(R.id.pager_info_eventi);
 		ArrayList<Fragment> listFrag = new ArrayList<Fragment>();
-		listFrag.add(new PageInfoEventi(0, "Descrizione 1"));
+		listFrag.add(new PageInfoEventi(0, mEvento.getDescrizione()));
 		mAdapter = new PagerAdapter(getSupportFragmentManager(), listFrag);
 		mPager.setAdapter(mAdapter);
 		// mDesc = (FontTextView) mView.findViewById(R.id.text_descrizione);
@@ -358,8 +361,8 @@ public class InfoEventi extends FragmentActivity implements LocationListener,
 			// mDesc.setText(parseGoogleDescRoute(descRoute.get()));
 			ArrayList<ElementDescRoute> mRouteText = parseGoogleDescRoute(descRoute
 					.get());
-			 mAdapter.fragments.add(new PageInfoEventi(1, mRouteText));
-			 mAdapter.notifyDataSetChanged();
+			mAdapter.fragments.add(new PageInfoEventi(1, mRouteText));
+			mAdapter.notifyDataSetChanged();
 			// ((ListView) mView.findViewById(R.id.lista_desc_route))
 			// .setAdapter(new ListAdapterRoute(getActivity(), mRouteText));
 			// Address mSource = new Address(Locale.getDefault());

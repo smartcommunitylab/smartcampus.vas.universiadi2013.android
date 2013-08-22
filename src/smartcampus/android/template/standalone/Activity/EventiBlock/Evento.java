@@ -62,8 +62,20 @@ public class Evento extends Activity {
 				Locale.getDefault());
 		String dateString = dateFormatter.format(Calendar.getInstance()
 				.getTime());
-		mLista = (DBManager.getInstance(getApplicationContext()))
-				.getEventiPerData(dateString);
+
+		mLista = new ArrayList<android.smartcampus.template.standalone.Evento>();
+		for (int i = 0; i < 10; i++) {
+			android.smartcampus.template.standalone.Evento evento = new android.smartcampus.template.standalone.Evento();
+			evento.setData("1.1.1 / 11:11");
+			evento.setDescrizione(getString(R.string.lorem_ipsum));
+			evento.setLatGPS(45.54148);
+			evento.setLngGPS(11.592808);
+			evento.setNome("Evento " + i);
+			mLista.add(evento);
+		}
+
+//		mLista = (DBManager.getInstance(getApplicationContext()))
+//				.getEventiPerData(dateString);
 
 		mListaEventi = (ListView) findViewById(R.id.list_eventi);
 		mAdapter = new ListArrayAdapter(getApplicationContext(), mLista);
@@ -157,7 +169,7 @@ public class Evento extends Activity {
 				android.smartcampus.template.standalone.Evento a = (android.smartcampus.template.standalone.Evento) (mListaEventi
 						.getAdapter().getItem(arg2));
 				mCaller.putExtra("Nome", a.getNome());
-				mCaller.putExtra("GPS", a.getLatGPS() +","+ a.getLngGPS());
+				mCaller.putExtra("GPS", a.getLatGPS() + "," + a.getLngGPS());
 				mCaller.putExtra("Desc", a.getDescrizione());
 				startActivity(mCaller);
 			}
@@ -186,14 +198,13 @@ public class Evento extends Activity {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-				LayoutInflater inflater = (LayoutInflater) context
-						.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LayoutInflater inflater = (LayoutInflater) context
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-				View rowView = new View(context);
+			View rowView = new View(context);
 
-				if (values.size() != 0) {
-					rowView = inflater.inflate(R.layout.row_eventi, parent,
-							false);
+			if (values.size() != 0) {
+				rowView = inflater.inflate(R.layout.row_eventi, parent, false);
 				// Calendar mCal = Calendar.getInstance();
 				// mCal.setTimeInMillis(values.get(position).getFromTime());
 				//

@@ -151,8 +151,8 @@
         </activity>
         <activity
             android:name="smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi"
-            android:label="" 
-            android:screenOrientation="portrait">
+            android:label=""
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="smartcampus.android.template.standalone.Activity.EventiBlock.DettaglioEvento"
@@ -207,6 +207,10 @@
             android:name="smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock.FAQ"
             android:label="@string/title_activity_home_guest"
             android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="smartcampus.android.template.standalone.HomeBlock.ResultSearch"
+            android:label="@string/title_activity_result_search" >
         </activity>
     </application>
 

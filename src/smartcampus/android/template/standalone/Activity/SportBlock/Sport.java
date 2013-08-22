@@ -78,7 +78,7 @@ public class Sport extends Activity {
 			View rowView = inflater.inflate(R.layout.grid_sport, parent, false);
 
 			ImageView mSport = (ImageView) rowView
-					.findViewById(R.id.image_sport);
+					.findViewById(R.id.image_btn_2);
 			mSport.setImageBitmap((BitmapFactory.decodeByteArray(
 					values.get(position).getImmagine(), 0, values.get(position)
 							.getImmagine().length)));

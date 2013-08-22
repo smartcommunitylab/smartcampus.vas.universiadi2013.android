@@ -193,20 +193,21 @@ public class Booking extends FragmentActivity implements LocationListener,
 					.getLongitude());
 
 		LatLngBounds.Builder builder = new LatLngBounds.Builder();
-		if (mMyMarker != null)
+		if (mMyMarker != null) {
 			builder.include(mMyMarker);
-		final LatLngBounds bounds = builder.build();
+			final LatLngBounds bounds = builder.build();
 
-		mMappa.setOnCameraChangeListener(new OnCameraChangeListener() {
+			mMappa.setOnCameraChangeListener(new OnCameraChangeListener() {
 
-			@Override
-			public void onCameraChange(CameraPosition position) {
-				// TODO Auto-generated method stub
-				mMappa.animateCamera(CameraUpdateFactory.newLatLngBounds(
-						bounds, 50));
-				mMappa.setOnCameraChangeListener(null);
-			}
-		});
+				@Override
+				public void onCameraChange(CameraPosition position) {
+					// TODO Auto-generated method stub
+					mMappa.animateCamera(CameraUpdateFactory.newLatLngBounds(
+							bounds, 50));
+					mMappa.setOnCameraChangeListener(null);
+				}
+			});
+		}
 	}
 
 	@Override
