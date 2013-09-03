@@ -1,49 +1,34 @@
 package smartcampus.android.template.standalone.Activity.EventiBlock;
 
-import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import smartcampus.android.template.standalone.R;
-import smartcampus.android.template.standalone.Activity.Model.DBManager;
-import smartcampus.android.template.standalone.R.drawable;
-import smartcampus.android.template.standalone.R.id;
-import smartcampus.android.template.standalone.R.layout;
+import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.AdapterView;
+import android.view.Window;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 public class Evento extends Activity {
 
@@ -58,122 +43,259 @@ public class Evento extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_evento);
 
-		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy",
-				Locale.getDefault());
-		String dateString = dateFormatter.format(Calendar.getInstance()
-				.getTime());
-
-		mLista = new ArrayList<android.smartcampus.template.standalone.Evento>();
-		for (int i = 0; i < 10; i++) {
-			android.smartcampus.template.standalone.Evento evento = new android.smartcampus.template.standalone.Evento();
-			evento.setData("1.1.1 / 11:11");
-			evento.setDescrizione(getString(R.string.lorem_ipsum));
-			evento.setLatGPS(45.54148);
-			evento.setLngGPS(11.592808);
-			evento.setNome("Evento " + i);
-			mLista.add(evento);
-		}
-
-//		mLista = (DBManager.getInstance(getApplicationContext()))
-//				.getEventiPerData(dateString);
-
-		mListaEventi = (ListView) findViewById(R.id.list_eventi);
-		mAdapter = new ListArrayAdapter(getApplicationContext(), mLista);
-		mListaEventi.setAdapter(mAdapter);
-
-		mContainer = (LinearLayout) findViewById(R.id.container_scroll_date);
-		for (int i = 0; i < 12; i++) {
-			Calendar mCal = Calendar.getInstance();
-			mCal.setTimeInMillis(Calendar.getInstance().getTimeInMillis()
-					+ 86400000 * i);
-
-			RelativeLayout mCell = new RelativeLayout(this);
-			mCell.setTag(mCal.getTimeInMillis());
-			mCell.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
-					LayoutParams.WRAP_CONTENT));
-
-			final ImageView mImgCella = new ImageView(this);
-			mImgCella.setImageResource(R.drawable.cell_event);
-			mImgCella.setTag(i);
-			mImgCella.setLayoutParams(new LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-			mCell.addView(mImgCella);
-
-			FontTextView mData = new FontTextView(this);
-			mData.setText(Integer.toString(mCal.get(Calendar.DATE)));
-			RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-			params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-			params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-			params.setMargins(0, (int) TypedValue.applyDimension(
-					TypedValue.COMPLEX_UNIT_DIP, 7, getResources()
-							.getDisplayMetrics()), 0, 0);
-			mData.setLayoutParams(params);
-			mData.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 45);
-			mData.setTextColor(Color.argb(255, 50, 147, 172));
-
-			mCell.addView(mData);
-
-			FontTextView mGiorno = new FontTextView(this);
-			SimpleDateFormat format = new SimpleDateFormat("MMMM");
-			String formattedDate = format.format(mCal.getTime());
-			mGiorno.setText(formattedDate.substring(0, 1).toUpperCase()
-					+ formattedDate.substring(1));
-			params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-					LayoutParams.WRAP_CONTENT);
-			params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-			params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-			params.setMargins(0, (int) TypedValue.applyDimension(
-					TypedValue.COMPLEX_UNIT_DIP, 50, getResources()
-							.getDisplayMetrics()), 0, 0);
-			mGiorno.setLayoutParams(params);
-			mGiorno.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-			mGiorno.setTextColor(Color.argb(255, 50, 147, 172));
-
-			mCell.addView(mGiorno);
-
-			mContainer.addView(mCell);
-
-			mCell.setOnTouchListener(new OnTouchListener() {
-
-				@Override
-				public boolean onTouch(View v, MotionEvent arg1) {
-					// TODO Auto-generated method stub
-					if (arg1.getAction() == MotionEvent.ACTION_UP) {
-
-						SimpleDateFormat dateFormatter = new SimpleDateFormat(
-								"dd.MM.yyyy", Locale.getDefault());
-						Calendar mCal = Calendar.getInstance();
-						mCal.setTimeInMillis((Long) v.getTag());
-						String dateString = dateFormatter.format(mCal.getTime());
-						mAdapter.values = (DBManager
-								.getInstance(getApplicationContext()))
-								.getEventiPerData(dateString);
-						mAdapter.notifyDataSetChanged();
-
-						return true;
-					}
-					return true;
-				}
-			});
-		}
-
-		mListaEventi.setOnItemClickListener(new OnItemClickListener() {
+		new AsyncTask<Void, Void, Void>() {
+			private Dialog dialog;
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
+			protected void onPreExecute() {
 				// TODO Auto-generated method stub
-				Intent mCaller = new Intent(arg1.getContext(),
-						DettaglioEvento.class);
-				android.smartcampus.template.standalone.Evento a = (android.smartcampus.template.standalone.Evento) (mListaEventi
-						.getAdapter().getItem(arg2));
-				mCaller.putExtra("Nome", a.getNome());
-				mCaller.putExtra("GPS", a.getLatGPS() + "," + a.getLngGPS());
-				mCaller.putExtra("Desc", a.getDescrizione());
-				startActivity(mCaller);
+				super.onPreExecute();
+
+				dialog = new Dialog(Evento.this);
+				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+				dialog.setContentView(R.layout.dialog_wait);
+				dialog.getWindow().setBackgroundDrawableResource(
+						R.drawable.dialog_rounded_corner_light_black);
+				dialog.show();
+				dialog.setCancelable(true);
+				dialog.setOnCancelListener(new OnCancelListener() {
+
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						// TODO Auto-generated method stub
+						cancel(true);
+					}
+				});
+
 			}
-		});
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				// TODO Auto-generated method stub
+				mLista = ManagerData.getEventiForData(Calendar.getInstance(
+						Locale.getDefault()).getTimeInMillis());
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				// TODO Auto-generated method stub
+				super.onPostExecute(result);
+
+				dialog.dismiss();
+
+				// START ONPOST
+
+				if (mLista.size() != 0) {
+					mListaEventi = (ListView) findViewById(R.id.list_eventi);
+					mAdapter = new ListArrayAdapter(getApplicationContext(),
+							mLista);
+					mListaEventi.setAdapter(mAdapter);
+
+					mContainer = (LinearLayout) findViewById(R.id.container_scroll_date);
+
+					for (int i = 0; i < 12; i++) {
+						Calendar mCal = Calendar.getInstance();
+						mCal.setTimeInMillis(Calendar.getInstance()
+								.getTimeInMillis() + 86400000 * i);
+
+						RelativeLayout mCell = new RelativeLayout(Evento.this);
+						mCell.setTag(mCal.getTimeInMillis());
+						mCell.setLayoutParams(new LayoutParams(
+								LayoutParams.WRAP_CONTENT,
+								LayoutParams.WRAP_CONTENT));
+
+						final ImageView mImgCella = new ImageView(Evento.this);
+						mImgCella
+								.setImageResource((i == 0) ? R.drawable.cell_event_press
+										: R.drawable.cell_event);
+						mImgCella.setTag(-4);
+						mImgCella.setLayoutParams(new LayoutParams(
+								LayoutParams.WRAP_CONTENT,
+								LayoutParams.WRAP_CONTENT));
+						mCell.addView(mImgCella);
+
+						FontTextView mData = new FontTextView(Evento.this);
+						mData.setTag(-3);
+						mData.setText(Integer.toString(mCal.get(Calendar.DATE)));
+						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+								LayoutParams.WRAP_CONTENT,
+								LayoutParams.WRAP_CONTENT);
+						params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+						params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+						params.setMargins(0, (int) TypedValue.applyDimension(
+								TypedValue.COMPLEX_UNIT_DIP, 7, getResources()
+										.getDisplayMetrics()), 0, 0);
+						mData.setLayoutParams(params);
+						mData.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 45);
+						mData.setTextColor((i == 0) ? Color
+								.parseColor("#FFFFFF") : Color.argb(255, 50,
+								147, 172));
+
+						mCell.addView(mData);
+
+						FontTextView mGiorno = new FontTextView(Evento.this);
+						mGiorno.setTag(-2);
+						SimpleDateFormat format = new SimpleDateFormat("MMMM");
+						String formattedDate = format.format(mCal.getTime());
+						mGiorno.setText(formattedDate.substring(0, 1)
+								.toUpperCase() + formattedDate.substring(1));
+						params = new RelativeLayout.LayoutParams(
+								LayoutParams.WRAP_CONTENT,
+								LayoutParams.WRAP_CONTENT);
+						params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+						params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+						params.setMargins(0, (int) TypedValue.applyDimension(
+								TypedValue.COMPLEX_UNIT_DIP, 50, getResources()
+										.getDisplayMetrics()), 0, 0);
+						mGiorno.setLayoutParams(params);
+						mGiorno.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+						mGiorno.setTextColor((i == 0) ? Color
+								.parseColor("#FFFFFF") : Color.argb(255, 50,
+								147, 172));
+
+						mCell.addView(mGiorno);
+
+						mContainer.addView(mCell);
+
+						mCell.setOnTouchListener(new OnTouchListener() {
+
+							@Override
+							public boolean onTouch(final View v,
+									MotionEvent arg1) {
+								// TODO Auto-generated method stub
+								if (arg1.getAction() == MotionEvent.ACTION_DOWN) {
+
+									return true;
+								}
+								if (arg1.getAction() == MotionEvent.ACTION_UP) {
+
+									for (int i = 0; i < mContainer
+											.getChildCount(); i++) {
+										if ((Long) (mContainer.getChildAt(i)
+												.getTag()) != v.getTag()) {
+											((ImageView) (((RelativeLayout) (mContainer
+													.getChildAt(i)))
+													.findViewWithTag(-4)))
+													.setImageResource(R.drawable.cell_event);
+											((TextView) (((RelativeLayout) (mContainer
+													.getChildAt(i)))
+													.findViewWithTag(-2))
+													.findViewWithTag(-2)).setTextColor(Color
+													.parseColor("#3293AC"));
+											((TextView) (((RelativeLayout) (mContainer
+													.getChildAt(i)))
+													.findViewWithTag(-3))
+													.findViewWithTag(-3)).setTextColor(Color
+													.parseColor("#3293AC"));
+										} else {
+											((ImageView) v.findViewWithTag(-4))
+													.setImageResource(R.drawable.cell_event_press);
+											((TextView) v.findViewWithTag(-2)).setTextColor(Color
+													.parseColor("#FFFFFF"));
+											((TextView) v.findViewWithTag(-3)).setTextColor(Color
+													.parseColor("#FFFFFF"));
+										}
+									}
+
+									new AsyncTask<Void, Void, Void>() {
+										private Dialog dialog;
+
+										@Override
+										protected void onPreExecute() {
+											// TODO Auto-generated method stub
+											super.onPreExecute();
+
+											dialog = new Dialog(Evento.this);
+											dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+											dialog.setContentView(R.layout.dialog_wait);
+											dialog.getWindow()
+													.setBackgroundDrawableResource(
+															R.drawable.dialog_rounded_corner_light_black);
+											dialog.show();
+											dialog.setCancelable(true);
+											dialog.setOnCancelListener(new OnCancelListener() {
+
+												@Override
+												public void onCancel(
+														DialogInterface dialog) {
+													// TODO Auto-generated
+													// method
+													// stub
+													Log.i("", "Cancel");
+													cancel(true);
+												}
+											});
+
+										}
+
+										@Override
+										protected Void doInBackground(
+												Void... params) {
+											// TODO Auto-generated method stub
+											mLista = ManagerData
+													.getEventiForData((Long) v
+															.getTag());
+											return null;
+										}
+
+										@Override
+										protected void onPostExecute(Void result) {
+											// TODO Auto-generated method stub
+											super.onPostExecute(result);
+
+											dialog.dismiss();
+
+											// START ONPOST
+
+											if (mLista.size() != 0) {
+												((TextView) findViewById(R.id.text_nessun_evento))
+														.setVisibility(View.GONE);
+												mAdapter.clear();
+												mAdapter = new ListArrayAdapter(
+														getApplicationContext(),
+														mLista);
+												mAdapter.notifyDataSetChanged();
+												mListaEventi
+														.setAdapter(mAdapter);
+											} else
+												((TextView) findViewById(R.id.text_nessun_evento))
+														.setVisibility(View.VISIBLE);
+											// END ONPOST
+										}
+
+									}.execute();
+
+									return true;
+								}
+								return true;
+							}
+						});
+					}
+
+					mListaEventi
+							.setOnItemClickListener(new OnItemClickListener() {
+
+								@Override
+								public void onItemClick(AdapterView<?> arg0,
+										View arg1, int arg2, long arg3) {
+									// TODO Auto-generated method stub
+									Intent mCaller = new Intent(arg1
+											.getContext(), InfoEventi.class);
+									mCaller.putExtra("data", mLista.get(arg2)
+											.getData());
+									mCaller.putExtra("index", arg2);
+									startActivity(mCaller);
+								}
+							});
+				} else
+					((TextView) findViewById(R.id.text_nessun_evento))
+							.setVisibility(View.VISIBLE);
+
+				// END ONPOST
+			}
+
+		}.execute();
 	}
 
 	private class ListArrayAdapter extends
@@ -205,24 +327,11 @@ public class Evento extends Activity {
 
 			if (values.size() != 0) {
 				rowView = inflater.inflate(R.layout.row_eventi, parent, false);
-				// Calendar mCal = Calendar.getInstance();
-				// mCal.setTimeInMillis(values.get(position).getFromTime());
-				//
-				// String ora = null;
-				//
-				// if (mCal.get(Calendar.MINUTE) < 10)
-				// ora = mCal.get(Calendar.HOUR_OF_DAY) + ":0"
-				// + mCal.get(Calendar.MINUTE);
-				// else
-				// ora = mCal.get(Calendar.HOUR_OF_DAY) + ":"
-				// + mCal.get(Calendar.MINUTE);
-				// if (mCal.get(Calendar.AM_PM) == Calendar.AM)
-				// ora = ora + " AM";
-				// else
-				// ora = ora + " PM";
 
 				((FontTextView) rowView.findViewById(R.id.text_orario))
-						.setText(values.get(position).getOra());
+						.setText(new SimpleDateFormat("hh:mm", Locale
+								.getDefault()).format(values.get(position)
+								.getData()));
 
 				if (values.get(position).getNome().length() <= 12)
 					((FontTextView) rowView.findViewById(R.id.text_nome_evento))
@@ -233,9 +342,6 @@ public class Evento extends Activity {
 							.setText(values.get(position).getNome()
 									.toUpperCase().substring(0, 11)
 									+ "...");
-
-				// ((FontTextView)rowView.findViewById(R.id.text_tipo_gara)).setText
-				// (values.get(position).ge);
 			}
 			return rowView;
 		}

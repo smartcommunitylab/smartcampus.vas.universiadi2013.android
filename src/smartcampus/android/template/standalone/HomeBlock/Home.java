@@ -1,7 +1,9 @@
 package smartcampus.android.template.standalone.HomeBlock;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 
 import com.viewpagerindicator.CirclePageIndicator;
@@ -15,8 +17,9 @@ import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSub
 import smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock.FAQ;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock.Problema;
 import smartcampus.android.template.standalone.Activity.SportBlock.Sport;
-import smartcampus.android.template.standalone.Utilities.Users;
+import smartcampus.android.template.standalone.IntroBlock.Intro;
 
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.annotation.TargetApi;
@@ -25,14 +28,17 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.database.DataSetObserver;
 import android.graphics.Typeface;
 import android.smartcampus.template.standalone.Evento;
+import android.smartcampus.template.standalone.Meeting;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -47,176 +53,233 @@ import android.widget.TextView.OnEditorActionListener;
 
 public class Home extends FragmentActivity /* implements EventoUpdateListener */{
 
-	private ImageView mEventi;
-	private ImageView mEventiLogoUp;
-	private ImageView mEventiLogoDown;
-
-	private ImageView mSport;
-	private ImageView mSportLogoUp;
-	private ImageView mSportLogoDown;
-
-	private ImageView mFacilities;
-	private ImageView mFacilitiesLogoUp;
-	private ImageView mFacilitiesLogoDown;
-
-	private ImageView mProfile;
-
 	private ViewPager mPager;
 	private PagerAdapter mAdapter;
 
-	private Timer rotateTimer;
-	private static int countPage = -1;
-	private boolean goUp = true;
-
-	private DBManager database;
-
-	List<Fragment> fragments = new ArrayList<Fragment>();
+	private List<Fragment> fragmentEventi = new ArrayList<Fragment>();
+	private List<Fragment> fragmentMeeting = new ArrayList<Fragment>();
+	private ArrayList<Evento> mListaEventiDiOggi = new ArrayList<Evento>();
+	private ArrayList<Meeting> mListaMeetingDiOggi = new ArrayList<Meeting>();
 
 	@Override
 	protected void onCreate(Bundle arg0) {
 		// TODO Auto-generated method stub
 		super.onCreate(arg0);
 		setContentView(R.layout.activity_home);
-		database = DBManager.getInstance(getApplicationContext());
 
-		setupButton(Users.amIASuperUser());
+		setupButton(getIntent().getBooleanExtra("sessionLogin", false));
 
-		ArrayList<Evento> mLista = (ArrayList<Evento>) DownloadManager
-				.getmLista();
-		List<Fragment> fragments = new ArrayList<Fragment>();
-		for (Evento evento : mLista)
-			fragments.add(new PageEventiOggi(evento, fragments.size() - 1));
+		new AsyncTask<Void, Void, Void>() {
+			private Dialog dialog;
 
-		// creating adapter and linking to view pager
-		if (mAdapter == null)
-			mAdapter = new PagerAdapter(getSupportFragmentManager(), fragments);
-		else
-			mAdapter.fragments = fragments;
-		if (mPager == null)
-			mPager = (ViewPager) findViewById(R.id.pager_info_eventi);
-		mAdapter.notifyDataSetChanged();
-		mPager.setAdapter(mAdapter);
-		mPager.invalidate();
-		// Bind the title indicator to the adapter
-		final CirclePageIndicator titleIndicator = (CirclePageIndicator) findViewById(R.id.page_indicator);
-		titleIndicator.setViewPager(mPager);
-
-		class TapGestureListener extends
-				GestureDetector.SimpleOnGestureListener {
-
-			@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 			@Override
-			public boolean onSingleTapConfirmed(MotionEvent e) {
-				Intent mCaller = new Intent(getApplication(), InfoEventi.class);
-				mCaller.putExtra("index", mPager.getCurrentItem());
-				startActivity(mCaller);
-				return true;
+			protected void onPreExecute() {
+				// TODO Auto-generated method stub
+				super.onPreExecute();
+
+				dialog = new Dialog(Home.this);
+				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+				dialog.setContentView(R.layout.dialog_wait);
+				dialog.getWindow().setBackgroundDrawableResource(
+						R.drawable.dialog_rounded_corner_light_black);
+				dialog.show();
+				dialog.setCancelable(true);
+				dialog.setOnCancelListener(new OnCancelListener() {
+
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						// TODO Auto-generated method stub
+						cancel(true);
+						finish();
+					}
+				});
+
 			}
-		}
 
-		final GestureDetector tapGestureDetector = new GestureDetector(this,
-				new TapGestureListener());
+			@Override
+			protected Void doInBackground(Void... params) {
+				// TODO Auto-generated method stub
+				mListaEventiDiOggi = ManagerData.getEventiForData(Calendar
+						.getInstance(Locale.getDefault()).getTimeInMillis());
+				for (Evento evento : mListaEventiDiOggi)
+					fragmentEventi.add(new PageEventiOggi(evento,
+							fragmentEventi.size() - 1));
 
-		mPager.setOnTouchListener(new OnTouchListener() {
-			public boolean onTouch(View v, MotionEvent event) {
-				tapGestureDetector.onTouchEvent(event);
-				return false;
+				mListaMeetingDiOggi = ManagerData.getMeetingPerData(Calendar
+						.getInstance(Locale.getDefault()).getTimeInMillis());
+				for (Meeting meeting : mListaMeetingDiOggi)
+					fragmentMeeting.add(new PageEventiOggi(meeting,
+							fragmentMeeting.size() - 1));
+				return null;
 			}
-		});
 
-		((EditText) findViewById(R.id.text_search)).setTypeface(Typeface
-				.createFromAsset(getApplicationContext().getAssets(),
-						"PatuaOne-Regular.otf"));
-		((EditText) findViewById(R.id.text_search))
-				.setOnEditorActionListener(new OnEditorActionListener() {
+			@Override
+			protected void onPostExecute(Void result) {
+				// TODO Auto-generated method stub
+				super.onPostExecute(result);
 
-					@Override
-					public boolean onEditorAction(TextView v, int actionId,
-							KeyEvent event) {
-						// TODO Auto-generated method stub
-						if (actionId == EditorInfo.IME_ACTION_DONE) {
-							InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-							imm.hideSoftInputFromWindow(
-									((EditText) findViewById(R.id.text_search))
-											.getWindowToken(), 0);
-							// Dialog general info
-							startFilterDialog();
+				dialog.dismiss();
+
+				// START ONPOST
+				// creating adapter and linking to view pager
+				if (mListaEventiDiOggi.size() != 0) {
+					if (mAdapter == null)
+						mAdapter = new PagerAdapter(
+								getSupportFragmentManager(), fragmentEventi);
+					else
+						mAdapter.fragments = fragmentEventi;
+					if (mPager == null)
+						mPager = (ViewPager) findViewById(R.id.pager_info_eventi);
+					mAdapter.notifyDataSetChanged();
+					mPager.setAdapter(mAdapter);
+					mPager.invalidate();
+					// Bind the title indicator to the adapter
+					final CirclePageIndicator titleIndicator = (CirclePageIndicator) findViewById(R.id.page_indicator);
+					titleIndicator.setViewPager(mPager);
+
+					class TapGestureListener extends
+							GestureDetector.SimpleOnGestureListener {
+
+						@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+						@Override
+						public boolean onSingleTapConfirmed(MotionEvent e) {
+							Intent mCaller = new Intent(getApplication(),
+									InfoEventi.class);
+							mCaller.putExtra("index", mPager.getCurrentItem());
+							startActivity(mCaller);
 							return true;
 						}
-						return false;
 					}
-				});
 
-		((RelativeLayout) findViewById(R.id.btn_avvia_ricerca))
-				.setOnTouchListener(new OnTouchListener() {
+					final GestureDetector tapGestureDetector = new GestureDetector(
+							Home.this, new TapGestureListener());
 
-					@Override
-					public boolean onTouch(View v, MotionEvent event) {
-						// TODO Auto-generated method stub
-						if (event.getAction() == MotionEvent.ACTION_DOWN) {
-							((ImageView) findViewById(R.id.image_search))
-									.setImageResource(R.drawable.btn_main_cerca_press);
-							return true;
+					mPager.setOnTouchListener(new OnTouchListener() {
+						public boolean onTouch(View v, MotionEvent event) {
+							tapGestureDetector.onTouchEvent(event);
+							return false;
 						}
-						if (event.getAction() == MotionEvent.ACTION_UP) {
-							((ImageView) findViewById(R.id.image_search))
-									.setImageResource(R.drawable.btn_main_cerca);
-							InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-							imm.hideSoftInputFromWindow(
-									((EditText) findViewById(R.id.text_search))
-											.getWindowToken(), 0);
-							// Dialog general info
-							startFilterDialog();
+					});
+				} else
+					((TextView) findViewById(R.id.text_nessun_evento))
+							.setVisibility(View.VISIBLE);
 
-							return true;
-						}
-						return false;
-					}
-				});
+				((EditText) findViewById(R.id.text_search))
+						.setTypeface(Typeface.createFromAsset(
+								getApplicationContext().getAssets(),
+								"PatuaOne-Regular.otf"));
+				((EditText) findViewById(R.id.text_search))
+						.setOnEditorActionListener(new OnEditorActionListener() {
 
-		((ImageView) findViewById(R.id.image_today_meeting)).setTag("pressed");
-		((ImageView) findViewById(R.id.image_today_meeting))
-				.setOnClickListener(new OnClickListener() {
+							@Override
+							public boolean onEditorAction(TextView v,
+									int actionId, KeyEvent event) {
+								// TODO Auto-generated method stub
+								if (actionId == EditorInfo.IME_ACTION_DONE) {
+									InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+									imm.hideSoftInputFromWindow(
+											((EditText) findViewById(R.id.text_search))
+													.getWindowToken(), 0);
+									// Dialog general info
+									startFilterDialog();
+									return true;
+								}
+								return false;
+							}
+						});
 
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						ImageView btn = (ImageView) findViewById(R.id.image_today_meeting);
-						if (((String) (btn.getTag()))
-								.equalsIgnoreCase("normal")) {
-							btn.setImageResource(R.drawable.btn_scroll_press);
-							btn.setTag("pressed");
-							((ImageView) findViewById(R.id.image_my_meeting))
-									.setImageResource(R.drawable.btn_scroll);
-							((ImageView) findViewById(R.id.image_my_meeting))
-									.setTag("normal");
+				((RelativeLayout) findViewById(R.id.btn_avvia_ricerca))
+						.setOnTouchListener(new OnTouchListener() {
 
-							// Change data-source in today meeting
-						}
-					}
-				});
+							@Override
+							public boolean onTouch(View v, MotionEvent event) {
+								// TODO Auto-generated method stub
+								if (event.getAction() == MotionEvent.ACTION_DOWN) {
+									((ImageView) findViewById(R.id.image_search))
+											.setImageResource(R.drawable.btn_main_cerca_press);
+									return true;
+								}
+								if (event.getAction() == MotionEvent.ACTION_UP) {
+									((ImageView) findViewById(R.id.image_search))
+											.setImageResource(R.drawable.btn_main_cerca);
+									InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+									imm.hideSoftInputFromWindow(
+											((EditText) findViewById(R.id.text_search))
+													.getWindowToken(), 0);
+									// Dialog general info
+									startFilterDialog();
 
-		((ImageView) findViewById(R.id.image_my_meeting)).setTag("normal");
-		((ImageView) findViewById(R.id.image_my_meeting))
-				.setOnClickListener(new OnClickListener() {
+									return true;
+								}
+								return false;
+							}
+						});
 
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						ImageView btn = (ImageView) findViewById(R.id.image_my_meeting);
-						if (((String) (btn.getTag()))
-								.equalsIgnoreCase("normal")) {
-							btn.setImageResource(R.drawable.btn_scroll_press);
-							btn.setTag("pressed");
-							((ImageView) findViewById(R.id.image_today_meeting))
-									.setImageResource(R.drawable.btn_scroll);
-							((ImageView) findViewById(R.id.image_today_meeting))
-									.setTag("normal");
+				((ImageView) findViewById(R.id.image_today_meeting))
+						.setTag("pressed");
+				((ImageView) findViewById(R.id.image_today_meeting))
+						.setOnClickListener(new OnClickListener() {
 
-							// Change datasource in my meeting
-						}
-					}
-				});
+							@Override
+							public void onClick(View v) {
+								// TODO Auto-generated method stub
+								ImageView btn = (ImageView) findViewById(R.id.image_today_meeting);
+								if (((String) (btn.getTag()))
+										.equalsIgnoreCase("normal")) {
+									btn.setImageResource(R.drawable.btn_scroll_press);
+									btn.setTag("pressed");
+									((ImageView) findViewById(R.id.image_my_meeting))
+											.setImageResource(R.drawable.btn_scroll);
+									((ImageView) findViewById(R.id.image_my_meeting))
+											.setTag("normal");
+
+									if (mListaEventiDiOggi.size() != 0) {
+										((TextView) findViewById(R.id.text_nessun_evento))
+												.setVisibility(View.GONE);
+										mAdapter.fragments = fragmentEventi;
+										mAdapter.notifyDataSetChanged();
+									} else
+										((TextView) findViewById(R.id.text_nessun_evento))
+												.setVisibility(View.VISIBLE);
+								}
+							}
+						});
+
+				((ImageView) findViewById(R.id.image_my_meeting))
+						.setTag("normal");
+				((ImageView) findViewById(R.id.image_my_meeting))
+						.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								// TODO Auto-generated method stub
+								ImageView btn = (ImageView) findViewById(R.id.image_my_meeting);
+								if (((String) (btn.getTag()))
+										.equalsIgnoreCase("normal")) {
+									btn.setImageResource(R.drawable.btn_scroll_press);
+									btn.setTag("pressed");
+									((ImageView) findViewById(R.id.image_today_meeting))
+											.setImageResource(R.drawable.btn_scroll);
+									((ImageView) findViewById(R.id.image_today_meeting))
+											.setTag("normal");
+
+									// Change datasource in my meeting
+									if (mListaMeetingDiOggi.size() != 0) {
+										((TextView) findViewById(R.id.text_nessun_evento))
+												.setVisibility(View.GONE);
+										mAdapter.fragments = fragmentMeeting;
+										mAdapter.notifyDataSetChanged();
+									} else
+										((TextView) findViewById(R.id.text_nessun_evento))
+												.setVisibility(View.VISIBLE);
+								}
+							}
+						});
+				// END ONPOST
+			}
+
+		}.execute();
+
 	}
 
 	@Override
@@ -229,7 +292,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
-		if (Users.amIASuperUser()) {
+		if (getIntent().getBooleanExtra("sessionLogin", false)) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle("Allert");
 			builder.setMessage("Are you sure to quit and logout?");
@@ -240,6 +303,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 						public void onClick(DialogInterface dialog, int id) {
 
 							// TO-DO Invalidate Token
+							ManagerData.invalidateToken();
 							dialog.dismiss();
 							finish();
 						}
@@ -305,7 +369,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 							if (event.getAction() == MotionEvent.ACTION_UP) {
 								((ImageView) findViewById(R.id.image_btn_2))
 										.setImageResource(R.drawable.btn_main_staff);
-								
+
 								startStaffToolDialog();
 								return true;
 							}
@@ -600,8 +664,8 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 					Intent mCaller = new Intent(getApplicationContext(),
 							ResultSearch.class);
-					mCaller.putExtra("rest", "search/eventi");
-					mCaller.putExtra("filter",
+					mCaller.putExtra("rest", "/search/eventi");
+					mCaller.putExtra("search",
 							((EditText) findViewById(R.id.text_search))
 									.getText().toString());
 					startActivity(mCaller);
@@ -628,8 +692,8 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 					Intent mCaller = new Intent(getApplicationContext(),
 							ResultSearch.class);
-					mCaller.putExtra("rest", "search/poi");
-					mCaller.putExtra("filter",
+					mCaller.putExtra("rest", "/search/poi");
+					mCaller.putExtra("search",
 							((EditText) findViewById(R.id.text_search))
 									.getText().toString());
 					startActivity(mCaller);
@@ -656,8 +720,8 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 					Intent mCaller = new Intent(getApplicationContext(),
 							ResultSearch.class);
-					mCaller.putExtra("rest", "search/sport");
-					mCaller.putExtra("filter",
+					mCaller.putExtra("rest", "/search/sport");
+					mCaller.putExtra("search",
 							((EditText) findViewById(R.id.text_search))
 									.getText().toString());
 					startActivity(mCaller);

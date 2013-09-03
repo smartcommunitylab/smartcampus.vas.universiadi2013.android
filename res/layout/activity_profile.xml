@@ -47,6 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/text_desc_route"
                 android:layout_below="@+id/text_desc_route"
+                android:maxLines="1"
                 android:text="Mario Rossi"
                 android:textSize="30sp" />
 
@@ -58,16 +59,18 @@
                 android:layout_below="@+id/text_nome_user"
                 android:layout_marginRight="75dp"
                 android:layout_marginTop="-4dp"
+                android:gravity="left"
                 android:text="Italian"
                 android:textSize="20sp" />
 
             <smartcampus.android.template.standalone.Utilities.FontTextView
                 android:id="@+id/text_role"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/image_profile"
                 android:layout_alignLeft="@+id/textView4"
                 android:layout_marginTop="15dp"
+                android:gravity="left"
                 android:text="Boss"
                 android:textSize="20sp" />
         </RelativeLayout>
@@ -85,6 +88,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" >
             </ListView>
+
+            <smartcampus.android.template.standalone.Utilities.FontTextView
+                android:id="@+id/text_nessun_superiore"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:gravity="center"
+                android:text="Nessun superiore trovato"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#3294ad"
+                android:visibility="gone" />
         </RelativeLayout>
     </LinearLayout>
 

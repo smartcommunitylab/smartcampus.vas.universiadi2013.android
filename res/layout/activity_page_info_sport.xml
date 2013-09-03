@@ -17,7 +17,6 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
             android:text="FontTextView" />
-
     </RelativeLayout>
 
     <RelativeLayout
@@ -30,9 +29,19 @@
             android:id="@+id/list_eventi_correlati"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
-
         </ListView>
 
+        <smartcampus.android.template.standalone.Utilities.FontTextView
+            android:id="@+id/text_nessun_evento_per_sport"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:text="Nessun risultato trovato"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#3294ad"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -47,6 +56,17 @@
             android:layout_height="wrap_content" >
         </ListView>
 
+        <smartcampus.android.template.standalone.Utilities.FontTextView
+            android:id="@+id/text_nessun_atleta_per_sport"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:text="Nessun risultato trovato"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#3294ad"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </RelativeLayout>

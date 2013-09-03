@@ -49,7 +49,7 @@
                     android:orientation="vertical" >
 
                     <smartcampus.android.template.standalone.Utilities.FontTextView
-                        android:id="@+id/textView1"
+                        android:id="@+id/text_indirizzo_poi"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="USERNAME"

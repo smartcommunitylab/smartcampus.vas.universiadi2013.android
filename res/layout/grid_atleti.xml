@@ -20,18 +20,18 @@
             android:id="@+id/text_nome_cognome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/text_nazionalita"
-            android:layout_alignParentTop="false"
-            android:layout_alignTop="@+id/text_nazionalita"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/image_atleta"
             android:text="FontTextView" />
 
         <smartcampus.android.template.standalone.Utilities.FontTextView
             android:id="@+id/text_nazionalita"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_below="@id/text_nome_cognome"
+            android:layout_centerVertical="false"
             android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/image_atleta"
+            android:layout_toRightOf="@id/image_atleta"
             android:text="FontTextView" />
 
     </RelativeLayout>

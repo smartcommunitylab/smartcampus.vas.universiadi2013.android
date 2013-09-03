@@ -1,6 +1,8 @@
 package smartcampus.android.template.standalone.HomeBlock;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Random;
 
 import smartcampus.android.template.standalone.R;
@@ -28,79 +30,99 @@ import android.widget.TextView;
 @SuppressLint("ValidFragment")
 public class PageEventiOggi extends Fragment {
 
-	private android.smartcampus.template.standalone.Evento mEvento;
+	private Object mEvento;
 	private int mPos;
-	
-	public PageEventiOggi(android.smartcampus.template.standalone.Evento evento, int position)
-	{
+
+	public PageEventiOggi(Object evento, int position) {
 		mEvento = evento;
 		mPos = position;
 	}
-	
-	public PageEventiOggi()
-	{
+
+	public PageEventiOggi() {
 		this(null, 0);
 	}
-	
-	public android.smartcampus.template.standalone.Evento getEvento()
-	{
-		return mEvento;
+
+	public Evento getEvento() {
+		return (Evento) mEvento;
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View mView = inflater.inflate(R.layout.activity_page_eventi_oggi, null);
-		
-		FontTextView mNome = (FontTextView)mView.findViewById(R.id.text_nome_evento);
-		mNome.setText(mEvento.getNome().toUpperCase());
-		
-		FontTextView mOra = (FontTextView)mView.findViewById(R.id.text_ora_evento);
-//		Calendar mHour = Calendar.getInstance();
-//		mHour.setTimeInMillis(mEvento.getData().getTime());
-//		String ora = null;
-//		
-//		if (mHour.get(Calendar.MINUTE) < 10)
-//			ora = mHour.get(Calendar.HOUR)+":0"+mHour.get(Calendar.MINUTE);
-//		else
-//			ora = mHour.get(Calendar.HOUR)+":"+mHour.get(Calendar.MINUTE);
-//		if (mHour.get(Calendar.AM_PM) == Calendar.AM)
-//			ora = ora + " AM";
-//		else
-//			ora = ora + " PM";
-		
-		mOra.setText(mEvento.getOra());
-		
-		ImageView mImgSfondo = (ImageView)mView.findViewById(R.id.image_sfondo_evento);
-//		int randomNum = (new Random()).nextInt(5);
-//		while (randomNum == 0)
-//			randomNum = (new Random()).nextInt(5);
-		mImgSfondo.setImageResource(getResources().getIdentifier("cover1", "drawable", "smartcampus.android.template.standalone"));
-//		FontTextView mToday = (FontTextView)mView.findViewById(R.id.text_today);
-//		Calendar mCal = Calendar.getInstance();
-//		mCal.setTimeInMillis(mEvento.getFromTime());
-//		mToday.setText(mToday.getText()+" ("+mCal.get(Calendar.DAY_OF_MONTH)+
-//				"/"+Integer.toString(mCal.get(Calendar.MONTH)+1)+"/"+
-//				mCal.get(Calendar.YEAR)+")");
-		
-		ImageView mMask = (ImageView)mView.findViewById(R.id.image_mask);
-		if (mPos % 2 == 0)
-		{
-			Bitmap sprite = BitmapFactory.decodeResource(this.getResources(),
-			        R.drawable.scroll_main);
-			Matrix rotateRight = new Matrix();
-			rotateRight.preScale(-1.0f, 1.0f);
-			Bitmap rSprite = Bitmap.createBitmap(sprite, 0, 0,
-			        sprite.getWidth(), sprite.getHeight(), rotateRight, true);
+
+		if (mEvento instanceof Evento) {
+			Evento evento = (Evento) mEvento;
+			FontTextView mNome = (FontTextView) mView
+					.findViewById(R.id.text_nome_evento);
+			mNome.setText(evento.getNome().toUpperCase());
+
+			FontTextView mOra = (FontTextView) mView
+					.findViewById(R.id.text_ora_evento);
+
+			mOra.setText(new SimpleDateFormat("hh:mm", Locale.getDefault())
+					.format(evento.getData()));
+
+			ImageView mImgSfondo = (ImageView) mView
+					.findViewById(R.id.image_sfondo_evento);
+			mImgSfondo.setImageResource(getResources().getIdentifier("cover1",
+					"drawable", "smartcampus.android.template.standalone"));
+
+			ImageView mMask = (ImageView) mView.findViewById(R.id.image_mask);
+			if (mPos % 2 == 0) {
+				Bitmap sprite = BitmapFactory.decodeResource(
+						this.getResources(), R.drawable.scroll_main);
+				Matrix rotateRight = new Matrix();
+				rotateRight.preScale(-1.0f, 1.0f);
+				Bitmap rSprite = Bitmap.createBitmap(sprite, 0, 0,
+						sprite.getWidth(), sprite.getHeight(), rotateRight,
+						true);
+
+				mMask.setImageBitmap(rSprite);
+
+				mNome.setGravity(Gravity.RIGHT);
+				mOra.setGravity(Gravity.RIGHT);
+				((FontTextView) mView.findViewById(R.id.text_today))
+						.setGravity(Gravity.RIGHT);
+			}
+		} else {
+			Meeting meeting = (Meeting)mEvento;
 			
-			mMask.setImageBitmap(rSprite);
-			
-			mNome.setGravity(Gravity.RIGHT);
-			mOra.setGravity(Gravity.RIGHT);
-			((FontTextView)mView.findViewById(R.id.text_today)).setGravity(Gravity.RIGHT);
+			FontTextView mNome = (FontTextView) mView
+					.findViewById(R.id.text_nome_evento);
+			mNome.setText(meeting.getNome().toUpperCase());
+
+			FontTextView mOra = (FontTextView) mView
+					.findViewById(R.id.text_ora_evento);
+
+			mOra.setText(new SimpleDateFormat("hh:mm", Locale.getDefault())
+					.format(meeting.getData()));
+
+			ImageView mImgSfondo = (ImageView) mView
+					.findViewById(R.id.image_sfondo_evento);
+			mImgSfondo.setImageResource(getResources().getIdentifier("cover1",
+					"drawable", "smartcampus.android.template.standalone"));
+
+			ImageView mMask = (ImageView) mView.findViewById(R.id.image_mask);
+			if (mPos % 2 == 0) {
+				Bitmap sprite = BitmapFactory.decodeResource(
+						this.getResources(), R.drawable.scroll_main);
+				Matrix rotateRight = new Matrix();
+				rotateRight.preScale(-1.0f, 1.0f);
+				Bitmap rSprite = Bitmap.createBitmap(sprite, 0, 0,
+						sprite.getWidth(), sprite.getHeight(), rotateRight,
+						true);
+
+				mMask.setImageBitmap(rSprite);
+
+				mNome.setGravity(Gravity.RIGHT);
+				mOra.setGravity(Gravity.RIGHT);
+				((FontTextView) mView.findViewById(R.id.text_today))
+						.setGravity(Gravity.RIGHT);
+			}
 		}
-		
+
 		return mView;
 	}
 

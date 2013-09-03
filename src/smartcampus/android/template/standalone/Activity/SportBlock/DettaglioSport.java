@@ -1,15 +1,22 @@
 package smartcampus.android.template.standalone.Activity.SportBlock;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import smartcampus.android.template.standalone.R;
 import smartcampus.android.template.standalone.R.id;
 import smartcampus.android.template.standalone.R.layout;
-import smartcampus.android.template.standalone.Activity.Model.ContainerSport;
-import smartcampus.android.template.standalone.Activity.Model.DBManager;
+import smartcampus.android.template.standalone.Activity.Model.ManagerData;
+import smartcampus.android.template.standalone.HomeBlock.Home;
+import smartcampus.android.template.standalone.IntroBlock.Intro;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -28,16 +35,28 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import eu.trentorise.smartcampus.protocolcarrier.ProtocolCarrier;
+import eu.trentorise.smartcampus.protocolcarrier.common.Constants.Method;
+import eu.trentorise.smartcampus.protocolcarrier.custom.MessageRequest;
+import eu.trentorise.smartcampus.protocolcarrier.custom.MessageResponse;
+import eu.trentorise.smartcampus.protocolcarrier.exceptions.ConnectionException;
+import eu.trentorise.smartcampus.protocolcarrier.exceptions.ProtocolException;
+import eu.trentorise.smartcampus.protocolcarrier.exceptions.SecurityException;
+
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -49,13 +68,17 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import android.smartcampus.template.standalone.Atleta;
+import android.smartcampus.template.standalone.Evento;
 import android.smartcampus.template.standalone.Sport;
 
 public class DettaglioSport extends FragmentActivity implements
@@ -67,7 +90,9 @@ public class DettaglioSport extends FragmentActivity implements
 	private LocationManager locationManager;
 	private LocationClient mLocationClient;
 
-	private ArrayList<android.smartcampus.template.standalone.Evento> mListEventi;
+	private ArrayList<Evento> mListEventi;
+	private ArrayList<Atleta> mListaAtleti = new ArrayList<Atleta>();
+	ArrayList<Fragment> fragment = new ArrayList<Fragment>();
 	LatLngBounds.Builder builder;
 
 	@Override
@@ -75,98 +100,167 @@ public class DettaglioSport extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_dettaglio_sport);
 
-		mSport = (ContainerSport.getListaSport(this)).get(getIntent()
-				.getIntExtra("Index", -1));
-		mListEventi = ((DBManager.getInstance(getApplicationContext())))
-				.getEventiSportiviPerSport(mSport.getNome());
+		new AsyncTask<Void, Void, Void>() {
+			private Dialog dialog;
 
-		ArrayList<Fragment> fragment = new ArrayList<Fragment>();
-		for (int i = 0; i < 3; i++)
-			fragment.add(new PageInfoSport(mSport, i));
-		ViewPager mPagerSport = (ViewPager) findViewById(R.id.pager_info_eventi);
-		mPagerSport.setAdapter(new PagerAdapter(getSupportFragmentManager(),
-				fragment));
+			@Override
+			protected void onPreExecute() {
+				// TODO Auto-generated method stub
+				super.onPreExecute();
 
-		mMappa = ((SupportMapFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.mappa)).getMap();
-
-		UiSettings mMapController = mMappa.getUiSettings();
-
-		mMapController.setCompassEnabled(true);
-		mMapController.setMyLocationButtonEnabled(false);
-		mMapController.setZoomControlsEnabled(false);
-
-		mMappa.setMyLocationEnabled(true);
-
-		builder = new LatLngBounds.Builder();
-		for (android.smartcampus.template.standalone.Evento mEvento : mListEventi) {
-			LatLng mMarker = new LatLng(mEvento.getLatGPS(),
-					mEvento.getLngGPS());
-			builder.include(mMarker);
-			Geocoder coder = new Geocoder(this, Locale.getDefault());
-
-			Address adrs;
-			try {
-				adrs = coder.getFromLocation(mMarker.latitude,
-						mMarker.longitude, 1).get(0);
-				mMappa.addMarker(new MarkerOptions()
-						.position(mMarker)
-						.icon(BitmapDescriptorFactory
-								.fromBitmap(drawMarkerWithTitleAndAddress(
-										mEvento.getNome(),
-										adrs.getAddressLine(0) + " - "
-												+ adrs.getAddressLine(1))))
-						.anchor(0.5f, 1));
-				mMappa.setOnMarkerClickListener(new OnMarkerClickListener() {
+				dialog = new Dialog(DettaglioSport.this);
+				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+				dialog.setContentView(R.layout.dialog_wait);
+				dialog.getWindow().setBackgroundDrawableResource(
+						R.drawable.dialog_rounded_corner_light_black);
+				dialog.show();
+				dialog.setCancelable(true);
+				dialog.setOnCancelListener(new OnCancelListener() {
 
 					@Override
-					public boolean onMarkerClick(Marker marker) {
+					public void onCancel(DialogInterface dialog) {
 						// TODO Auto-generated method stub
-						if (mLocationClient.getLastLocation() != null) {
-							Intent intent = new Intent(
-									android.content.Intent.ACTION_VIEW,
-									Uri.parse("http://maps.google.com/maps?saddr="
-											+ mLocationClient.getLastLocation()
-													.getLatitude()
-											+ ","
-											+ mLocationClient.getLastLocation()
-													.getLongitude()
-											+ "&daddr="
-											+ marker.getPosition().latitude
-											+ ","
-											+ marker.getPosition().longitude));
-							startActivity(intent);
-							return true;
-						}
-						return false;
+						cancel(true);
+						finish();
 					}
-
 				});
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
 			}
-		}
 
-		// Otteniamo il riferimento al LocationManager
-		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-		if (locationManager != null) {
-			boolean gpsIsEnabled = locationManager
-					.isProviderEnabled(LocationManager.GPS_PROVIDER);
-			boolean networkIsEnabled = locationManager
-					.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-			if (networkIsEnabled) {
-				locationManager.requestLocationUpdates(
-						LocationManager.GPS_PROVIDER, 0, 100, this);
-			} else if (gpsIsEnabled) {
-				locationManager.requestLocationUpdates(
-						LocationManager.NETWORK_PROVIDER, 0, 100, this);
+			@Override
+			protected Void doInBackground(Void... params) {
+				// TODO Auto-generated method stub
+				if (getIntent().getBooleanExtra("search", false)) {
+					for (Sport sport : ManagerData
+							.getSport(DettaglioSport.this)) {
+						if (sport.getNome().equalsIgnoreCase(
+								getIntent().getStringExtra("sport")))
+							mSport = sport;
+					}
+					mListEventi = ManagerData.getEventiPerSport(getIntent()
+							.getStringExtra("sport"));
+				} else {
+					mSport = (ManagerData.getSport(DettaglioSport.this))
+							.get(getIntent().getIntExtra("Index", -1));
+					mListEventi = ManagerData.getEventiPerSport(mSport
+							.getNome());
+				}
+				for (Evento evento : mListEventi) {
+					ArrayList<Atleta> mListaAtletiTmp = ManagerData
+							.getAtletiPerEvento(evento);
+					for (Atleta atleta : mListaAtletiTmp)
+						mListaAtleti.add(atleta);
+				}
+				for (int i = 0; i < 3; i++)
+					fragment.add(new PageInfoSport(mSport.getDescrizione(),
+							mListEventi, mListaAtleti, i));
+				return null;
 			}
-		}
-		mLocationClient = new LocationClient(this, this, this);
-		mLocationClient.connect();
+
+			@Override
+			protected void onPostExecute(Void result) {
+				// TODO Auto-generated method stub
+				super.onPostExecute(result);
+
+				// START ONPOST
+				ViewPager mPagerSport = (ViewPager) findViewById(R.id.pager_info_eventi);
+				mPagerSport.setAdapter(new PagerAdapter(
+						getSupportFragmentManager(), fragment));
+
+				mMappa = ((SupportMapFragment) getSupportFragmentManager()
+						.findFragmentById(R.id.mappa)).getMap();
+
+				UiSettings mMapController = mMappa.getUiSettings();
+
+				mMapController.setCompassEnabled(true);
+				mMapController.setMyLocationButtonEnabled(false);
+				mMapController.setZoomControlsEnabled(false);
+
+				mMappa.setMyLocationEnabled(true);
+
+				builder = new LatLngBounds.Builder();
+				for (Evento mEvento : mListEventi) {
+					LatLng mMarker = new LatLng(mEvento.getLatGPS(),
+							mEvento.getLngGPS());
+					builder.include(mMarker);
+					Geocoder coder = new Geocoder(DettaglioSport.this,
+							Locale.getDefault());
+
+					Address adrs;
+					try {
+						adrs = coder.getFromLocation(mMarker.latitude,
+								mMarker.longitude, 1).get(0);
+						mMappa.addMarker(new MarkerOptions()
+								.position(mMarker)
+								.icon(BitmapDescriptorFactory
+										.fromBitmap(drawMarkerWithTitleAndAddress(
+												mEvento.getNome(),
+												adrs.getAddressLine(0)
+														+ " - "
+														+ adrs.getAddressLine(1))))
+								.anchor(0.5f, 1));
+						mMappa.setOnMarkerClickListener(new OnMarkerClickListener() {
+
+							@Override
+							public boolean onMarkerClick(Marker marker) {
+								// TODO Auto-generated method stub
+								if (mLocationClient.getLastLocation() != null) {
+									Intent intent = new Intent(
+											android.content.Intent.ACTION_VIEW,
+											Uri.parse("http://maps.google.com/maps?saddr="
+													+ mLocationClient
+															.getLastLocation()
+															.getLatitude()
+													+ ","
+													+ mLocationClient
+															.getLastLocation()
+															.getLongitude()
+													+ "&daddr="
+													+ marker.getPosition().latitude
+													+ ","
+													+ marker.getPosition().longitude));
+									startActivity(intent);
+									return true;
+								}
+								return false;
+							}
+
+						});
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+				// Otteniamo il riferimento al LocationManager
+				locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+				if (locationManager != null) {
+					boolean gpsIsEnabled = locationManager
+							.isProviderEnabled(LocationManager.GPS_PROVIDER);
+					boolean networkIsEnabled = locationManager
+							.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+					if (networkIsEnabled) {
+						locationManager.requestLocationUpdates(
+								LocationManager.GPS_PROVIDER, 0, 100,
+								DettaglioSport.this);
+					} else if (gpsIsEnabled) {
+						locationManager.requestLocationUpdates(
+								LocationManager.NETWORK_PROVIDER, 0, 100,
+								DettaglioSport.this);
+					}
+				}
+				mLocationClient = new LocationClient(DettaglioSport.this,
+						DettaglioSport.this, DettaglioSport.this);
+				mLocationClient.connect();
+
+				// END ONPOST
+
+				dialog.dismiss();
+			}
+
+		}.execute();
 	}
 
 	@Override

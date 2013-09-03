@@ -55,6 +55,19 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.9" />
             </LinearLayout>
+
+            <smartcampus.android.template.standalone.Utilities.FontTextView
+                android:id="@+id/text_nessun_evento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:text="Nessun evento in programma"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#3294ad"
+                android:visibility="gone" />
+
+                 />
         </RelativeLayout>
 
         <RelativeLayout
@@ -93,7 +106,7 @@
                                 android:src="@drawable/btn_scroll_press" />
 
                             <smartcampus.android.template.standalone.Utilities.FontTextView
-                                android:id="@+id/textView1"
+                                android:id="@+id/text_indirizzo_poi"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
