@@ -1,0 +1,74 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/image_general_info_event"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/user_pic" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:orientation="vertical" >
+
+        <smartcampus.android.template.standalone.Utilities.FontTextView
+            android:id="@+id/text_anagrafiche_sms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:gravity="center"
+            android:text="Medium Text"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#3294ad" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:orientation="vertical" >
+
+            <smartcampus.android.template.standalone.Utilities.FontTextView
+                android:id="@+id/text_categoria_sms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="TextView"
+                android:textColor="#3294ad" />
+
+            <smartcampus.android.template.standalone.Utilities.FontTextView
+                android:id="@+id/text_ruolo_sms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="TextView"
+                android:textColor="#3294ad" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_indirizzo_poi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:text="Small Text"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#0fff" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.8" >
+
+        <ImageView
+            android:id="@+id/img_check_send"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/btn_check" />
+    </RelativeLayout>
+
+</LinearLayout>

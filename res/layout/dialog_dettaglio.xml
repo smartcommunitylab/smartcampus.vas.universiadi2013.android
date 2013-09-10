@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <smartcampus.android.template.standalone.Utilities.FontTextView
+        android:id="@+id/text1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4"
+        android:gravity="center"
+        android:text="Domanda:"
+        android:textColor="#3294ad" />
+
+    <smartcampus.android.template.standalone.Utilities.FontTextView
+        android:id="@+id/text_dettaglio_question"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4"
+        android:gravity="center"
+        android:text="Dove sono i ristoranti di Trento?"
+        android:textColor="#3294ad"
+        android:textSize="17dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4" >
+
+        <TextView
+            android:id="@+id/text_indirizzo_poi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Large Text"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#0fff" />
+    </RelativeLayout>
+
+    <smartcampus.android.template.standalone.Utilities.FontTextView
+        android:id="@+id/text2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4"
+        android:gravity="center"
+        android:text="Risposta:"
+        android:textColor="#3294ad" />
+
+    <smartcampus.android.template.standalone.Utilities.FontTextView
+        android:id="@+id/text_dettaglio_answer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4"
+        android:gravity="center"
+        android:lines="4"
+        android:scrollbars="vertical"
+        android:text="@string/lorem_ipsum"
+        android:textColor="#3294ad"
+        android:textSize="20dp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4" >
+
+        <TextView
+            android:id="@+id/text_indirizzo_poi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Large Text"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#0fff" />
+    </RelativeLayout>
+
+    <smartcampus.android.template.standalone.Utilities.FontTextView
+        android:id="@+id/text3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4"
+        android:gravity="center"
+        android:text="Accuracy:"
+        android:textColor="#3294ad" />
+
+    <smartcampus.android.template.standalone.Utilities.FontTextView
+        android:id="@+id/text_dettaglio_accuracy"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.4"
+        android:gravity="center"
+        android:text="100%"
+        android:textColor="#3294ad"
+        android:textSize="20dp" />
+
+</LinearLayout>

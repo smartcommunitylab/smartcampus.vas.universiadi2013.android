@@ -1,0 +1,319 @@
+package smartcampus.android.template.standalone.HomeBlock;
+
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Locale;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import eu.trentorise.smartcampus.protocolcarrier.ProtocolCarrier;
+import eu.trentorise.smartcampus.protocolcarrier.common.Constants.Method;
+import eu.trentorise.smartcampus.protocolcarrier.custom.MessageRequest;
+import eu.trentorise.smartcampus.protocolcarrier.custom.MessageResponse;
+import eu.trentorise.smartcampus.protocolcarrier.exceptions.ConnectionException;
+import eu.trentorise.smartcampus.protocolcarrier.exceptions.ProtocolException;
+import eu.trentorise.smartcampus.protocolcarrier.exceptions.SecurityException;
+import smartcampus.android.template.standalone.R;
+import smartcampus.android.template.standalone.R.layout;
+import smartcampus.android.template.standalone.R.menu;
+import smartcampus.android.template.standalone.Utilities.FontTextView;
+import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
+import smartcampus.android.template.standalone.Activity.FacilitiesBlock.Booking;
+import smartcampus.android.template.standalone.Activity.Model.ManagerData;
+import smartcampus.android.template.standalone.Activity.SportBlock.DettaglioSport;
+import smartcampus.android.template.standalone.Activity.SportBlock.SportImageConstant;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.smartcampus.template.standalone.Evento;
+import android.smartcampus.template.standalone.POI;
+import android.smartcampus.template.standalone.Sport;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.*;
+import android.widget.AdapterView.OnItemClickListener;
+
+public class ResultSearch extends Activity {
+
+	private ArrayList<JSONObject> mListaObj;
+	private ArrayList<Evento> mListaEvento = new ArrayList<Evento>();
+	private ArrayList<POI> mListaPOI = new ArrayList<POI>();
+	private ArrayList<Sport> mListaSport = new ArrayList<Sport>();
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_result_search);
+
+		new AsyncTask<Void, Void, Void>() {
+			private Dialog dialog;
+
+			@Override
+			protected void onPreExecute() {
+				// TODO Auto-generated method stub
+				super.onPreExecute();
+
+				dialog = new Dialog(ResultSearch.this);
+				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+				dialog.setContentView(R.layout.dialog_wait);
+				dialog.getWindow().setBackgroundDrawableResource(
+						R.drawable.dialog_rounded_corner_light_black);
+				dialog.show();
+				dialog.setCancelable(true);
+				dialog.setOnCancelListener(new OnCancelListener() {
+
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						// TODO Auto-generated method stub
+						cancel(true);
+						finish();
+					}
+				});
+
+			}
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				// TODO Auto-generated method stub
+				mListaObj = ManagerData.getSearchForFilter(getIntent()
+						.getStringExtra("search"),
+						getIntent().getStringExtra("rest"));
+				try {
+					if (getIntent().getStringExtra("rest").equalsIgnoreCase(
+							"/search/eventi")) {
+						for (JSONObject obj : mListaObj) {
+							Evento evento = new Evento(null,
+									obj.getString("nome"), obj.getLong("data"),
+									obj.getString("descrizione"), obj
+											.getJSONObject("gps").getDouble(
+													"latGPS"), obj
+											.getJSONObject("gps").getDouble(
+													"lngGPS"),
+									obj.getString("tipoSport"));
+
+							mListaEvento.add(evento);
+						}
+					} else if (getIntent().getStringExtra("rest")
+							.equalsIgnoreCase("/search/poi")) {
+						for (JSONObject obj : mListaObj) {
+							POI poi = new POI(null, obj.getString("nome"),
+									obj.getString("categoria"), obj
+											.getJSONObject("GPS").getDouble(
+													"latGPS"), obj
+											.getJSONObject("GPS").getDouble(
+													"lngGPS"));
+							poi.getIndirizzo();
+							mListaPOI.add(poi);
+						}
+					} else if (getIntent().getStringExtra("rest")
+							.equalsIgnoreCase("/search/sport")) {
+						for (JSONObject obj : mListaObj) {
+							Sport sport = new Sport(obj.getString("nome"),
+									SportImageConstant.resourcesFromID(
+											obj.getInt("foto"),
+											ResultSearch.this),
+									obj.getString("descrizione"));
+
+							mListaSport.add(sport);
+						}
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				// TODO Auto-generated method stub
+				super.onPostExecute(result);
+
+				dialog.dismiss();
+
+				// START ONPOST
+				if (getIntent().getStringExtra("rest").equalsIgnoreCase(
+						"/search/eventi")) {
+
+					if (mListaEvento.size() != 0) {
+						((ListView) findViewById(R.id.lista_risultati_search))
+								.setAdapter(new RowSearch<Evento>(
+										getApplicationContext(), mListaEvento));
+						((ListView) findViewById(R.id.lista_risultati_search))
+								.setOnItemClickListener(new OnItemClickListener() {
+
+									@Override
+									public void onItemClick(
+											AdapterView<?> arg0, View arg1,
+											int arg2, long arg3) {
+										// TODO Auto-generated method stub
+
+										Intent mCaller = new Intent(arg1
+												.getContext(), InfoEventi.class);
+										mCaller.putExtra("search", true);
+										mCaller.putExtra(
+												"searchString",
+												getIntent().getStringExtra(
+														"search"));
+										mCaller.putExtra("data", mListaEvento
+												.get(arg2).getData());
+										mCaller.putExtra("index", arg2);
+										startActivity(mCaller);
+									}
+								});
+					} else
+						((TextView) findViewById(R.id.text_nessun_risultato))
+								.setVisibility(View.VISIBLE);
+
+				} else if (getIntent().getStringExtra("rest").equalsIgnoreCase(
+						"/search/poi")) {
+
+					if (mListaPOI.size() != 0) {
+						((ListView) findViewById(R.id.lista_risultati_search))
+								.setAdapter(new RowSearch<POI>(
+										getApplicationContext(), mListaPOI));
+						((ListView) findViewById(R.id.lista_risultati_search))
+								.setOnItemClickListener(new OnItemClickListener() {
+
+									@Override
+									public void onItemClick(
+											AdapterView<?> arg0, View arg1,
+											int arg2, long arg3) {
+										// TODO Auto-generated method stub
+										Intent mCaller = new Intent(arg1
+												.getContext(), Booking.class);
+										mCaller.putExtra("search", true);
+										mCaller.putExtra(
+												"searchString",
+												getIntent().getStringExtra(
+														"search"));
+										mCaller.putExtra("index", arg2);
+										startActivity(mCaller);
+									}
+								});
+					} else
+						((TextView) findViewById(R.id.text_nessun_risultato))
+								.setVisibility(View.VISIBLE);
+
+				} else if (getIntent().getStringExtra("rest").equalsIgnoreCase(
+						"/search/sport")) {
+
+					if (mListaSport.size() != 0) {
+						((ListView) findViewById(R.id.lista_risultati_search))
+								.setAdapter(new RowSearch<Sport>(
+										getApplicationContext(), mListaSport));
+						((ListView) findViewById(R.id.lista_risultati_search))
+								.setOnItemClickListener(new OnItemClickListener() {
+
+									@Override
+									public void onItemClick(
+											AdapterView<?> arg0, View arg1,
+											int arg2, long arg3) {
+										// TODO Auto-generated method stub
+										Intent mCaller = new Intent(arg1
+												.getContext(),
+												DettaglioSport.class);
+										mCaller.putExtra("sport", mListaSport
+												.get(arg2).getNome());
+										mCaller.putExtra("search", true);
+										startActivity(mCaller);
+									}
+								});
+					} else
+						((TextView) findViewById(R.id.text_nessun_risultato))
+								.setVisibility(View.VISIBLE);
+
+				}
+				// END ONPOST
+			}
+
+		}.execute();
+	}
+
+	public class RowSearch<E> extends ArrayAdapter<E> {
+		private final Context context;
+		private final ArrayList<E> values;
+
+		public RowSearch(Context context, ArrayList<E> values) {
+			super(context, R.layout.row_eventi, values);
+			this.context = context;
+			this.values = values;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+
+			LayoutInflater inflater = (LayoutInflater) context
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+			View rowView = null;
+
+			if (getIntent().getStringExtra("rest").equalsIgnoreCase(
+					"/search/eventi")) {
+				if (values.size() != 0) {
+					rowView = inflater.inflate(R.layout.row_eventi, parent,
+							false);
+					Evento evento = (Evento) values.get(position);
+
+					((FontTextView) rowView.findViewById(R.id.text_orario))
+							.setText(new SimpleDateFormat("hh:mm", Locale
+									.getDefault()).format(evento.getData()));
+
+					if (evento.getNome().length() <= 12)
+						((FontTextView) rowView
+								.findViewById(R.id.text_nome_evento))
+								.setText(evento.getNome().toUpperCase());
+					else
+						((FontTextView) rowView
+								.findViewById(R.id.text_nome_evento))
+								.setText(evento.getNome().toUpperCase()
+										.substring(0, 11)
+										+ "...");
+				}
+			} else if (getIntent().getStringExtra("rest").equalsIgnoreCase(
+					"/search/poi")) {
+				if (values.size() != 0) {
+					rowView = inflater.inflate(R.layout.row_poi, parent, false);
+					POI poi = (POI) values.get(position);
+
+					((FontTextView) rowView
+							.findViewById(R.id.text_indirizzo_poi_search))
+							.setText(poi.getIndirizzo());
+					((FontTextView) rowView
+							.findViewById(R.id.text_categoria_poi_search))
+							.setText(poi.getCategoria());
+				}
+			} else if (getIntent().getStringExtra("rest").equalsIgnoreCase(
+					"/search/sport")) {
+				if (values.size() != 0) {
+					rowView = inflater.inflate(R.layout.row_sport, parent,
+							false);
+					Sport sport = (Sport) values.get(position);
+
+					((FontTextView) rowView
+							.findViewById(R.id.text_nome_sport_search))
+							.setText(sport.getNome());
+					((ImageView) rowView.findViewById(R.id.image_sport_search))
+							.setImageBitmap(BitmapFactory.decodeByteArray(
+									sport.getFoto(), 0, sport.getFoto().length));
+				}
+			}
+
+			return rowView;
+		}
+	}
+}
