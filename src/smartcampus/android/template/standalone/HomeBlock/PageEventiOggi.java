@@ -1,31 +1,23 @@
 package smartcampus.android.template.standalone.HomeBlock;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Locale;
-import java.util.Random;
 
 import smartcampus.android.template.standalone.R;
-import smartcampus.android.template.standalone.R.drawable;
-import smartcampus.android.template.standalone.R.id;
-import smartcampus.android.template.standalone.R.layout;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
-import android.smartcampus.template.standalone.*;
-
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.smartcampus.template.standalone.Evento;
+import android.smartcampus.template.standalone.Meeting;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 @SuppressLint("ValidFragment")
 public class PageEventiOggi extends Fragment {
@@ -87,8 +79,8 @@ public class PageEventiOggi extends Fragment {
 						.setGravity(Gravity.RIGHT);
 			}
 		} else {
-			Meeting meeting = (Meeting)mEvento;
-			
+			Meeting meeting = (Meeting) mEvento;
+
 			FontTextView mNome = (FontTextView) mView
 					.findViewById(R.id.text_nome_evento);
 			mNome.setText(meeting.getNome().toUpperCase());

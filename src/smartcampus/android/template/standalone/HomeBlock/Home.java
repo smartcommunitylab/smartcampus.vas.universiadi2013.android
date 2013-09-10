@@ -4,33 +4,28 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Timer;
-
-import com.viewpagerindicator.CirclePageIndicator;
 
 import smartcampus.android.template.standalone.R;
-import smartcampus.android.template.standalone.Activity.EventiBlock.*;
+import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
 import smartcampus.android.template.standalone.Activity.FacilitiesBlock.Booking;
-import smartcampus.android.template.standalone.Activity.Model.*;
+import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.Profile;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FilterCalendarioActivity;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock.FAQ;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock.Problema;
 import smartcampus.android.template.standalone.Activity.SportBlock.Sport;
-import smartcampus.android.template.standalone.IntroBlock.Intro;
-
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
 import android.smartcampus.template.standalone.Evento;
 import android.smartcampus.template.standalone.Meeting;
 import android.support.v4.app.Fragment;
@@ -38,7 +33,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -48,8 +42,13 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+
+import com.viewpagerindicator.CirclePageIndicator;
 
 public class Home extends FragmentActivity /* implements EventoUpdateListener */{
 

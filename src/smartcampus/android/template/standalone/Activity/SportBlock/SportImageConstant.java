@@ -2,10 +2,10 @@ package smartcampus.android.template.standalone.Activity.SportBlock;
 
 import java.io.ByteArrayOutputStream;
 
+import smartcampus.android.template.standalone.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import smartcampus.android.template.standalone.R;
 
 public class SportImageConstant {
 

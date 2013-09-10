@@ -1,29 +1,17 @@
 package smartcampus.android.template.standalone.Activity.EventiBlock;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import smartcampus.android.template.standalone.R;
-import smartcampus.android.template.standalone.R.layout;
-import smartcampus.android.template.standalone.R.menu;
 import smartcampus.android.template.standalone.Utilities.ElementDescRoute;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
-import android.os.Bundle;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.database.DataSetObserver;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -43,9 +31,9 @@ public class PageInfoEventi extends Fragment {
 		position = pos;
 		params = prm;
 	}
-	
+
 	public PageInfoEventi() {
-		this(-1,null);
+		this(-1, null);
 	}
 
 	@Override
@@ -78,8 +66,6 @@ public class PageInfoEventi extends Fragment {
 
 		return mView;
 	}
-	
-	
 
 	private class ListAdapterRoute extends ArrayAdapter<ElementDescRoute> {
 

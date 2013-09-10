@@ -1,6 +1,5 @@
 package smartcampus.android.template.standalone.Activity.SportBlock;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 import smartcampus.android.template.standalone.R;
@@ -11,13 +10,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.smartcampus.template.standalone.Atleta;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

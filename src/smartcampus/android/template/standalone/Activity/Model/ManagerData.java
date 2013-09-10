@@ -1,9 +1,6 @@
 package smartcampus.android.template.standalone.Activity.Model;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -11,19 +8,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import smartcampus.android.template.standalone.Activity.SportBlock.SportImageConstant;
-
 import android.content.Context;
 import android.smartcampus.template.standalone.Atleta;
 import android.smartcampus.template.standalone.Evento;
 import android.smartcampus.template.standalone.ExtendedAnswer;
-import android.smartcampus.template.standalone.GeoPoint;
 import android.smartcampus.template.standalone.Meeting;
 import android.smartcampus.template.standalone.POI;
 import android.smartcampus.template.standalone.Sport;
 import android.smartcampus.template.standalone.Ticket;
 import android.smartcampus.template.standalone.Turno;
 import android.smartcampus.template.standalone.Utente;
-import android.widget.TextView;
 
 public class ManagerData {
 

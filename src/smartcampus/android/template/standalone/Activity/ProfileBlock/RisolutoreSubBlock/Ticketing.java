@@ -1,21 +1,13 @@
 package smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock;
 
 import smartcampus.android.template.standalone.R;
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.widget.Button;
+import android.view.Window;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 public class Ticketing {
 

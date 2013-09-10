@@ -1,49 +1,29 @@
 package smartcampus.android.template.standalone.Activity.ProfileBlock;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import smartcampus.android.template.standalone.R;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
-import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FilterCalendarioActivity;
-import smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock.FAQ;
-import smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock.Problema;
-import smartcampus.android.template.standalone.HomeBlock.Home;
-import smartcampus.android.template.standalone.IntroBlock.Intro;
-import smartcampus.android.template.standalone.R.drawable;
-import smartcampus.android.template.standalone.R.id;
-import smartcampus.android.template.standalone.R.layout;
-import smartcampus.android.template.standalone.Utilities.FontTextView;
-
-import eu.trentorise.smartcampus.profileservice.ProfileService;
-import eu.trentorise.smartcampus.profileservice.ProfileServiceException;
-import eu.trentorise.smartcampus.profileservice.model.BasicProfile;
-import android.R.array;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.smartcampus.template.standalone.Utente;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.View.OnTouchListener;
-import android.widget.*;
+import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 public class Profile extends Activity {
 

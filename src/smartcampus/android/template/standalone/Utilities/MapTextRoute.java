@@ -7,13 +7,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import smartcampus.android.template.standalone.R;
-
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -36,8 +32,7 @@ public class MapTextRoute extends AsyncTask<String, Integer, JSONObject> {
 					+ "&destination="
 					+ destGPSTokenized[0]
 					+ ","
-					+ destGPSTokenized[1]
-					+ "&sensor=false&language=it";
+					+ destGPSTokenized[1] + "&sensor=false&language=it";
 			Log.i("Path", path);
 			url = new URL(path);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();

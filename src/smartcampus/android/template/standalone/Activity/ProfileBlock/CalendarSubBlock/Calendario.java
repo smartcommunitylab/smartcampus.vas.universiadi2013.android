@@ -1,51 +1,39 @@
 package smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock;
 
-import java.lang.reflect.Array;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 
 import smartcampus.android.template.standalone.R;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
-import smartcampus.android.template.standalone.HomeBlock.Home;
-import smartcampus.android.template.standalone.IntroBlock.Intro;
-
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
-import android.content.res.Configuration;
+import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Rect;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.smartcampus.template.standalone.Turno;
 import android.smartcampus.template.standalone.Utente;
-import android.text.Layout;
-import android.text.StaticLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.*;
-import android.widget.AbsListView.OnScrollListener;
+import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 public class Calendario extends Activity implements ScrollViewListener {
 

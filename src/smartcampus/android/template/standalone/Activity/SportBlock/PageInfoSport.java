@@ -1,58 +1,28 @@
 package smartcampus.android.template.standalone.Activity.SportBlock;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import smartcampus.android.template.standalone.R;
 import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
-import smartcampus.android.template.standalone.Activity.Model.ManagerData;
-import smartcampus.android.template.standalone.HomeBlock.Home;
-import smartcampus.android.template.standalone.IntroBlock.Intro;
-import smartcampus.android.template.standalone.R.id;
-import smartcampus.android.template.standalone.R.layout;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
-
-//import eu.trentorise.smartcampus.ac.authenticator.AMSCAccessProvider;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.DialogInterface.OnCancelListener;
+import android.os.Bundle;
+import android.smartcampus.template.standalone.Atleta;
+import android.smartcampus.template.standalone.Evento;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.webkit.WebView.FindListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import android.smartcampus.template.standalone.Atleta;
-import android.smartcampus.template.standalone.Sport;
-import android.smartcampus.template.standalone.Evento;
+//import eu.trentorise.smartcampus.ac.authenticator.AMSCAccessProvider;
 
 @SuppressLint("ValidFragment")
 public class PageInfoSport extends Fragment {

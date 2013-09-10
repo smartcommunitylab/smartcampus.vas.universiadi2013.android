@@ -1,19 +1,13 @@
 package smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock;
 
 import smartcampus.android.template.standalone.R;
-import smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock.FAQ;
-import smartcampus.android.template.standalone.HomeBlock.Home;
-import android.os.Bundle;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
-import android.widget.*;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
+import android.widget.ImageView;
 
 public class ChooseChannel {
 

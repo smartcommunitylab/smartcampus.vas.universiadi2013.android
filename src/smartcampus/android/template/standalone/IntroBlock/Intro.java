@@ -4,26 +4,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 import smartcampus.android.template.standalone.R;
-import smartcampus.android.template.standalone.HomeBlock.Home;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
-import android.os.AsyncTask;
-import android.os.Bundle;
+import smartcampus.android.template.standalone.HomeBlock.Home;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 public class Intro extends Activity {

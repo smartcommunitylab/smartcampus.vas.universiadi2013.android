@@ -5,28 +5,28 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import smartcampus.android.template.standalone.R;
-import smartcampus.android.template.standalone.R.layout;
-import smartcampus.android.template.standalone.R.menu;
-import smartcampus.android.template.standalone.Utilities.FontTextView;
 import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
-import android.os.AsyncTask;
-import android.os.Bundle;
+import smartcampus.android.template.standalone.Utilities.FontTextView;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.smartcampus.template.standalone.Evento;
 import android.smartcampus.template.standalone.POI;
-import android.util.Log;
-import android.widget.*;
-import android.widget.AdapterView.OnItemClickListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 public class DettaglioEventoPerPOI extends Activity {
 
