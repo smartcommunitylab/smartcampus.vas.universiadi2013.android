@@ -46,7 +46,10 @@
     <string name="title_activity_profile">Profile</string>
     <string name="title_activity_batch">Batch</string>
     <string name="AUTH_TOKEN">aee58a92-d42d-42e8-b55e-12e4289586fc</string>
+     <string name="JUNIPER_CLIENT_ID"></string>
     <string name="URL_BACKEND">http://smartcampusvasuniversiadi2013web.app.smartcampuslab.it</string>
+    <string name="URL_BACKEND_JUNIPER">https://smartcampus.eventbuilder.it</string>
+    <string name="URL_JUNIPER_LOGIN">/oauth/token</string>
     <string name="title_activity_row_desc_route">RowDescRoute</string>
     <string name="title_activity_page_info_eventi">PageInfoEventi</string>
     <string name="title_activity_result_search">ResultSearch</string>

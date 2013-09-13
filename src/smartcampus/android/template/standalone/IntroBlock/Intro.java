@@ -313,6 +313,8 @@ public class Intro extends Activity {
 	}
 
 	private boolean login(String username, String password) {
+		
+		//TODO federico login
 		return (ManagerData.getAuthToken(username, password) != null);
 	}
 
