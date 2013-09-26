@@ -2,7 +2,7 @@ package smartcampus.android.template.standalone.Activity.EventiBlock;
 
 import java.util.ArrayList;
 
-import smartcampus.android.template.standalone.R;
+import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Utilities.ElementDescRoute;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
 import android.annotation.SuppressLint;

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import smartcampus.android.template.standalone.R;
+import smartcampus.android.template.universiadi.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;

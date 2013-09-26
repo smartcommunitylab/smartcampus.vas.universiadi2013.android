@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import smartcampus.android.template.standalone.R;
+import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import android.app.Activity;
 import android.app.AlertDialog;

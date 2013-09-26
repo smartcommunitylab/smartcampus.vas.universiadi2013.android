@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import smartcampus.android.template.standalone.R;
+import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import android.app.Dialog;
 import android.content.Context;

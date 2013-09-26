@@ -3,7 +3,7 @@ package smartcampus.android.template.standalone.IntroBlock;
 import java.util.HashMap;
 import java.util.Map;
 
-import smartcampus.android.template.standalone.R;
+import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.HomeBlock.Home;
 import android.app.Activity;
@@ -42,7 +42,7 @@ public class Intro extends Activity {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Credenziali");
-		builder.setMessage("Credenziali per l'accesso\nUsername: 'nome3'\nPassword: 'test'");
+		builder.setMessage("Credenziali per l'accesso\nUsername: 'gzacco'\nPassword: 'gabriele'");
 		builder.setCancelable(false);
 		builder.setPositiveButton("Chiudi",
 				new android.content.DialogInterface.OnClickListener() {
@@ -315,6 +315,8 @@ public class Intro extends Activity {
 	private boolean login(String username, String password) {
 		
 		//TODO federico login
+		
+		
 		return (ManagerData.getAuthToken(username, password) != null);
 	}
 

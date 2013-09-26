@@ -7,7 +7,7 @@ import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import smartcampus.android.template.standalone.R;
+import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
 import smartcampus.android.template.standalone.Activity.FacilitiesBlock.Booking;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;

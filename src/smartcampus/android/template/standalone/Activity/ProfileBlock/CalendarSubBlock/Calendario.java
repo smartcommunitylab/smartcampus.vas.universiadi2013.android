@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 
-import smartcampus.android.template.standalone.R;
+import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import android.app.Activity;
 import android.app.AlertDialog;

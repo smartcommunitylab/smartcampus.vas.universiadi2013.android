@@ -9,7 +9,7 @@ import java.util.Locale;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import smartcampus.android.template.standalone.R;
+import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Utilities.ElementDescRoute;
 import smartcampus.android.template.standalone.Utilities.MapTextRoute;

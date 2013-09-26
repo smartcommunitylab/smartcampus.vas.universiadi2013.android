@@ -1,6 +1,6 @@
 package smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock;
 
-import smartcampus.android.template.standalone.R;
+import smartcampus.android.template.universiadi.R;
 import android.app.Activity;
 import android.app.Dialog;
 import android.view.MotionEvent;

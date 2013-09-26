@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import smartcampus.android.template.standalone.R;
+import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
 import smartcampus.android.template.standalone.Activity.FacilitiesBlock.Booking;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;

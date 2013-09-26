@@ -2,7 +2,7 @@ package smartcampus.android.template.standalone.Activity.SportBlock;
 
 import java.util.ArrayList;
 
-import smartcampus.android.template.standalone.R;
+import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import android.app.Activity;
 import android.app.Dialog;

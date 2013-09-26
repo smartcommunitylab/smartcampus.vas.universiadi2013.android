@@ -3,7 +3,7 @@ package smartcampus.android.template.standalone.HomeBlock;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import smartcampus.android.template.standalone.R;
+import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;

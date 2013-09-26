@@ -14,7 +14,7 @@
 //import org.json.JSONException;
 //import org.json.JSONObject;
 //
-//import smartcampus.android.template.standalone.R;
+//import smartcampus.android.template.universiadi.R;
 //
 //import android.os.AsyncTask;
 //import android.util.Log;
