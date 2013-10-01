@@ -59,7 +59,7 @@ class RestRequest {
 			String path = mContext.getString(R.string.URL_BACKEND) + params[0];
 			url = new URL(path);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.addRequestProperty("AUTH_TOKEN", mToken);
+			con.addRequestProperty("Authorization", mToken);
 			con.setRequestMethod("GET");
 			con.setConnectTimeout(5000);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -131,7 +131,7 @@ class RestRequest {
 			String body = null;
 
 			MessageResponse response;
-			response = mProtocolCarrier.invokeSync(request, "test smartcampus",
+			response = mProtocolCarrier.invokeSync(request, mToken,
 					mContext.getString(R.string.AUTH_TOKEN));
 
 			if (response.getHttpStatus() == 200) {
