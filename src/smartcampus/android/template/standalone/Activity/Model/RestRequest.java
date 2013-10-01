@@ -9,6 +9,7 @@ import java.net.URL;
 
 import smartcampus.android.template.universiadi.R;
 import android.content.Context;
+import android.util.Log;
 import eu.trentorise.smartcampus.protocolcarrier.ProtocolCarrier;
 import eu.trentorise.smartcampus.protocolcarrier.common.Constants.Method;
 import eu.trentorise.smartcampus.protocolcarrier.custom.MessageRequest;
@@ -58,6 +59,7 @@ class RestRequest {
 		try {
 			String path = mContext.getString(R.string.URL_BACKEND) + params[0];
 			url = new URL(path);
+			Log.d("1", path);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.addRequestProperty("Authorization", mToken);
 			con.setRequestMethod("GET");
