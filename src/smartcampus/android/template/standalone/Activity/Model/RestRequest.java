@@ -10,6 +10,7 @@ import java.net.URL;
 import smartcampus.android.template.universiadi.R;
 import android.content.Context;
 import android.util.Log;
+import eu.trentorise.smartcampus.network.JsonUtils;
 import eu.trentorise.smartcampus.protocolcarrier.ProtocolCarrier;
 import eu.trentorise.smartcampus.protocolcarrier.common.Constants.Method;
 import eu.trentorise.smartcampus.protocolcarrier.custom.MessageRequest;
@@ -137,7 +138,7 @@ class RestRequest {
 			e.printStackTrace();
 		}
 
-		JuniperResponse res = Utils.convertJSONToObject(response.getBody(),
+		JuniperResponse res = JsonUtils.toObject(response.getBody(),
 				JuniperResponse.class);
 		if (res.isLogged()) {
 			return res.getAccess_token();
