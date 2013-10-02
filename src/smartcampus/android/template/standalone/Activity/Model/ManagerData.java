@@ -39,13 +39,14 @@ public class ManagerData {
 
 	public static Utente readUserData() {
 		try {
-			JSONObject userData = new JSONObject(mRest.restRequest(
-					new String[] { "/read_user_data" }, RestRequestType.GET));
-			return new Utente(userData.getString("nome"),
-					userData.getString("cognome"), userData.getString("ruolo"),
-					userData.getString("ambito"), userData.getString("foto")
-							.getBytes("UTF-8"),
-					userData.getString("numeroTelefonico"));
+			JSONObject userData = new JSONObject(mRest.retrieveUserData());
+			return new Utente(userData.getString("firstname"),
+					userData.getString("lastname"),
+					userData.getString("afunction"),
+					userData.getString("arole"), userData.getString("photo")
+							.getBytes("UTF-8"), userData.getString("mobile"),
+					userData.getString("email"), Integer.toString(userData
+							.getInt("id")), userData.getString("uuid"));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -278,11 +279,12 @@ public class ManagerData {
 
 			for (int i = 0; i < arrayUtenti.length(); i++) {
 				JSONObject obj = arrayUtenti.getJSONObject(i);
-				Utente utente = new Utente(obj.getString("nome"),
-						obj.getString("cognome"), obj.getString("ruolo"),
-						obj.getString("ambito"), obj.getString("foto")
-								.getBytes("UTF-8"),
-						obj.getString("numeroTelefonico"));
+				Utente utente = new Utente(obj.getString("firstname"),
+						obj.getString("lastname"), obj.getString("afunction"),
+						obj.getString("arole"), obj.getString("photo")
+								.getBytes("UTF-8"), obj.getString("mobile"),
+						obj.getString("email"), Integer.toString(obj
+								.getInt("id")), obj.getString("uuid"));
 				mListaUtenti.add(utente);
 			}
 		} catch (JSONException e) {
@@ -444,11 +446,12 @@ public class ManagerData {
 
 			for (int i = 0; i < arrayUtenti.length(); i++) {
 				JSONObject obj = arrayUtenti.getJSONObject(i);
-				Utente utente = new Utente(obj.getString("nome"),
-						obj.getString("cognome"), obj.getString("ruolo"),
-						obj.getString("ambito"), obj.getString("foto")
-								.getBytes("UTF-8"),
-						obj.getString("numeroTelefonico"));
+				Utente utente = new Utente(obj.getString("firstname"),
+						obj.getString("lastname"), obj.getString("afunction"),
+						obj.getString("arole"), obj.getString("photo")
+								.getBytes("UTF-8"), obj.getString("mobile"),
+						obj.getString("email"), Integer.toString(obj
+								.getInt("id")), obj.getString("uuid"));
 				mListaUtenti.add(utente);
 			}
 		} catch (JSONException e) {

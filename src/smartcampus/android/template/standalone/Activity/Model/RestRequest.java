@@ -40,6 +40,33 @@ class RestRequest {
 		}
 	}
 
+	public String retrieveUserData() {
+		URL url;
+		try {
+			String path = "https://smartcampus.eventbuilder.it/getUserData";
+			url = new URL(path);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.addRequestProperty("Authorization", mToken);
+			con.setRequestMethod("GET");
+			con.setConnectTimeout(5000);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					con.getInputStream()));
+			String line = "";
+			String response = "";
+			while ((line = reader.readLine()) != null) {
+				response = response + line;
+			}
+			return response;
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	/*
 	 * Params: params --> params[0] URL params[1..size] otherParams
 	 */

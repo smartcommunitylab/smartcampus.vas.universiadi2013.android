@@ -12,65 +12,94 @@ public class Utente {
     private String ambito;
     private byte[] foto;
     private String numeroTelefonico;
+    private String mail;
+    private String id;
+    private String uuid;
+    
+	public Utente(String nome, String cognome, String ruolo, String ambito,
+			byte[] foto, String numeroTelefonico, String mail, String id,
+			String uuid) {
+		super();
+		this.nome = nome;
+		this.cognome = cognome;
+		this.ruolo = ruolo;
+		this.ambito = ambito;
+		this.foto = foto;
+		this.numeroTelefonico = numeroTelefonico;
+		this.mail = mail;
+		this.id = id;
+		this.uuid = uuid;
+	}
 
-    public Utente() {
-    }
+	public String getNome() {
+		return nome;
+	}
 
-    public Utente(String nome, String cognome, String ruolo, String ambito, byte[] foto, String numeroTelefonico) {
-        this.nome = nome;
-        this.cognome = cognome;
-        this.ruolo = ruolo;
-        this.ambito = ambito;
-        this.foto = foto;
-        this.numeroTelefonico = numeroTelefonico;
-    }
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-    public String getNome() {
-        return nome;
-    }
+	public String getCognome() {
+		return cognome;
+	}
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+	public void setCognome(String cognome) {
+		this.cognome = cognome;
+	}
 
-    public String getCognome() {
-        return cognome;
-    }
+	public String getRuolo() {
+		return ruolo;
+	}
 
-    public void setCognome(String cognome) {
-        this.cognome = cognome;
-    }
+	public void setRuolo(String ruolo) {
+		this.ruolo = ruolo;
+	}
 
-    public String getRuolo() {
-        return ruolo;
-    }
+	public String getAmbito() {
+		return ambito;
+	}
 
-    public void setRuolo(String ruolo) {
-        this.ruolo = ruolo;
-    }
+	public void setAmbito(String ambito) {
+		this.ambito = ambito;
+	}
 
-    public String getAmbito() {
-        return ambito;
-    }
+	public byte[] getFoto() {
+		return foto;
+	}
 
-    public void setAmbito(String ambito) {
-        this.ambito = ambito;
-    }
+	public void setFoto(byte[] foto) {
+		this.foto = foto;
+	}
 
-    public byte[] getFoto() {
-        return foto;
-    }
+	public String getNumeroTelefonico() {
+		return numeroTelefonico;
+	}
 
-    public void setFoto(byte[] foto) {
-        this.foto = foto;
-    }
+	public void setNumeroTelefonico(String numeroTelefonico) {
+		this.numeroTelefonico = numeroTelefonico;
+	}
 
-    public String getNumeroTelefonico() {
-        return numeroTelefonico;
-    }
+	public String getMail() {
+		return mail;
+	}
 
-    public void setNumeroTelefonico(String numeroTelefonico) {
-        this.numeroTelefonico = numeroTelefonico;
-    }
+	public void setMail(String mail) {
+		this.mail = mail;
+	}
 
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 }
