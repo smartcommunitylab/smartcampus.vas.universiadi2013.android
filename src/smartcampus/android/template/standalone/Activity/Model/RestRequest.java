@@ -9,6 +9,7 @@ import java.net.URL;
 
 import smartcampus.android.template.universiadi.R;
 import android.content.Context;
+import android.smartcampus.template.standalone.Utente;
 import android.util.Log;
 import eu.trentorise.smartcampus.network.JsonUtils;
 import eu.trentorise.smartcampus.protocolcarrier.ProtocolCarrier;
@@ -44,10 +45,40 @@ class RestRequest {
 	public String retrieveUserData() {
 		URL url;
 		try {
-			String path = "https://smartcampus.eventbuilder.it/getUserData";
+			String path = mContext.getString(R.string.URL_BACKEND_JUNIPER)
+					+ "/getUserData";
 			url = new URL(path);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.addRequestProperty("Authorization", mToken);
+			con.addRequestProperty("Authorization",
+					mContext.getString(R.string.JUNIPER_CLIENT_ID));
+			con.setRequestMethod("GET");
+			con.setConnectTimeout(5000);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					con.getInputStream()));
+			String line = "";
+			String response = "";
+			while ((line = reader.readLine()) != null) {
+				response = response + line;
+			}
+			return response;
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public String getFunzioni(Utente user) {
+		URL url;
+		try {
+			String path = mContext.getString(R.string.URL_BACKEND_JUNIPER)
+					+ "/utente/" + user.getId() + "/funzioni";
+			url = new URL(path);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.addRequestProperty("Authorization", juniperToken);
 			con.setRequestMethod("GET");
 			con.setConnectTimeout(5000);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -89,7 +120,7 @@ class RestRequest {
 			url = new URL(path);
 			Log.d("1", path);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.addRequestProperty("Authorization", mToken);
+			con.addRequestProperty("Authorization", juniperToken);
 			con.setRequestMethod("GET");
 			con.setConnectTimeout(5000);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -150,7 +181,7 @@ class RestRequest {
 
 	private String callPOSTRequest(String[] params) {
 		ProtocolCarrier mProtocolCarrier = new ProtocolCarrier(mContext,
-				"test smartcampus");
+				juniperToken);
 
 		MessageRequest request = new MessageRequest(
 				mContext.getString(R.string.URL_BACKEND), params[0]);
@@ -161,8 +192,8 @@ class RestRequest {
 			String body = null;
 
 			MessageResponse response;
-			response = mProtocolCarrier.invokeSync(request, mToken,
-					mContext.getString(R.string.AUTH_TOKEN));
+			response = mProtocolCarrier.invokeSync(request, juniperToken,
+					juniperToken);
 
 			if (response.getHttpStatus() == 200) {
 

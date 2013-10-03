@@ -1,14 +1,26 @@
 package smartcampus.android.template.standalone.Activity.Model;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
+import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import smartcampus.android.template.standalone.Activity.SportBlock.SportImageConstant;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.smartcampus.template.standalone.Atleta;
 import android.smartcampus.template.standalone.Evento;
 import android.smartcampus.template.standalone.ExtendedAnswer;
@@ -18,6 +30,7 @@ import android.smartcampus.template.standalone.Sport;
 import android.smartcampus.template.standalone.Ticket;
 import android.smartcampus.template.standalone.Turno;
 import android.smartcampus.template.standalone.Utente;
+import android.text.Html;
 
 public class ManagerData {
 
@@ -70,17 +83,19 @@ public class ManagerData {
 		ArrayList<Evento> mListaEventi = new ArrayList<Evento>();
 		try {
 			JSONArray arrayEventi = new JSONArray(mRest.restRequest(
-					new String[] { "/evento_data/" + data },
+					new String[] { "/evento/data/" + data },
 					RestRequestType.GET));
 			if (arrayEventi != null) {
 				for (int i = 0; i < arrayEventi.length(); i++) {
-					JSONObject obj;
-					obj = arrayEventi.getJSONObject(i);
-					Evento evento = new Evento(null, obj.getString("nome"),
-							obj.getLong("data"), obj.getString("descrizione"),
-							obj.getJSONObject("gps").getDouble("latGPS"), obj
-									.getJSONObject("gps").getDouble("lngGPS"),
-							obj.getString("tipoSport"));
+					JSONObject obj = arrayEventi.getJSONObject(i);
+
+					Evento evento = new Evento(null, obj.getString("title"),
+							obj.getLong("fromTime"), Html.fromHtml(
+									obj.getString("description")).toString(),
+							obj.getJSONArray("location").getDouble(0), obj
+									.getJSONArray("location").getDouble(1),
+							"Sport 1", downloadImageFormURL(obj.getJSONObject(
+									"customData").getString("imageUrl")));
 					mListaEventi.add(evento);
 				}
 			}
@@ -90,6 +105,18 @@ public class ManagerData {
 		}
 
 		return mListaEventi;
+	}
+
+	private static Bitmap downloadImageFormURL(String url) {
+		try {
+			return BitmapFactory.decodeStream((InputStream) new URL(url)
+					.getContent());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public static ArrayList<Evento> getEventiPerSport(String sport) {
@@ -104,11 +131,12 @@ public class ManagerData {
 			for (int i = 0; i < arrayEventi.length(); i++) {
 				JSONObject obj;
 				obj = arrayEventi.getJSONObject(i);
-				Evento evento = new Evento(null, obj.getString("nome"),
-						obj.getLong("data"), obj.getString("descrizione"), obj
-								.getJSONObject("gps").getDouble("latGPS"), obj
-								.getJSONObject("gps").getDouble("lngGPS"),
-						obj.getString("tipoSport"));
+				Evento evento = new Evento(null, obj.getString("title"),
+						obj.getLong("fromTime"), obj.getString("description"),
+						obj.getJSONObject("location").getDouble("0"), obj
+								.getJSONObject("location").getDouble("1"),
+						"Sport 1", downloadImageFormURL(obj.getJSONObject(
+								"customData").getString("imageUrl")));
 				mListaEventi.add(evento);
 
 			}
@@ -196,12 +224,11 @@ public class ManagerData {
 					RestRequestType.GET));
 			if (arrayPOI != null) {
 				for (int i = 0; i < arrayPOI.length(); i++) {
-					JSONObject obj;
-					obj = arrayPOI.getJSONObject(i);
-					mListaPOI.add(new POI(null, obj.getString("nome"), obj
-							.getString("categoria"), obj.getJSONObject("gps")
-							.getDouble("latGPS"), obj.getJSONObject("gps")
-							.getDouble("lngGPS")));
+					JSONObject obj = arrayPOI.getJSONObject(i);
+					mListaPOI.add(new POI(null, obj.getString("title"), obj
+							.getString("type").split(" - ")[1], obj
+							.getJSONArray("location").getDouble(0), obj
+							.getJSONArray("location").getDouble(1)));
 				}
 			}
 		} catch (JSONException e) {
@@ -215,19 +242,20 @@ public class ManagerData {
 		ArrayList<Evento> mListaEventi = new ArrayList<Evento>();
 		try {
 
-			JSONObject params = new JSONObject().put("latGPS", poi.getLatGPS())
-					.put("lngGPS", poi.getLngGPS());
+			JSONObject params = new JSONObject().put("GPS", new JSONArray()
+					.put(poi.getLatGPS()).put(poi.getLngGPS()));
 
 			JSONArray arrayEventi = new JSONArray(mRest.restRequest(
 					new String[] { "/poi_evento", params.toString() },
 					RestRequestType.POST));
 			for (int i = 0; i < arrayEventi.length(); i++) {
 				JSONObject obj = arrayEventi.getJSONObject(i);
-				Evento evento = new Evento(null, obj.getString("nome"),
-						obj.getLong("data"), obj.getString("descrizione"), obj
-								.getJSONObject("gps").getDouble("latGPS"), obj
-								.getJSONObject("gps").getDouble("lngGPS"),
-						obj.getString("tipoSport"));
+				Evento evento = new Evento(null, obj.getString("title"),
+						obj.getLong("fromTime"), obj.getString("description"),
+						obj.getJSONArray("location").getDouble(0), obj
+								.getJSONArray("location").getDouble(1),
+						"Sport 1", downloadImageFormURL(obj.getJSONObject(
+								"customData").getString("imageUrl")));
 				mListaEventi.add(evento);
 			}
 		} catch (JSONException e) {
@@ -243,7 +271,7 @@ public class ManagerData {
 
 		try {
 			JSONArray arrayUtenti = new JSONArray(mRest.restRequest(
-					new String[] { "/categoria_volontari" },
+					new String[] { "/volontari/categorie" },
 					RestRequestType.GET));
 			for (int i = 0; i < arrayUtenti.length(); i++) {
 				mListaCategorie.add(arrayUtenti.getString(i));
@@ -256,44 +284,49 @@ public class ManagerData {
 		return mListaCategorie;
 	}
 
-	public static ArrayList<Utente> getUserForCategoriaAndAmbito(String ambito,
-			String ruolo) {
+	public static ArrayList<Utente> getUserForFunzione(Utente user) {
 		ArrayList<Utente> mListaUtenti = new ArrayList<Utente>();
 		JSONArray arrayUtenti = null;
 
 		try {
-			if (ambito == null)
-				arrayUtenti = new JSONArray(mRest.restRequest(
-						new String[] { "/utenti/\"\"/"
-								+ ruolo.replace(" ", "%20") },
-						RestRequestType.GET));
-			else if (ruolo == null)
-				arrayUtenti = new JSONArray(mRest.restRequest(
-						new String[] { "/utenti/" + ambito.replace(" ", "%20")
-								+ "/\"\"" }, RestRequestType.GET));
-			else
-				arrayUtenti = new JSONArray(mRest.restRequest(
-						new String[] { "/utenti/" + ambito.replace(" ", "%20")
-								+ "/" + ruolo.replace(" ", "%20") },
-						RestRequestType.GET));
-
-			for (int i = 0; i < arrayUtenti.length(); i++) {
-				JSONObject obj = arrayUtenti.getJSONObject(i);
-				Utente utente = new Utente(obj.getString("firstname"),
-						obj.getString("lastname"), obj.getString("afunction"),
-						obj.getString("arole"), obj.getString("photo")
-								.getBytes("UTF-8"), obj.getString("mobile"),
-						obj.getString("email"), Integer.toString(obj
-								.getInt("id")), obj.getString("uuid"));
-				mListaUtenti.add(utente);
-			}
+			arrayUtenti = new JSONArray(mRest.getFunzioni(user));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+		// try {
+		// if (ambito == null)
+		// arrayUtenti = new JSONArray(mRest.restRequest(
+		// new String[] { "/utenti/\"\"/"
+		// + ruolo.replace(" ", "%20") },
+		// RestRequestType.GET));
+		// else if (ruolo == null)
+		// arrayUtenti = new JSONArray(mRest.restRequest(
+		// new String[] { "/utenti/" + ambito.replace(" ", "%20")
+		// + "/\"\"" }, RestRequestType.GET));
+		// else
+		// arrayUtenti = new JSONArray(mRest.restRequest(
+		// new String[] { "/utenti/" + ambito.replace(" ", "%20")
+		// + "/" + ruolo.replace(" ", "%20") },
+		// RestRequestType.GET));
+		//
+		// for (int i = 0; i < arrayUtenti.length(); i++) {
+		// JSONObject obj = arrayUtenti.getJSONObject(i);
+		// Utente utente = new Utente(obj.getString("firstname"),
+		// obj.getString("lastname"), obj.getString("afunction"),
+		// obj.getString("arole"), obj.getString("photo")
+		// .getBytes("UTF-8"), obj.getString("mobile"),
+		// obj.getString("email"), Integer.toString(obj
+		// .getInt("id")), obj.getString("uuid"));
+		// mListaUtenti.add(utente);
+		// }
+		// } catch (JSONException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (UnsupportedEncodingException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 
 		return mListaUtenti;
 	}

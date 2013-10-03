@@ -66,9 +66,7 @@ public class Profile extends Activity {
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
 				user = ManagerData.readUserData();
-				mListaSuperiori = ManagerData.getUserForCategoriaAndAmbito(user
-						.getAmbito(), Integer.toString((Integer.parseInt(user
-						.getRuolo()) - 1)));
+				mListaSuperiori = ManagerData.getUserForFunzione(user);
 				return null;
 			}
 

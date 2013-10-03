@@ -1,6 +1,9 @@
 package smartcampus.android.template.standalone.Activity.EventiBlock;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -58,6 +61,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 //import com.google.android.maps.GeoPoint;
 
 @SuppressLint("ValidFragment")
@@ -125,13 +129,14 @@ public class InfoEventi extends FragmentActivity implements LocationListener,
 					JSONObject obj = arrayJSON.get(getIntent().getIntExtra(
 							"index", 0));
 					try {
-						mEvento = new Evento(null, obj.getString("nome"),
-								obj.getLong("data"),
-								obj.getString("descrizione"), obj
-										.getJSONObject("gps").getDouble(
-												"latGPS"), obj.getJSONObject(
-										"gps").getDouble("lngGPS"),
-								obj.getString("tipoSport"));
+						mEvento = new Evento(null, obj.getString("title"),
+								obj.getLong("fromTime"),
+								obj.getString("description"), obj
+										.getJSONObject("location").getDouble(
+												"0"), obj.getJSONObject(
+										"location").getDouble("1"), "Sport 1",
+								downloadImageFormURL(obj.getJSONObject(
+										"customData").getString("imageUrl")));
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -261,6 +266,18 @@ public class InfoEventi extends FragmentActivity implements LocationListener,
 	// new LatLng(lat, lng)).width(5)
 	// .color(Color.BLUE).geodesic(true));
 	// }
+
+	private Bitmap downloadImageFormURL(String url) {
+		try {
+			return BitmapFactory.decodeStream((InputStream) new URL(url)
+					.getContent());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	private Bitmap drawMarkerWithTitleAndAddress(String title, String add) {
 

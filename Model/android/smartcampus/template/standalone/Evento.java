@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.graphics.Bitmap;
 import android.text.Html;
 
 import smartcampus.android.template.universiadi.R;
@@ -31,6 +32,7 @@ public class Evento {
 	private Double latGPS;
 	private Double lngGPS;
 	private String tipoSport;
+	private Bitmap image;
 
 	private ArrayList<ElementDescRoute> routeTestuale = null;
 	private String indirizzo = null;
@@ -43,7 +45,7 @@ public class Evento {
 	}
 
 	public Evento(Long id, String nome, Long data, String descrizione,
-			Double latGPS, Double lngGPS, String tipoSport) {
+			Double latGPS, Double lngGPS, String tipoSport, Bitmap image) {
 		this.id = id;
 		this.nome = nome;
 		this.data = data;
@@ -51,6 +53,7 @@ public class Evento {
 		this.latGPS = latGPS;
 		this.lngGPS = lngGPS;
 		this.tipoSport = tipoSport;
+		this.image = image;
 	}
 
 	public Long getId() {
@@ -260,4 +263,11 @@ public class Evento {
 		return null;
 	}
 
+	public Bitmap getUrlImage() {
+		return image;
+	}
+
+	public void setUrlImage(Bitmap image) {
+		this.image = image;
+	}
 }

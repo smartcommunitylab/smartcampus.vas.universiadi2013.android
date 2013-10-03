@@ -58,8 +58,7 @@ public class PageEventiOggi extends Fragment {
 
 			ImageView mImgSfondo = (ImageView) mView
 					.findViewById(R.id.image_sfondo_evento);
-			mImgSfondo.setImageResource(getResources().getIdentifier("cover1",
-					"drawable", "smartcampus.android.template.standalone"));
+			mImgSfondo.setImageBitmap(evento.getUrlImage());
 
 			ImageView mMask = (ImageView) mView.findViewById(R.id.image_mask);
 			if (mPos % 2 == 0) {

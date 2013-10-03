@@ -1,5 +1,9 @@
 package smartcampus.android.template.standalone.HomeBlock;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -20,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -87,13 +92,15 @@ public class ResultSearch extends Activity {
 							"/search/eventi")) {
 						for (JSONObject obj : mListaObj) {
 							Evento evento = new Evento(null,
-									obj.getString("nome"), obj.getLong("data"),
-									obj.getString("descrizione"), obj
-											.getJSONObject("gps").getDouble(
-													"latGPS"), obj
-											.getJSONObject("gps").getDouble(
-													"lngGPS"),
-									obj.getString("tipoSport"));
+									obj.getString("title"),
+									obj.getLong("fromTime"),
+									obj.getString("description"), obj
+											.getJSONObject("location")
+											.getDouble("0"), obj.getJSONObject(
+											"location").getDouble("1"),
+									"Sport 1", downloadImageFormURL(obj
+											.getJSONObject("customData")
+											.getString("imageUrl")));
 
 							mListaEvento.add(evento);
 						}
@@ -232,6 +239,18 @@ public class ResultSearch extends Activity {
 			}
 
 		}.execute();
+	}
+
+	private Bitmap downloadImageFormURL(String url) {
+		try {
+			return BitmapFactory.decodeStream((InputStream) new URL(url)
+					.getContent());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public class RowSearch<E> extends ArrayAdapter<E> {

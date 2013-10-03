@@ -28,6 +28,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.smartcampus.template.standalone.Evento;
 import android.smartcampus.template.standalone.Meeting;
+import android.smartcampus.template.standalone.Utente;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;

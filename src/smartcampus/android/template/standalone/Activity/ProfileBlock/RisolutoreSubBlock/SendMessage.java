@@ -71,12 +71,12 @@ public class SendMessage {
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
-				if (type.equalsIgnoreCase("sms"))
-					mVolontari = ManagerData.getUserForCategoriaAndAmbito(
-							ContainerTicket.getmCategoria(), null);
-				else
-					mVolontari = ManagerData.getUserForCategoriaAndAmbito(
-							ContainerTicket.getmCategoria(), "0");
+//				if (type.equalsIgnoreCase("sms"))
+//					mVolontari = ManagerData.getUserForCategoriaAndAmbito(
+//							ContainerTicket.getmCategoria(), null);
+//				else
+//					mVolontari = ManagerData.getUserForCategoriaAndAmbito(
+//							ContainerTicket.getmCategoria(), "0");
 				return null;
 			}
 
