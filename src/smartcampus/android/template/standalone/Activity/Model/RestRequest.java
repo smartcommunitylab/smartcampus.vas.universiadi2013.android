@@ -38,6 +38,7 @@ class RestRequest {
 			return (juniperToken = login(username, password));
 		} else {
 			mToken = mContext.getString(R.string.AUTH_TOKEN);
+			juniperToken = mToken;
 			return callGETRequest(new String[] { "/anonymus_login" });
 		}
 	}
@@ -169,13 +170,14 @@ class RestRequest {
 			e.printStackTrace();
 		}
 
-		JuniperResponse res = JsonUtils.toObject(response.getBody(),
-				JuniperResponse.class);
-		if (res.isLogged()) {
-			return res.getAccess_token();
-		} else {
+		if (response != null) {
+			JuniperResponse res = JsonUtils.toObject(response.getBody(),
+					JuniperResponse.class);
+			if (res.isLogged())
+				return res.getAccess_token();
 			return null;
 		}
+		return null;
 
 	}
 

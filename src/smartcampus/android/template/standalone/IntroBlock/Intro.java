@@ -163,7 +163,8 @@ public class Intro extends Activity {
 								if (controlCredential())
 									if (login(
 											((EditText) findViewById(R.id.text_username))
-													.getText().toString(),
+													.getText().toString()
+													.replace(" ", ""),
 											((EditText) findViewById(R.id.text_password))
 													.getText().toString())) {
 										InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -313,10 +314,9 @@ public class Intro extends Activity {
 	}
 
 	private boolean login(String username, String password) {
-		
-		//TODO federico login
-		
-		
+
+		// TODO federico login
+
 		return (ManagerData.getAuthToken(username, password) != null);
 	}
 

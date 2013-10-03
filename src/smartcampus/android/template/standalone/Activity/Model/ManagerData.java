@@ -30,6 +30,7 @@ import android.smartcampus.template.standalone.Sport;
 import android.smartcampus.template.standalone.Ticket;
 import android.smartcampus.template.standalone.Turno;
 import android.smartcampus.template.standalone.Utente;
+import android.telephony.TelephonyManager;
 import android.text.Html;
 
 public class ManagerData {
@@ -273,8 +274,12 @@ public class ManagerData {
 			JSONArray arrayUtenti = new JSONArray(mRest.restRequest(
 					new String[] { "/volontari/categorie" },
 					RestRequestType.GET));
-			for (int i = 0; i < arrayUtenti.length(); i++) {
-				mListaCategorie.add(arrayUtenti.getString(i));
+			JSONArray utentiComitato = arrayUtenti.getJSONObject(0)
+					.getJSONArray("items");
+			for (int i = 0; i < utentiComitato.length(); i++) {
+				String categoria = utentiComitato.getJSONObject(i)
+						.getString("path").replace("Organising Committee:", "");
+				mListaCategorie.add(categoria);
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -359,17 +364,26 @@ public class ManagerData {
 		return false;
 	}
 
-	public static boolean sendHelpdesk(Ticket ticket) {
+	public static boolean sendHelpdesk(Ticket ticket, Context context) {
 		try {
 			JSONObject ticketObj = new JSONObject();
-			ticketObj.put("latGPS", ticket.getLatGPS());
-			ticketObj.put("lngGPS", ticket.getLngGPS());
-			ticketObj.put("descrizione", ticket.getDescrizione());
-			ticketObj.put("categoria", ticket.getCategoria());
+			ticketObj.put("_id", "");
+			ticketObj.put("status", "send");
+			ticketObj.put("ambito", ticket.getCategoria());
 			ticketObj.put("foto", ticket.getFoto());
+			ticketObj.put(
+					"gps",
+					new JSONArray().put(ticket.getLatGPS()).put(
+							ticket.getLngGPS()));
+			ticketObj.put("descrizione", ticket.getDescrizione());
+			ticketObj.put("indirizzo", ticket.getIndirizzo());
+
+			TelephonyManager telemamanger = (TelephonyManager) context
+					.getSystemService(Context.TELEPHONY_SERVICE);
+			ticketObj.put("telefono", telemamanger.getLine1Number());
 
 			return Boolean.getBoolean(mRest.restRequest(new String[] {
-					"/send_helpdesk", ticketObj.toString() },
+					"/ticket/send", ticketObj.toString() },
 					RestRequestType.POST));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

@@ -21,6 +21,7 @@ import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -395,6 +396,9 @@ public class Problema extends Activity implements
 					.setTypeface(Typeface.createFromAsset(
 							getApplicationContext().getAssets(),
 							"PatuaOne-Regular.otf"));
+			if (values.get(position).length() > 13)
+				((TextView) rowView.findViewById(android.R.id.text1))
+						.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 
 			return rowView;
 		}
