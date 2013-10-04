@@ -50,8 +50,7 @@ class RestRequest {
 					+ "/getUserData";
 			url = new URL(path);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.addRequestProperty("Authorization",
-					mContext.getString(R.string.JUNIPER_CLIENT_ID));
+			con.addRequestProperty("Authorization",juniperToken);
 			con.setRequestMethod("GET");
 			con.setConnectTimeout(5000);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -174,7 +173,7 @@ class RestRequest {
 			JuniperResponse res = JsonUtils.toObject(response.getBody(),
 					JuniperResponse.class);
 			if (res.isLogged())
-				return res.getAccess_token();
+				return "Bearer " +res.getAccess_token();
 			return null;
 		}
 		return null;
