@@ -3,9 +3,19 @@ package smartcampus.android.template.standalone.Activity.Model;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 
 import smartcampus.android.template.universiadi.R;
 import android.content.Context;
@@ -19,7 +29,6 @@ import eu.trentorise.smartcampus.protocolcarrier.custom.MessageResponse;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.ConnectionException;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.ProtocolException;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.SecurityException;
-import eu.trentorise.smartcampus.storage.Utils;
 
 class RestRequest {
 
@@ -32,7 +41,7 @@ class RestRequest {
 		mContext = cnt;
 	}
 
-	public String authenticate(String username, String password) {
+	public String authenticate(String username, String password)  {
 		if (username != null && password != null) {
 			mToken = mContext.getString(R.string.AUTH_TOKEN);
 			return (juniperToken = login(username, password));
@@ -141,40 +150,41 @@ class RestRequest {
 		return null;
 	}
 
-	private String login(String username, String password) {
-		ProtocolCarrier mProtocolCarrie = new ProtocolCarrier(this.mContext,
-				mToken);
-
-		MessageRequest request = new MessageRequest(
-				mContext.getString(R.string.URL_BACKEND_JUNIPER),
+	private String login(String username, String password)  {
+	
+		
+		HttpClient httpClient = new DefaultHttpClient();
+        HttpPost requestS = new HttpPost(
+				mContext.getString(R.string.URL_BACKEND_JUNIPER)+
 				mContext.getString(R.string.URL_JUNIPER_LOGIN));
-		request.setBody("grant_type=password&client_id="
-				+ mContext.getString(R.string.JUNIPER_CLIENT_ID)
-				+ "&client_secret=%22%22&username=" + username + "&password="
-				+ password);
-		request.setMethod(Method.POST);
-		request.setContentType(" application/x-www-form-urlencoded");
-
-		MessageResponse response = null;
+        StringEntity entity;
 		try {
-			response = mProtocolCarrie.invokeSync(request, mToken, mToken);
-		} catch (ConnectionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			entity = new StringEntity("grant_type=password&client_id="
+					+ mContext.getString(R.string.JUNIPER_CLIENT_ID)
+					+ "&client_secret=%22%22&username=" + username + "&password="
+					+ password, HTTP.UTF_8);
+		
+		entity.setContentType(" application/x-www-form-urlencoded");
+        requestS.setEntity(entity);
+        HttpResponse response=httpClient.execute(requestS);
+         String responseString = EntityUtils.toString(response.getEntity());
 
 		if (response != null) {
-			JuniperResponse res = JsonUtils.toObject(response.getBody(),
+			JuniperResponse res = JsonUtils.toObject(responseString,
 					JuniperResponse.class);
 			if (res.isLogged())
 				return "Bearer " +res.getAccess_token();
 			return null;
+		}
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return null;
 
