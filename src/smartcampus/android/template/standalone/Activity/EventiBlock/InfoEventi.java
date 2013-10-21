@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,6 +95,8 @@ public class InfoEventi extends FragmentActivity implements LocationListener,
 
 		new AsyncTask<Void, Void, Void>() {
 
+			private Map<String, Object> mResult;
+
 			@Override
 			protected void onPreExecute() {
 				// TODO Auto-generated method stub
@@ -122,32 +125,42 @@ public class InfoEventi extends FragmentActivity implements LocationListener,
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
 				if (fromSearch) {
-					ArrayList<JSONObject> arrayJSON = ManagerData
-							.getSearchForFilter(
-									getIntent().getStringExtra("searchString"),
-									"/search/eventi");
-					JSONObject obj = arrayJSON.get(getIntent().getIntExtra(
-							"index", 0));
-					try {
-						mEvento = new Evento(null, obj.getString("title"),
-								obj.getLong("fromTime"),
-								obj.getString("description"), obj
-										.getJSONObject("location").getDouble(
-												"0"), obj.getJSONObject(
-										"location").getDouble("1"), "Sport 1",
-								downloadImageFormURL(obj.getJSONObject(
-										"customData").getString("imageUrl")));
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+					ArrayList<JSONObject> arrayJSON = null;
+					mResult = ManagerData.getSearchForFilter(getIntent()
+							.getStringExtra("searchString"), "/search/eventi");
+					if (!((Boolean) mResult.get("connectionError"))) {
+						arrayJSON = (ArrayList<JSONObject>) mResult
+								.get("params");
+
+						JSONObject obj = arrayJSON.get(getIntent().getIntExtra(
+								"index", 0));
+						try {
+							mEvento = new Evento(null, obj.getString("title"),
+									obj.getLong("fromTime"),
+									obj.getString("description"), obj
+											.getJSONObject("location")
+											.getDouble("0"), obj.getJSONObject(
+											"location").getDouble("1"),
+									"Sport 1", downloadImageFormURL(obj
+											.getJSONObject("customData")
+											.getString("imageUrl")));
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				} else {
-					mEvento = ManagerData.getEventiForData(
-							getIntent().getLongExtra(
+					mResult = ManagerData.getEventiForData(getIntent()
+							.getLongExtra(
 									"data",
 									Calendar.getInstance(Locale.getDefault())
-											.getTimeInMillis())).get(
-							getIntent().getIntExtra("index", 0));
+											.getTimeInMillis()));
+					if (!((Boolean) mResult.get("connectionError"))) {
+						ArrayList<android.smartcampus.template.standalone.Evento> mLista = (ArrayList<android.smartcampus.template.standalone.Evento>) mResult
+								.get("params");
+						mEvento = mLista.get(getIntent()
+								.getIntExtra("index", 0));
+					}
 				}
 				return null;
 			}
@@ -159,98 +172,118 @@ public class InfoEventi extends FragmentActivity implements LocationListener,
 
 				// START ONPOST
 
-				mPager = (ViewPager) findViewById(R.id.pager_info_eventi);
-				ArrayList<Fragment> listFrag = new ArrayList<Fragment>();
-				listFrag.add(new PageInfoEventi(0, mEvento.getDescrizione()));
-				mAdapter = new PagerAdapter(getSupportFragmentManager(),
-						listFrag);
-				mPager.setAdapter(mAdapter);
+				if ((Boolean) mResult.get("connectionError")) {
+					dialog.dismiss();
+					Dialog noConnection = new Dialog(InfoEventi.this);
+					noConnection.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					noConnection.setContentView(R.layout.dialog_no_connection);
+					noConnection.getWindow().setBackgroundDrawableResource(
+							R.drawable.dialog_rounded_corner_light_black);
+					noConnection.show();
+					noConnection.setCancelable(true);
+					noConnection.setOnCancelListener(new OnCancelListener() {
 
-				mMappa = ((SupportMapFragment) getSupportFragmentManager()
-						.findFragmentById(R.id.mappa)).getMap();
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							// TODO Auto-generated method stub
+							finish();
+						}
+					});
+				} else {
+					mPager = (ViewPager) findViewById(R.id.pager_info_eventi);
+					ArrayList<Fragment> listFrag = new ArrayList<Fragment>();
+					listFrag.add(new PageInfoEventi(0, mEvento.getDescrizione()));
+					mAdapter = new PagerAdapter(getSupportFragmentManager(),
+							listFrag);
+					mPager.setAdapter(mAdapter);
 
-				UiSettings mMapController = mMappa.getUiSettings();
+					mMappa = ((SupportMapFragment) getSupportFragmentManager()
+							.findFragmentById(R.id.mappa)).getMap();
 
-				mMapController.setCompassEnabled(true);
-				mMapController.setMyLocationButtonEnabled(false);
-				mMapController.setZoomControlsEnabled(false);
+					UiSettings mMapController = mMappa.getUiSettings();
 
-				mMappa.setMyLocationEnabled(true);
+					mMapController.setCompassEnabled(true);
+					mMapController.setMyLocationButtonEnabled(false);
+					mMapController.setZoomControlsEnabled(false);
 
-				if (mEvento.getLatGPS() != 0 && mEvento.getLngGPS() != 0) {
-					mMarker = new LatLng(mEvento.getLatGPS(),
-							mEvento.getLngGPS());
-					Geocoder coder = new Geocoder(InfoEventi.this,
-							Locale.getDefault());
+					mMappa.setMyLocationEnabled(true);
 
-					Address adrs;
-					try {
-						adrs = coder.getFromLocation(mMarker.latitude,
-								mMarker.longitude, 1).get(0);
-						mMappa.addMarker(new MarkerOptions()
-								.position(mMarker)
-								.icon(BitmapDescriptorFactory
-										.fromBitmap(drawMarkerWithTitleAndAddress(
-												mEvento.getNome(),
-												adrs.getAddressLine(0)
-														+ " - "
-														+ adrs.getAddressLine(1))))
-								.anchor(0.5f, 1));
-						mMappa.setOnMarkerClickListener(new OnMarkerClickListener() {
+					if (mEvento.getLatGPS() != 0 && mEvento.getLngGPS() != 0) {
+						mMarker = new LatLng(mEvento.getLatGPS(),
+								mEvento.getLngGPS());
+						Geocoder coder = new Geocoder(InfoEventi.this,
+								Locale.getDefault());
 
-							@Override
-							public boolean onMarkerClick(Marker marker) {
-								// TODO Auto-generated method stub
-								if (mLocationClient.getLastLocation() != null) {
-									Intent intent = new Intent(
-											android.content.Intent.ACTION_VIEW,
-											Uri.parse("http://maps.google.com/maps?saddr="
-													+ mLocationClient
-															.getLastLocation()
-															.getLatitude()
-													+ ","
-													+ mLocationClient
-															.getLastLocation()
-															.getLongitude()
-													+ "&daddr="
-													+ marker.getPosition().latitude
-													+ ","
-													+ marker.getPosition().longitude));
-									startActivity(intent);
-									return true;
+						Address adrs;
+						try {
+							adrs = coder.getFromLocation(mMarker.latitude,
+									mMarker.longitude, 1).get(0);
+							mMappa.addMarker(new MarkerOptions()
+									.position(mMarker)
+									.icon(BitmapDescriptorFactory
+											.fromBitmap(drawMarkerWithTitleAndAddress(
+													mEvento.getNome(),
+													adrs.getAddressLine(0)
+															+ " - "
+															+ adrs.getAddressLine(1))))
+									.anchor(0.5f, 1));
+							mMappa.setOnMarkerClickListener(new OnMarkerClickListener() {
+
+								@Override
+								public boolean onMarkerClick(Marker marker) {
+									// TODO Auto-generated method stub
+									if (mLocationClient.getLastLocation() != null) {
+										Intent intent = new Intent(
+												android.content.Intent.ACTION_VIEW,
+												Uri.parse("http://maps.google.com/maps?saddr="
+														+ mLocationClient
+																.getLastLocation()
+																.getLatitude()
+														+ ","
+														+ mLocationClient
+																.getLastLocation()
+																.getLongitude()
+														+ "&daddr="
+														+ marker.getPosition().latitude
+														+ ","
+														+ marker.getPosition().longitude));
+										startActivity(intent);
+										return true;
+									}
+									return false;
 								}
-								return false;
-							}
 
-						});
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+							});
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
-				}
 
-				// Otteniamo il riferimento al LocationManager
-				locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+					// Otteniamo il riferimento al LocationManager
+					locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-				if (locationManager != null) {
-					boolean gpsIsEnabled = locationManager
-							.isProviderEnabled(LocationManager.GPS_PROVIDER);
-					boolean networkIsEnabled = locationManager
-							.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+					if (locationManager != null) {
+						boolean gpsIsEnabled = locationManager
+								.isProviderEnabled(LocationManager.GPS_PROVIDER);
+						boolean networkIsEnabled = locationManager
+								.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-					if (networkIsEnabled) {
-						locationManager.requestLocationUpdates(
-								LocationManager.GPS_PROVIDER, 0, 100,
-								InfoEventi.this);
-					} else if (gpsIsEnabled) {
-						locationManager.requestLocationUpdates(
-								LocationManager.NETWORK_PROVIDER, 0, 100,
-								InfoEventi.this);
+						if (networkIsEnabled) {
+							locationManager.requestLocationUpdates(
+									LocationManager.GPS_PROVIDER, 0, 100,
+									InfoEventi.this);
+						} else if (gpsIsEnabled) {
+							locationManager.requestLocationUpdates(
+									LocationManager.NETWORK_PROVIDER, 0, 100,
+									InfoEventi.this);
+						}
 					}
+					mLocationClient = new LocationClient(InfoEventi.this,
+							InfoEventi.this, InfoEventi.this);
+					mLocationClient.connect();
+
 				}
-				mLocationClient = new LocationClient(InfoEventi.this,
-						InfoEventi.this, InfoEventi.this);
-				mLocationClient.connect();
 
 				// END ONPOST
 			}
@@ -330,7 +363,8 @@ public class InfoEventi extends FragmentActivity implements LocationListener,
 		// TODO Auto-generated method stub
 		super.onPause();
 
-		locationManager.removeUpdates(this);
+		if (locationManager != null)
+			locationManager.removeUpdates(this);
 	}
 
 	@Override

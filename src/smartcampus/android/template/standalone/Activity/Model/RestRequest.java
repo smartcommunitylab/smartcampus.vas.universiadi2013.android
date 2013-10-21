@@ -1,12 +1,15 @@
 package smartcampus.android.template.standalone.Activity.Model;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -19,6 +22,8 @@ import org.apache.http.util.EntityUtils;
 
 import smartcampus.android.template.universiadi.R;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.smartcampus.template.standalone.Utente;
 import android.util.Log;
 import eu.trentorise.smartcampus.network.JsonUtils;
@@ -29,6 +34,7 @@ import eu.trentorise.smartcampus.protocolcarrier.custom.MessageResponse;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.ConnectionException;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.ProtocolException;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.SecurityException;
+import eu.trentorise.smartcampus.storage.Utils;
 
 class RestRequest {
 
@@ -39,52 +45,53 @@ class RestRequest {
 
 	public RestRequest(Context cnt) {
 		mContext = cnt;
+		// TO DELETE
+		juniperToken = mToken = mContext.getString(R.string.AUTH_TOKEN);
+		mToken = mContext.getString(R.string.AUTH_TOKEN);
 	}
 
-	public String authenticate(String username, String password)  {
+	public Map<String, Object> authenticate(String username, String password) {
+		Map<String, Object> mReturn = new HashMap<String, Object>();
+		NetworkInfo ni = ((ConnectivityManager) (mContext
+				.getSystemService(Context.CONNECTIVITY_SERVICE)))
+				.getActiveNetworkInfo();
+
+		if (ni == null || ni.getState() != NetworkInfo.State.CONNECTED) {
+			mReturn.put("connectionError", true);
+			return mReturn;
+		}
 		if (username != null && password != null) {
 			mToken = mContext.getString(R.string.AUTH_TOKEN);
-			return (juniperToken = login(username, password));
+			mReturn.put("connectionError", false);
+			juniperToken = login(username, password);
+			mReturn.put("params", login(username, password));
+			return mReturn;
 		} else {
 			mToken = mContext.getString(R.string.AUTH_TOKEN);
+			mReturn.put("connectionError", false);
+			juniperToken = callGETRequest(new String[] { "/anonymus_login" });
+			//
 			juniperToken = mToken;
-			return callGETRequest(new String[] { "/anonymus_login" });
+			//
+			mReturn.put("params", juniperToken);
+			return mReturn;
 		}
 	}
 
-	public String retrieveUserData() {
+	public Map<String, Object> retrieveUserData() {
+		Map<String, Object> mReturn = new HashMap<String, Object>();
+		NetworkInfo ni = ((ConnectivityManager) (mContext
+				.getSystemService(Context.CONNECTIVITY_SERVICE)))
+				.getActiveNetworkInfo();
+
+		if (ni == null || ni.getState() != NetworkInfo.State.CONNECTED) {
+			mReturn.put("connectionError", true);
+			return mReturn;
+		}
 		URL url;
 		try {
 			String path = mContext.getString(R.string.URL_BACKEND_JUNIPER)
 					+ "/getUserData";
-			url = new URL(path);
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.addRequestProperty("Authorization",juniperToken);
-			con.setRequestMethod("GET");
-			con.setConnectTimeout(5000);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					con.getInputStream()));
-			String line = "";
-			String response = "";
-			while ((line = reader.readLine()) != null) {
-				response = response + line;
-			}
-			return response;
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public String getFunzioni(Utente user) {
-		URL url;
-		try {
-			String path = mContext.getString(R.string.URL_BACKEND_JUNIPER)
-					+ "/utente/" + user.getId() + "/funzioni";
 			url = new URL(path);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.addRequestProperty("Authorization", juniperToken);
@@ -97,7 +104,48 @@ class RestRequest {
 			while ((line = reader.readLine()) != null) {
 				response = response + line;
 			}
-			return response;
+			mReturn.put("connectionError", false);
+			mReturn.put("params", response);
+			return mReturn;
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Map<String, Object> getFunzioni(Utente user) {
+		Map<String, Object> mReturn = new HashMap<String, Object>();
+		NetworkInfo ni = ((ConnectivityManager) (mContext
+				.getSystemService(Context.CONNECTIVITY_SERVICE)))
+				.getActiveNetworkInfo();
+
+		if (ni == null || ni.getState() != NetworkInfo.State.CONNECTED) {
+			mReturn.put("connectionError", true);
+			return mReturn;
+		}
+		URL url;
+		try {
+			String path = mContext.getString(R.string.URL_BACKEND) + "/utente/"
+					+ user.getId() + "/funzioni";
+			url = new URL(path);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.addRequestProperty("Authorization", juniperToken);
+			con.setRequestMethod("GET");
+			con.setConnectTimeout(5000);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					con.getInputStream()));
+			String line = "";
+			String response = "";
+			while ((line = reader.readLine()) != null) {
+				response = response + line;
+			}
+			mReturn.put("connectionError", false);
+			mReturn.put("params", response);
+			return mReturn;
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -111,12 +159,26 @@ class RestRequest {
 	/*
 	 * Params: params --> params[0] URL params[1..size] otherParams
 	 */
-	public String restRequest(String[] params, int restType) {
+	public Map<String, Object> restRequest(String[] params, int restType) {
+
+		Map<String, Object> mReturn = new HashMap<String, Object>();
+		NetworkInfo ni = ((ConnectivityManager) (mContext
+				.getSystemService(Context.CONNECTIVITY_SERVICE)))
+				.getActiveNetworkInfo();
+
+		if (ni == null || ni.getState() != NetworkInfo.State.CONNECTED) {
+			mReturn.put("connectionError", true);
+			return mReturn;
+		}
 		switch (restType) {
 		case RestRequestType.GET:
-			return callGETRequest(params);
+			mReturn.put("connectionError", false);
+			mReturn.put("params", callGETRequest(params));
+			return mReturn;
 		case RestRequestType.POST:
-			return callPOSTRequest(params);
+			mReturn.put("connectionError", false);
+			mReturn.put("params", callPOSTRequest(params));
+			return mReturn;
 		default:
 			return null;
 		}
@@ -150,8 +212,8 @@ class RestRequest {
 		return null;
 	}
 
-	private String login(String username, String password)  {
-	
+	private String login(String username, String password) {
+		
 		
 		HttpClient httpClient = new DefaultHttpClient();
         HttpPost requestS = new HttpPost(
@@ -189,6 +251,7 @@ class RestRequest {
 		return null;
 
 	}
+
 
 	private String callPOSTRequest(String[] params) {
 		ProtocolCarrier mProtocolCarrier = new ProtocolCarrier(mContext,

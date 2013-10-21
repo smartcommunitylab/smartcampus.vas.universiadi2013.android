@@ -2,8 +2,10 @@ package smartcampus.android.template.standalone.Activity.SportBlock;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
@@ -102,30 +104,54 @@ public class DettaglioSport extends FragmentActivity implements
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
-				if (getIntent().getBooleanExtra("search", false)) {
-					for (Sport sport : ManagerData
-							.getSport(DettaglioSport.this)) {
-						if (sport.getNome().equalsIgnoreCase(
-								getIntent().getStringExtra("sport")))
-							mSport = sport;
-					}
-					mListEventi = ManagerData.getEventiPerSport(getIntent()
-							.getStringExtra("sport"));
+				Map<String, Object> mResult = ManagerData
+						.getSport(DettaglioSport.this);
+				if ((Boolean) mResult.get("connectionError")) {
+					Dialog noConnection = new Dialog(DettaglioSport.this);
+					noConnection.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					noConnection.setContentView(R.layout.dialog_no_connection);
+					noConnection.getWindow().setBackgroundDrawableResource(
+							R.drawable.dialog_rounded_corner_light_black);
+					noConnection.show();
+					noConnection.setCancelable(true);
+					noConnection.setOnCancelListener(new OnCancelListener() {
+
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							// TODO Auto-generated method stub
+							finish();
+						}
+					});
 				} else {
-					mSport = (ManagerData.getSport(DettaglioSport.this))
-							.get(getIntent().getIntExtra("Index", -1));
-					mListEventi = ManagerData.getEventiPerSport(mSport
-							.getNome());
+					if (getIntent().getBooleanExtra("search", false)) {
+						for (Sport sport : (ArrayList<Sport>) mResult
+								.get("params")) {
+							if (sport.getNome().equalsIgnoreCase(
+									getIntent().getStringExtra("sport")))
+								mSport = sport;
+						}
+						mListEventi = (ArrayList<Evento>) ManagerData
+								.getEventiPerSport(
+										getIntent().getStringExtra("sport"))
+								.get("params");
+					} else {
+						mSport = (Sport) (((ArrayList<Sport>) (ManagerData
+								.getSport(DettaglioSport.this).get("params")))
+								.get(getIntent().getIntExtra("Index", -1)));
+						mListEventi = (ArrayList<Evento>) ManagerData
+								.getEventiPerSport(mSport.getNome()).get(
+										"params");
+					}
+					for (Evento evento : mListEventi) {
+						ArrayList<Atleta> mListaAtletiTmp = (ArrayList<Atleta>) ManagerData
+								.getAtletiPerEvento(evento).get("params");
+						for (Atleta atleta : mListaAtletiTmp)
+							mListaAtleti.add(atleta);
+					}
+					for (int i = 0; i < 3; i++)
+						fragment.add(new PageInfoSport(mSport.getDescrizione(),
+								mListEventi, mListaAtleti, i));
 				}
-				for (Evento evento : mListEventi) {
-					ArrayList<Atleta> mListaAtletiTmp = ManagerData
-							.getAtletiPerEvento(evento);
-					for (Atleta atleta : mListaAtletiTmp)
-						mListaAtleti.add(atleta);
-				}
-				for (int i = 0; i < 3; i++)
-					fragment.add(new PageInfoSport(mSport.getDescrizione(),
-							mListEventi, mListaAtleti, i));
 				return null;
 			}
 

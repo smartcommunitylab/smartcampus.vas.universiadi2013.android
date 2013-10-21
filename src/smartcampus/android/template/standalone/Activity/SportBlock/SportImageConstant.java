@@ -9,44 +9,44 @@ import android.graphics.BitmapFactory;
 
 public class SportImageConstant {
 
-	public static final int SPORT_0 = 0;
-	public static final int SPORT_1 = 1;
-	public static final int SPORT_2 = 2;
-	public static final int SPORT_3 = 3;
-	public static final int SPORT_4 = 4;
-	public static final int SPORT_5 = 5;
-	public static final int SPORT_6 = 6;
-	public static final int SPORT_7 = 7;
-	public static final int SPORT_8 = 8;
-	public static final int SPORT_9 = 9;
-	public static final int SPORT_10 = 10;
-	public static final int SPORT_11 = 11;
+	public static final int ALPINE = 0;
+	public static final int BIATLHON = 1;
+	public static final int CROSS = 2;
+	public static final int CURLING = 3;
+	public static final int FIGURE = 4;
+	public static final int FREESTYLE = 5;
+	public static final int ICE = 6;
+	public static final int NORDIC = 7;
+	public static final int SHORTTRACK = 8;
+	public static final int SKIIJUMPING = 9;
+	public static final int SNOWBOARDING = 10;
+	public static final int SPEEDSKATING = 11;
 
 	public static byte[] resourcesFromID(int id, Context cnt) {
 		switch (id) {
-		case SPORT_0:
+		case ALPINE:
 			return fromResourcesToByteArray(R.drawable.alpine, cnt);
-		case SPORT_1:
+		case BIATLHON:
 			return fromResourcesToByteArray(R.drawable.biathlon, cnt);
-		case SPORT_2:
+		case CROSS:
 			return fromResourcesToByteArray(R.drawable.cross, cnt);
-		case SPORT_3:
+		case CURLING:
 			return fromResourcesToByteArray(R.drawable.curling, cnt);
-		case SPORT_4:
+		case FIGURE:
 			return fromResourcesToByteArray(R.drawable.figure, cnt);
-		case SPORT_5:
+		case FREESTYLE:
 			return fromResourcesToByteArray(R.drawable.freestyle, cnt);
-		case SPORT_6:
+		case ICE:
 			return fromResourcesToByteArray(R.drawable.ice, cnt);
-		case SPORT_7:
+		case NORDIC:
 			return fromResourcesToByteArray(R.drawable.nordic, cnt);
-		case SPORT_8:
+		case SHORTTRACK:
 			return fromResourcesToByteArray(R.drawable.shorttrack, cnt);
-		case SPORT_9:
+		case SKIIJUMPING:
 			return fromResourcesToByteArray(R.drawable.skijumping, cnt);
-		case SPORT_10:
+		case SNOWBOARDING:
 			return fromResourcesToByteArray(R.drawable.snowboarding, cnt);
-		case SPORT_11:
+		case SPEEDSKATING:
 			return fromResourcesToByteArray(R.drawable.speedskating, cnt);
 		default:
 			return new byte[1];

@@ -1,11 +1,15 @@
 package smartcampus.android.template.standalone.Activity.FacilitiesBlock;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import smartcampus.android.template.universiadi.R;
+import smartcampus.android.template.standalone.Activity.EventiBlock.Evento;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
 import android.app.Dialog;
@@ -75,9 +79,11 @@ public class Booking extends FragmentActivity implements LocationListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_booking);
 
-		final ArrayList<String> mValues = new ArrayList<String>();
-		mValues.add("Categoria 1");
-		mValues.add("Categoria 2");
+		final ArrayList<POICategory> mValues = new ArrayList<POICategory>();
+		mValues.add(new POICategory("Stadio del Ghiaccio", "stadioghiaccio"));
+		mValues.add(new POICategory("Impianto Scii", "impiantosci"));
+		mValues.add(new POICategory("Snowpark", "snowpark"));
+		mValues.add(new POICategory("Stadio di salto", "stadiosalto"));
 
 		dialogSelectPOI = new Dialog(Booking.this);
 		dialogSelectPOI.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -110,6 +116,7 @@ public class Booking extends FragmentActivity implements LocationListener,
 				// TODO Auto-generated method stub
 				new AsyncTask<Void, Void, Void>() {
 					private Dialog dialog;
+					private Map<String, Object> mResult;
 
 					@Override
 					protected void onPreExecute() {
@@ -139,19 +146,23 @@ public class Booking extends FragmentActivity implements LocationListener,
 					@Override
 					protected Void doInBackground(Void... params) {
 						// TODO Auto-generated method stub
-						mListaPOI = ManagerData.getPOIForType(mValues.get(arg2));
-						for (POI obj : mListaPOI) {
-							mListaMarkerOptions.add(new MarkerOptions()
-									.position(
-											new LatLng(obj.getLatGPS(), obj
-													.getLngGPS()))
-									.title(obj.getIndirizzo())
-									.snippet(
-											obj.getCategoria() + "/"
-													+ obj.getLatGPS() + "-"
-													+ obj.getLngGPS()));
+						mResult = ManagerData.getPOIForType(mValues.get(arg2)
+								.getPrivateName());
+						if (!((Boolean) mResult.get("connectionError"))) {
+							mListaPOI = (ArrayList<POI>) mResult.get("params");
+							for (POI obj : mListaPOI) {
+								mListaMarkerOptions.add(new MarkerOptions()
+										.position(
+												new LatLng(obj.getLatGPS(), obj
+														.getLngGPS()))
+										.title(obj.getIndirizzo())
+										.snippet(
+												obj.getCategoria() + "/"
+														+ obj.getLatGPS() + "-"
+														+ obj.getLngGPS()));
+							}
+							setPOIsMap(mListaPOI);
 						}
-						setPOIsMap(mListaPOI);
 						return null;
 					}
 
@@ -171,12 +182,36 @@ public class Booking extends FragmentActivity implements LocationListener,
 						mButtonPOI.startAnimation(anim);
 						mButtonPOI.setVisibility(View.VISIBLE);
 
-						mMappa.clear();
-						for (MarkerOptions option : mListaMarkerOptions)
-							mMappa.addMarker(option);
+						if ((Boolean) mResult.get("connectionError")) {
+							Dialog noConnection = new Dialog(Booking.this);
+							noConnection
+									.requestWindowFeature(Window.FEATURE_NO_TITLE);
+							noConnection
+									.setContentView(R.layout.dialog_no_connection);
+							noConnection
+									.getWindow()
+									.setBackgroundDrawableResource(
+											R.drawable.dialog_rounded_corner_light_black);
+							noConnection.show();
+							noConnection.setCancelable(true);
+							noConnection
+									.setOnCancelListener(new OnCancelListener() {
 
-						mMappa.animateCamera(CameraUpdateFactory
-								.newLatLngBounds(bounds, 50));
+										@Override
+										public void onCancel(
+												DialogInterface dialog) {
+											// TODO Auto-generated method stub
+											finish();
+										}
+									});
+						} else {
+							mMappa.clear();
+							for (MarkerOptions option : mListaMarkerOptions)
+								mMappa.addMarker(option);
+
+							mMappa.animateCamera(CameraUpdateFactory
+									.newLatLngBounds(bounds, 50));
+						}
 						// END ONPOST
 					}
 
@@ -347,14 +382,14 @@ public class Booking extends FragmentActivity implements LocationListener,
 			boolean gpsIsEnabled = locationManager
 					.isProviderEnabled(LocationManager.GPS_PROVIDER);
 			boolean networkIsEnabled = locationManager
-					.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+					.isProviderEnabled(LocationManager.PASSIVE_PROVIDER);
 
 			if (networkIsEnabled) {
 				locationManager.requestLocationUpdates(
 						LocationManager.GPS_PROVIDER, 0, 100, this);
 			} else if (gpsIsEnabled) {
 				locationManager.requestLocationUpdates(
-						LocationManager.NETWORK_PROVIDER, 0, 100, this);
+						LocationManager.PASSIVE_PROVIDER, 0, 100, this);
 			}
 		}
 
@@ -380,6 +415,35 @@ public class Booking extends FragmentActivity implements LocationListener,
 			mButtonPOI.setVisibility(View.VISIBLE);
 		} else
 			super.onBackPressed();
+	}
+
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+
+		locationManager.removeUpdates(this);
+	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+
+		if (locationManager != null) {
+			boolean gpsIsEnabled = locationManager
+					.isProviderEnabled(LocationManager.GPS_PROVIDER);
+			boolean networkIsEnabled = locationManager
+					.isProviderEnabled(LocationManager.PASSIVE_PROVIDER);
+
+			if (networkIsEnabled) {
+				locationManager.requestLocationUpdates(
+						LocationManager.GPS_PROVIDER, 0, 100, this);
+			} else if (gpsIsEnabled) {
+				locationManager.requestLocationUpdates(
+						LocationManager.PASSIVE_PROVIDER, 0, 100, this);
+			}
+		}
 	}
 
 	@Override
@@ -480,6 +544,7 @@ public class Booking extends FragmentActivity implements LocationListener,
 		new AsyncTask<Void, Void, Void>() {
 			private Dialog dialog;
 			private ArrayList<JSONObject> mListaPOI;
+			private Map<String, Object> mResult;
 
 			@Override
 			protected void onPreExecute() {
@@ -508,20 +573,24 @@ public class Booking extends FragmentActivity implements LocationListener,
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
-				mListaPOI = ManagerData.getSearchForFilter(getIntent()
+				mResult = ManagerData.getSearchForFilter(getIntent()
 						.getStringExtra("searchString"), "/search/poi");
-				JSONObject obj = mListaPOI.get(getIntent().getIntExtra("index",
-						0));
-				try {
-					poiForSearch = new POI(null, obj.getString("nome"),
-							obj.getString("categoria"), obj
-									.getJSONObject("GPS").getDouble("latGPS"),
-							obj.getJSONObject("GPS").getDouble("lngGPS"));
-					poiForSearch.getIndirizzo();
+				if (!((Boolean) mResult.get("connectionError"))) {
+					mListaPOI = (ArrayList<JSONObject>) mResult.get("params");
+					JSONObject obj = mListaPOI.get(getIntent().getIntExtra(
+							"index", 0));
+					try {
+						poiForSearch = new POI(null, obj.getString("nome"),
+								obj.getString("categoria"), obj.getJSONObject(
+										"GPS").getDouble("latGPS"), obj
+										.getJSONObject("GPS").getDouble(
+												"lngGPS"));
+						poiForSearch.getIndirizzo();
 
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 				return null;
 			}
@@ -534,30 +603,48 @@ public class Booking extends FragmentActivity implements LocationListener,
 				dialog.dismiss();
 
 				// START ONPOST
-				mMappa.addMarker(new MarkerOptions()
-						.position(
-								new LatLng(poiForSearch.getLatGPS(),
-										poiForSearch.getLngGPS()))
-						.title(poiForSearch.getIndirizzo())
-						.snippet(
-								poiForSearch.getCategoria() + "/"
-										+ poiForSearch.getLatGPS() + "-"
-										+ poiForSearch.getLngGPS()));
-				mLocationClient = new LocationClient(Booking.this,
-						Booking.this, Booking.this);
-				mLocationClient.connect();
+				if ((Boolean) mResult.get("connectionError")) {
+					Dialog noConnection = new Dialog(Booking.this);
+					noConnection.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					noConnection.setContentView(R.layout.dialog_no_connection);
+					noConnection.getWindow().setBackgroundDrawableResource(
+							R.drawable.dialog_rounded_corner_light_black);
+					noConnection.show();
+					noConnection.setCancelable(true);
+					noConnection.setOnCancelListener(new OnCancelListener() {
+
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							// TODO Auto-generated method stub
+							finish();
+						}
+					});
+				} else {
+					mMappa.addMarker(new MarkerOptions()
+							.position(
+									new LatLng(poiForSearch.getLatGPS(),
+											poiForSearch.getLngGPS()))
+							.title(poiForSearch.getIndirizzo())
+							.snippet(
+									poiForSearch.getCategoria() + "/"
+											+ poiForSearch.getLatGPS() + "-"
+											+ poiForSearch.getLngGPS()));
+					mLocationClient = new LocationClient(Booking.this,
+							Booking.this, Booking.this);
+					mLocationClient.connect();
+				}
 				// END ONPOST
 			}
 
 		}.execute();
 	}
 
-	private class ListArrayAdapter extends ArrayAdapter<String> {
+	private class ListArrayAdapter extends ArrayAdapter<POICategory> {
 
 		private final Context context;
-		private final ArrayList<String> values;
+		private final ArrayList<POICategory> values;
 
-		public ListArrayAdapter(Context context, ArrayList<String> values) {
+		public ListArrayAdapter(Context context, ArrayList<POICategory> values) {
 			super(context, R.layout.row_select, values);
 			this.context = context;
 			this.values = values;
@@ -573,7 +660,7 @@ public class Booking extends FragmentActivity implements LocationListener,
 
 			FontTextView mSelect = (FontTextView) rowView
 					.findViewById(R.id.text_select);
-			mSelect.setText(values.get(position).toUpperCase());
+			mSelect.setText(values.get(position).getPublicName());
 
 			ImageView mLogo = (ImageView) rowView.findViewById(R.id.image_logo);
 
@@ -596,6 +683,33 @@ public class Booking extends FragmentActivity implements LocationListener,
 			}
 
 			return rowView;
+		}
+	}
+
+	private class POICategory {
+		private String publicName;
+		private String privateName;
+
+		public POICategory(String publicName, String privateName) {
+			super();
+			this.publicName = publicName;
+			this.privateName = privateName;
+		}
+
+		public String getPublicName() {
+			return publicName;
+		}
+
+		public void setPublicName(String publicName) {
+			this.publicName = publicName;
+		}
+
+		public String getPrivateName() {
+			return privateName;
+		}
+
+		public void setPrivateName(String privateName) {
+			this.privateName = privateName;
 		}
 	}
 }

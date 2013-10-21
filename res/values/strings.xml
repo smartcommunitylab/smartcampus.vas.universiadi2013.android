@@ -48,7 +48,7 @@
     <string name="AUTH_TOKEN">aee58a92-d42d-42e8-b55e-12e4289586fc</string>
     <string name="JUNIPER_CLIENT_ID">23e47820-fe2e-4e5e-9a2c-6a24fad9fa92</string>
     <string name="JUNIPER_USER_DATA_AUTH">Bearer d13396ec22b37d4d6da70efd8dcf2bbcad4bb0e1</string>
-    <string name="URL_BACKEND">http://uni.app.smartcampuslab.it</string>
+    <string name="URL_BACKEND">http://smartcampusvasuniversiadi2013web.app.smartcampuslab.it</string>
     <string name="URL_BACKEND_JUNIPER">https://smartcampus.eventbuilder.it</string>
     <string name="URL_JUNIPER_LOGIN">/oauth/token</string>
     <string name="title_activity_row_desc_route">RowDescRoute</string>

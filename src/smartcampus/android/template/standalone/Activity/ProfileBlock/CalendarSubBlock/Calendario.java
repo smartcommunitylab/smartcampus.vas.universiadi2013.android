@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 import smartcampus.android.template.universiadi.R;
+import smartcampus.android.template.standalone.Activity.EventiBlock.Evento;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -47,6 +49,7 @@ public class Calendario extends Activity implements ScrollViewListener {
 
 		new AsyncTask<Void, Void, Void>() {
 			private Dialog dialog;
+			private Map<String, Object> mResult;
 
 			@Override
 			protected void onPreExecute() {
@@ -75,10 +78,12 @@ public class Calendario extends Activity implements ScrollViewListener {
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
-				listTurni = ManagerData.getTurniForDataAndLuogoAndCategoria(
+				mResult = ManagerData.getTurniForDataAndLuogoAndCategoria(
 						getIntent().getLongExtra("data", 0), getIntent()
 								.getStringExtra("luogo"), getIntent()
 								.getStringExtra("categoria"));
+				if (!((Boolean) mResult.get("connectionError")))
+					listTurni = (ArrayList<Turno>) mResult.get("params");
 				return null;
 			}
 
@@ -91,56 +96,77 @@ public class Calendario extends Activity implements ScrollViewListener {
 
 				// START ONPOST
 
-				LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				LinearLayout mContainerOra = (LinearLayout) findViewById(R.id.container_lista_ora);
-				for (int i = 0; i < 21; i++) {
-					int time = 800 + 50 * i;
-					View rowOra = inflater.inflate(R.layout.row_ora, null,
-							false);
-					if (time % 100 == 0) {
-						((TextView) rowOra.findViewById(R.id.text_ora))
-								.setText(" " + (time / 100) + ":00 ");
-					} else {
-						((TextView) rowOra.findViewById(R.id.text_ora))
-								.setText(" " + (time / 100) + ":30 ");
-					}
-					rowOra.setLayoutParams(new LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.MATCH_PARENT, 0.5f));
-					mContainerOra.addView(rowOra);
-				}
+				if ((Boolean) mResult.get("connectionError")) {
+					Dialog noConnection = new Dialog(Calendario.this);
+					noConnection.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					noConnection.setContentView(R.layout.dialog_no_connection);
+					noConnection.getWindow().setBackgroundDrawableResource(
+							R.drawable.dialog_rounded_corner_light_black);
+					noConnection.show();
+					noConnection.setCancelable(true);
+					noConnection.setOnCancelListener(new OnCancelListener() {
 
-				mAllAScrollView = new ArrayList<ScrollView>();
-				ObservableScrollView mScroll = (ObservableScrollView) findViewById(R.id.scrollView2);
-				mScroll.setScrollViewListener(Calendario.this);
-				mAllAScrollView.add(mScroll);
-
-				ArrayList<String> mLuoghi = getLuoghi(listTurni);
-				ArrayList<String> mCategorie = getCategorie(listTurni);
-
-				for (int i = 0; i < mLuoghi.size(); i++) // # luoghi
-				{
-					ArrayList<View> list = new ArrayList<View>();
-					for (int j = 0; j < mCategorie.size(); j++) // # categorie
-																// per luogo
-					{
-						if (getTurniPerLuogoECategoria(mLuoghi.get(i),
-								mCategorie.get(j)).size() != 0) {
-							View base = createBaseColoumn(
-									mCategorie.get(j),
-									getTurniPerLuogoECategoria(mLuoghi.get(i),
-											mCategorie.get(j)));
-							list.add(base);
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							// TODO Auto-generated method stub
+							finish();
 						}
+					});
+				} else {
+					LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+					LinearLayout mContainerOra = (LinearLayout) findViewById(R.id.container_lista_ora);
+					for (int i = 0; i < 21; i++) {
+						int time = 800 + 50 * i;
+						View rowOra = inflater.inflate(R.layout.row_ora, null,
+								false);
+						if (time % 100 == 0) {
+							((TextView) rowOra.findViewById(R.id.text_ora))
+									.setText(" " + (time / 100) + ":00 ");
+						} else {
+							((TextView) rowOra.findViewById(R.id.text_ora))
+									.setText(" " + (time / 100) + ":30 ");
+						}
+						rowOra.setLayoutParams(new LayoutParams(
+								LayoutParams.MATCH_PARENT,
+								LayoutParams.MATCH_PARENT, 0.5f));
+						mContainerOra.addView(rowOra);
 					}
 
-					View complex = createComplexColoumn(mLuoghi.get(i), list);
-					complex.setLayoutParams(new LayoutParams(
-							LayoutParams.MATCH_PARENT,
-							LayoutParams.MATCH_PARENT, 0.5f));
+					mAllAScrollView = new ArrayList<ScrollView>();
+					ObservableScrollView mScroll = (ObservableScrollView) findViewById(R.id.scrollView2);
+					mScroll.setScrollViewListener(Calendario.this);
+					mAllAScrollView.add(mScroll);
 
-					LinearLayout mContainer = (LinearLayout) findViewById(R.id.container_complex_coloumn);
-					mContainer.addView(complex);
+					ArrayList<String> mLuoghi = getLuoghi(listTurni);
+					ArrayList<String> mCategorie = getCategorie(listTurni);
+
+					for (int i = 0; i < mLuoghi.size(); i++) // # luoghi
+					{
+						ArrayList<View> list = new ArrayList<View>();
+						for (int j = 0; j < mCategorie.size(); j++) // #
+																	// categorie
+																	// per luogo
+						{
+							if (getTurniPerLuogoECategoria(mLuoghi.get(i),
+									mCategorie.get(j)).size() != 0) {
+								View base = createBaseColoumn(
+										mCategorie.get(j),
+										getTurniPerLuogoECategoria(
+												mLuoghi.get(i),
+												mCategorie.get(j)));
+								list.add(base);
+							}
+						}
+
+						View complex = createComplexColoumn(mLuoghi.get(i),
+								list);
+						complex.setLayoutParams(new LayoutParams(
+								LayoutParams.MATCH_PARENT,
+								LayoutParams.MATCH_PARENT, 0.5f));
+
+						LinearLayout mContainer = (LinearLayout) findViewById(R.id.container_complex_coloumn);
+						mContainer.addView(complex);
+					}
 				}
 
 				// END ONPOST
@@ -384,9 +410,31 @@ public class Calendario extends Activity implements ScrollViewListener {
 				if ((index.after(inizioTurno) || index.compareTo(inizioTurno) == 0)
 						&& (index.before(fineTurno) || index
 								.compareTo(fineTurno) == 0)) {
-					mResult[i] = new ExtendedTurno((Date) index.clone(),
-							getNumeroVolontari(turno),
-							ManagerData.getUtentiForTurno(turno), numeroTurno);
+					Map<String, Object> mMapUtentiTurno = ManagerData
+							.getUtentiForTurno(turno);
+					if ((Boolean) mMapUtentiTurno.get("connectionError")) {
+						Dialog noConnection = new Dialog(Calendario.this);
+						noConnection
+								.requestWindowFeature(Window.FEATURE_NO_TITLE);
+						noConnection
+								.setContentView(R.layout.dialog_no_connection);
+						noConnection.getWindow().setBackgroundDrawableResource(
+								R.drawable.dialog_rounded_corner_light_black);
+						noConnection.show();
+						noConnection.setCancelable(true);
+						noConnection.setOnCancelListener(new OnCancelListener() {
+
+							@Override
+							public void onCancel(DialogInterface dialog) {
+								// TODO Auto-generated method stub
+								finish();
+							}
+						});
+					} else
+						mResult[i] = new ExtendedTurno((Date) index.clone(),
+								getNumeroVolontari(turno),
+								(ArrayList<Utente>) mMapUtentiTurno
+										.get("paras"), numeroTurno);
 				} else if (mResult[i] == null
 						|| mResult[i].getNumberTurno() == -1) {
 					mResult[i] = new ExtendedTurno((Date) index.clone(), -1,

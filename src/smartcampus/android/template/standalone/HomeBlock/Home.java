@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
@@ -71,6 +72,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 		new AsyncTask<Void, Void, Void>() {
 			private Dialog dialog;
+			private Map<String, Object> mResult;
 
 			@Override
 			protected void onPreExecute() {
@@ -99,17 +101,23 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
-				mListaEventiDiOggi = ManagerData.getEventiForData(Calendar
-						.getInstance(Locale.getDefault()).getTimeInMillis());
-				for (Evento evento : mListaEventiDiOggi)
-					fragmentEventi.add(new PageEventiOggi(evento,
-							fragmentEventi.size() - 1));
+				mResult = ManagerData.getEventiForData(Calendar.getInstance(
+						Locale.getDefault()).getTimeInMillis());
+				if (!((Boolean) mResult.get("connectionError"))) {
+					mListaEventiDiOggi = (ArrayList<Evento>) mResult
+							.get("params");
+					for (Evento evento : mListaEventiDiOggi)
+						fragmentEventi.add(new PageEventiOggi(evento,
+								fragmentEventi.size() - 1));
 
-				mListaMeetingDiOggi = ManagerData.getMeetingPerData(Calendar
-						.getInstance(Locale.getDefault()).getTimeInMillis());
-				for (Meeting meeting : mListaMeetingDiOggi)
-					fragmentMeeting.add(new PageEventiOggi(meeting,
-							fragmentMeeting.size() - 1));
+					mListaMeetingDiOggi = (ArrayList<Meeting>) ManagerData
+							.getMeetingPerData(
+									Calendar.getInstance(Locale.getDefault())
+											.getTimeInMillis()).get("params");
+					for (Meeting meeting : mListaMeetingDiOggi)
+						fragmentMeeting.add(new PageEventiOggi(meeting,
+								fragmentMeeting.size() - 1));
+				}
 				return null;
 			}
 
@@ -121,48 +129,69 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 				dialog.dismiss();
 
 				// START ONPOST
-				// creating adapter and linking to view pager
-				if (mListaEventiDiOggi.size() != 0) {
-					if (mAdapter == null)
-						mAdapter = new PagerAdapter(
-								getSupportFragmentManager(), fragmentEventi);
-					else
-						mAdapter.fragments = fragmentEventi;
-					if (mPager == null)
-						mPager = (ViewPager) findViewById(R.id.pager_info_eventi);
-					mAdapter.notifyDataSetChanged();
-					mPager.setAdapter(mAdapter);
-					mPager.invalidate();
-					// Bind the title indicator to the adapter
-					final CirclePageIndicator titleIndicator = (CirclePageIndicator) findViewById(R.id.page_indicator);
-					titleIndicator.setViewPager(mPager);
+				if (!((Boolean) mResult.get("connectionError"))) {
+					// creating adapter and linking to view pager
+					if (mListaEventiDiOggi.size() != 0) {
+						if (mAdapter == null)
+							mAdapter = new PagerAdapter(
+									getSupportFragmentManager(), fragmentEventi);
+						else
+							mAdapter.fragments = fragmentEventi;
+						if (mPager == null)
+							mPager = (ViewPager) findViewById(R.id.pager_info_eventi);
+						mAdapter.notifyDataSetChanged();
+						mPager.setAdapter(mAdapter);
+						mPager.invalidate();
+						// Bind the title indicator to the adapter
+						final CirclePageIndicator titleIndicator = (CirclePageIndicator) findViewById(R.id.page_indicator);
+						titleIndicator.setViewPager(mPager);
 
-					class TapGestureListener extends
-							GestureDetector.SimpleOnGestureListener {
+						class TapGestureListener extends
+								GestureDetector.SimpleOnGestureListener {
 
-						@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-						@Override
-						public boolean onSingleTapConfirmed(MotionEvent e) {
-							Intent mCaller = new Intent(getApplication(),
-									InfoEventi.class);
-							mCaller.putExtra("index", mPager.getCurrentItem());
-							startActivity(mCaller);
-							return true;
+							@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+							@Override
+							public boolean onSingleTapConfirmed(MotionEvent e) {
+								Intent mCaller = new Intent(getApplication(),
+										InfoEventi.class);
+								mCaller.putExtra("index",
+										mPager.getCurrentItem());
+								startActivity(mCaller);
+								return true;
+							}
 						}
-					}
 
-					final GestureDetector tapGestureDetector = new GestureDetector(
-							Home.this, new TapGestureListener());
+						final GestureDetector tapGestureDetector = new GestureDetector(
+								Home.this, new TapGestureListener());
 
-					mPager.setOnTouchListener(new OnTouchListener() {
-						public boolean onTouch(View v, MotionEvent event) {
-							tapGestureDetector.onTouchEvent(event);
-							return false;
-						}
-					});
-				} else
+						mPager.setOnTouchListener(new OnTouchListener() {
+							public boolean onTouch(View v, MotionEvent event) {
+								tapGestureDetector.onTouchEvent(event);
+								return false;
+							}
+						});
+					} else
+						((TextView) findViewById(R.id.text_nessun_evento))
+								.setVisibility(View.VISIBLE);
+				} else {
 					((TextView) findViewById(R.id.text_nessun_evento))
 							.setVisibility(View.VISIBLE);
+					Dialog noConnection = new Dialog(Home.this);
+					noConnection.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					noConnection.setContentView(R.layout.dialog_no_connection);
+					noConnection.getWindow().setBackgroundDrawableResource(
+							R.drawable.dialog_rounded_corner_light_black);
+					noConnection.setCancelable(true);
+					noConnection.show();
+					noConnection.setOnCancelListener(new OnCancelListener() {
+
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							// TODO Auto-generated method stub
+							finish();
+						}
+					});
+				}
 
 				((EditText) findViewById(R.id.text_search))
 						.setTypeface(Typeface.createFromAsset(
