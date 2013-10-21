@@ -415,8 +415,8 @@ public class ManagerData {
 		ArrayList<Utente> mListaSuperiori = new ArrayList<Utente>();
 		try {
 			Map<String, Object> mMapRequest = mRest
-					.restRequest(new String[] { "/getSuperiori?ref_object="
-							+ user.getId() }, RestRequestType.GET);
+					.restRequest(new String[] { "/utente/"
+							+ user.getId()+"/superiori" }, RestRequestType.GET);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
 					(Boolean) mMapRequest.get("connectionError"));

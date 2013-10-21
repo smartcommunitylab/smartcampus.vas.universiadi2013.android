@@ -93,9 +93,9 @@ public class Profile extends Activity {
 					funzione = (ArrayList<String>) ManagerData
 							.getFunzioneForUser(user).get("params");
 				}
-				// mListaSuperiori = (ArrayList<Utente>) (ManagerData
-				// .getSuperioriForUser(user, funzione.get(0))
-				// .get("params"));
+				 mListaSuperiori = (ArrayList<Utente>) (ManagerData
+				 .getSuperioriForUser(user, funzione.get(0))
+				 .get("params"));
 				return null;
 			}
 
