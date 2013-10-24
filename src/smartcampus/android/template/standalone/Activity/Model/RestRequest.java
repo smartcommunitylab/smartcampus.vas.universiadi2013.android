@@ -69,7 +69,8 @@ class RestRequest {
 		} else {
 			mToken = mContext.getString(R.string.AUTH_TOKEN);
 			mReturn.put("connectionError", false);
-			juniperToken = callGETRequest(new String[] { "/anonymus_login" });
+			juniperToken = callGETRequest(new String[] { mContext
+					.getString(R.string.URL_ANONYMOUS_LOGIN) });
 			//
 			juniperToken = mToken;
 			//
@@ -91,7 +92,7 @@ class RestRequest {
 		URL url;
 		try {
 			String path = mContext.getString(R.string.URL_BACKEND_JUNIPER)
-					+ "/getUserData";
+					+ mContext.getString(R.string.URL_USER_DATA);
 			url = new URL(path);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.addRequestProperty("Authorization", juniperToken);
@@ -213,31 +214,30 @@ class RestRequest {
 	}
 
 	private String login(String username, String password) {
-		
-		
+
 		HttpClient httpClient = new DefaultHttpClient();
-        HttpPost requestS = new HttpPost(
-				mContext.getString(R.string.URL_BACKEND_JUNIPER)+
-				mContext.getString(R.string.URL_JUNIPER_LOGIN));
-        StringEntity entity;
+		HttpPost requestS = new HttpPost(
+				mContext.getString(R.string.URL_BACKEND_JUNIPER)
+						+ mContext.getString(R.string.URL_JUNIPER_LOGIN));
+		StringEntity entity;
 		try {
 			entity = new StringEntity("grant_type=password&client_id="
 					+ mContext.getString(R.string.JUNIPER_CLIENT_ID)
-					+ "&client_secret=%22%22&username=" + username + "&password="
-					+ password, HTTP.UTF_8);
-		
-		entity.setContentType(" application/x-www-form-urlencoded");
-        requestS.setEntity(entity);
-        HttpResponse response=httpClient.execute(requestS);
-         String responseString = EntityUtils.toString(response.getEntity());
+					+ "&client_secret=%22%22&username=" + username
+					+ "&password=" + password, HTTP.UTF_8);
 
-		if (response != null) {
-			JuniperResponse res = JsonUtils.toObject(responseString,
-					JuniperResponse.class);
-			if (res.isLogged())
-				return "Bearer " +res.getAccess_token();
-			return null;
-		}
+			entity.setContentType(mContext.getString(R.string.OBJECT_TYPE_POST));
+			requestS.setEntity(entity);
+			HttpResponse response = httpClient.execute(requestS);
+			String responseString = EntityUtils.toString(response.getEntity());
+
+			if (response != null) {
+				JuniperResponse res = JsonUtils.toObject(responseString,
+						JuniperResponse.class);
+				if (res.isLogged())
+					return "Bearer " + res.getAccess_token();
+				return null;
+			}
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -252,14 +252,12 @@ class RestRequest {
 
 	}
 
-
 	private String callPOSTRequest(String[] params) {
 		ProtocolCarrier mProtocolCarrier = new ProtocolCarrier(mContext,
 				juniperToken);
 
 		MessageRequest request = new MessageRequest(
 				mContext.getString(R.string.URL_BACKEND), params[0]);
-
 		try {
 			request.setMethod(Method.POST);
 			request.setBody(params[1]);

@@ -10,6 +10,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -95,7 +96,7 @@ public class PageInfoEventi extends Fragment {
 
 			if (position == 0) {
 				((TextView) rowView.findViewById(R.id.text_description))
-						.setText("Route per "
+						.setText(getContext().getString(R.string.ROUTE_FOR)
 								+ values.get(position).getDescription());
 			} else {
 				((TextView) rowView.findViewById(R.id.text_description))

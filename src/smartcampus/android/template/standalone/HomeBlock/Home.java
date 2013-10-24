@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
 import smartcampus.android.template.standalone.Activity.FacilitiesBlock.Booking;
@@ -689,15 +692,26 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					return true;
 				}
 				if (event.getAction() == MotionEvent.ACTION_UP) {
-					mFilterEvent.setImageResource(R.drawable.btn_filter_event);
 
-					Intent mCaller = new Intent(getApplicationContext(),
-							ResultSearch.class);
-					mCaller.putExtra("rest", "/search/eventi");
-					mCaller.putExtra("search",
-							((EditText) findViewById(R.id.text_search))
-									.getText().toString());
-					startActivity(mCaller);
+					try {
+						mFilterEvent
+								.setImageResource(R.drawable.btn_filter_event);
+
+						Intent mCaller = new Intent(getApplicationContext(),
+								ResultSearch.class);
+						mCaller.putExtra("rest", "/evento/search");
+						JSONObject obj = new JSONObject();
+						obj.put("tipoFiltro", "SPORT");
+						obj.put("nome", "re");
+						// obj.put("nome",((EditText)
+						// findViewById(R.id.text_search))
+						// .getText().toString()));
+						mCaller.putExtra("search", obj.toString());
+						startActivity(mCaller);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					return true;
 				}
 				return false;
@@ -717,15 +731,25 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					return true;
 				}
 				if (event.getAction() == MotionEvent.ACTION_UP) {
-					mFilterPoi.setImageResource(R.drawable.btn_filter_poi);
 
-					Intent mCaller = new Intent(getApplicationContext(),
-							ResultSearch.class);
-					mCaller.putExtra("rest", "/search/poi");
-					mCaller.putExtra("search",
-							((EditText) findViewById(R.id.text_search))
-									.getText().toString());
-					startActivity(mCaller);
+					try {
+						mFilterPoi.setImageResource(R.drawable.btn_filter_poi);
+
+						Intent mCaller = new Intent(getApplicationContext(),
+								ResultSearch.class);
+						mCaller.putExtra("rest", "/evento/search");
+						JSONObject obj = new JSONObject();
+						obj.put("tipoFiltro", "SPORT");
+						obj.put("nome", "re");
+						// obj.put("nome",(((EditText)
+						// findViewById(R.id.text_search))
+						// .getText().toString());
+						mCaller.putExtra("search", obj.toString());
+						startActivity(mCaller);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					return true;
 				}
 				return false;
@@ -745,15 +769,25 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					return true;
 				}
 				if (event.getAction() == MotionEvent.ACTION_UP) {
-					mFilterSport.setImageResource(R.drawable.btn_filter_sport);
+					try {
+						mFilterSport
+								.setImageResource(R.drawable.btn_filter_sport);
 
-					Intent mCaller = new Intent(getApplicationContext(),
-							ResultSearch.class);
-					mCaller.putExtra("rest", "/search/sport");
-					mCaller.putExtra("search",
-							((EditText) findViewById(R.id.text_search))
-									.getText().toString());
-					startActivity(mCaller);
+						Intent mCaller = new Intent(getApplicationContext(),
+								ResultSearch.class);
+						mCaller.putExtra("rest", "/evento/search");
+						JSONObject obj = new JSONObject();
+						obj.put("tipoFiltro", "SPORT");
+						obj.put("nome", "re");
+						// obj.put("nome",(((EditText)
+						// findViewById(R.id.text_search))
+						// .getText().toString());
+						mCaller.putExtra("search", obj.toString());
+						startActivity(mCaller);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					return true;
 				}
 				return false;

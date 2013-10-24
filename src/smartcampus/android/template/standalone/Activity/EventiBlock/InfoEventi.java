@@ -44,6 +44,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
 import android.view.Window;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -127,7 +128,8 @@ public class InfoEventi extends FragmentActivity implements LocationListener,
 				if (fromSearch) {
 					ArrayList<JSONObject> arrayJSON = null;
 					mResult = ManagerData.getSearchForFilter(getIntent()
-							.getStringExtra("searchString"), "/search/eventi");
+							.getStringExtra("searchString"),
+							getString(R.string.URL_EVENTO_SEARCH));
 					if (!((Boolean) mResult.get("connectionError"))) {
 						arrayJSON = (ArrayList<JSONObject>) mResult
 								.get("params");
@@ -135,15 +137,17 @@ public class InfoEventi extends FragmentActivity implements LocationListener,
 						JSONObject obj = arrayJSON.get(getIntent().getIntExtra(
 								"index", 0));
 						try {
-							mEvento = new Evento(null, obj.getString("title"),
+							mEvento = new Evento(
+									null,
+									obj.getString("title"),
 									obj.getLong("fromTime"),
-									obj.getString("description"), obj
-											.getJSONObject("location")
-											.getDouble("0"), obj.getJSONObject(
-											"location").getDouble("1"),
-									"Sport 1", downloadImageFormURL(obj
-											.getJSONObject("customData")
-											.getString("imageUrl")));
+									Html.fromHtml(obj.getString("description"))
+											.toString(),
+									obj.getJSONArray("location").getDouble(0),
+									obj.getJSONArray("location").getDouble(1),
+									"Sport 1",
+									downloadImageFormURL(obj.getJSONObject(
+											"customData").getString("imageUrl")));
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

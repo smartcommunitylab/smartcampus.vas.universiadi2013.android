@@ -21,6 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import smartcampus.android.template.standalone.Activity.SportBlock.SportImageConstant;
+import smartcampus.android.template.universiadi.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -41,12 +42,15 @@ public class ManagerData {
 	private static ManagerData instance = null;
 	private static RestRequest mRest;
 
+	private static Context mContext;
+
 	public static ManagerData getInstance(Context context) {
 		return (instance == null) ? (instance = new ManagerData(context))
 				: instance;
 	}
 
 	private ManagerData(Context context) {
+		mContext = context;
 		mRest = new RestRequest(context);
 	}
 
@@ -91,14 +95,17 @@ public class ManagerData {
 	}
 
 	public static void invalidateToken() {
-		mRest.restRequest(new String[] { "/invalidate" }, RestRequestType.GET);
+		mRest.restRequest(
+				new String[] { mContext.getString(R.string.URL_INVALIDATE) },
+				RestRequestType.GET);
 	}
 
 	public static Map<String, Object> getEventiForData(Long data) {
 		ArrayList<Evento> mListaEventi = new ArrayList<Evento>();
 		try {
 			Map<String, Object> mMapRequest = mRest.restRequest(
-					new String[] { "/evento/data/" + data },
+					new String[] { mContext
+							.getString(R.string.URL_EVENTO_PER_DATA) + data },
 					RestRequestType.GET);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
@@ -151,11 +158,10 @@ public class ManagerData {
 		ArrayList<Evento> mListaEventi = new ArrayList<Evento>();
 
 		try {
-			Map<String, Object> mMapRequest = mRest
-					.restRequest(
-							new String[] { "/evento_sport/"
-									+ sport.replace(" ", "%20") },
-							RestRequestType.GET);
+			Map<String, Object> mMapRequest = mRest.restRequest(
+					new String[] { mContext
+							.getString(R.string.URL_EVENTO_PER_SPORT)
+							+ sport.replace(" ", "%20") }, RestRequestType.GET);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
 					(Boolean) (mMapRequest.get("connectionError")));
@@ -191,7 +197,8 @@ public class ManagerData {
 
 		try {
 			Map<String, Object> mMapRequest = mRest.restRequest(
-					new String[] { "/meeting/" + data }, RestRequestType.GET);
+					new String[] { mContext.getString(R.string.URL_MY_AGENDA)
+							+ data }, RestRequestType.GET);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
 					(Boolean) mMapRequest.get("connectionError"));
@@ -238,10 +245,10 @@ public class ManagerData {
 			params.put("gps", gps);
 			params.put("tipoSport", evento.getTipoSport());
 
-			Map<String, Object> mMapRequest = mRest
-					.restRequest(
-							new String[] { "/atleti_evento", params.toString() },
-							RestRequestType.POST);
+			Map<String, Object> mMapRequest = mRest.restRequest(
+					new String[] {
+							mContext.getString(R.string.URL_ATLETI_PER_EVENTO),
+							params.toString() }, RestRequestType.POST);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
 					(Boolean) (mMapRequest.get("connectionError")));
@@ -289,7 +296,9 @@ public class ManagerData {
 			// new String[] { "/poi/" + type.replace(" ", "%20") },
 			// RestRequestType.GET);
 			Map<String, Object> mMapReqeust = mRest.restRequest(
-					new String[] { "/poi/party" }, RestRequestType.GET);
+					new String[] { mContext
+							.getString(R.string.URL_POI_PER_TIPO) },
+					RestRequestType.GET);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
 					(Boolean) mMapReqeust.get("connectionError"));
@@ -320,8 +329,10 @@ public class ManagerData {
 			JSONObject params = new JSONObject().put("GPS", new JSONArray()
 					.put(poi.getLatGPS()).put(poi.getLngGPS()));
 
-			Map<String, Object> mMapRequest = mRest.restRequest(new String[] {
-					"/poi_evento", params.toString() }, RestRequestType.POST);
+			Map<String, Object> mMapRequest = mRest.restRequest(
+					new String[] {
+							mContext.getString(R.string.URL_EVENTO_PER_POI),
+							params.toString() }, RestRequestType.POST);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
 					(Boolean) (mMapRequest.get("connectionError")));
@@ -358,7 +369,8 @@ public class ManagerData {
 
 		try {
 			Map<String, Object> mMapRequest = mRest.restRequest(
-					new String[] { "/volontari/categorie" },
+					new String[] { mContext
+							.getString(R.string.URL_CATEGORIE_VOLONTARI) },
 					RestRequestType.GET);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
@@ -414,9 +426,9 @@ public class ManagerData {
 			String pathFunzione) {
 		ArrayList<Utente> mListaSuperiori = new ArrayList<Utente>();
 		try {
-			Map<String, Object> mMapRequest = mRest
-					.restRequest(new String[] { "/utente/"
-							+ user.getId()+"/superiori" }, RestRequestType.GET);
+			Map<String, Object> mMapRequest = mRest.restRequest(
+					new String[] { "/utente/" + user.getId() + "/superiori" },
+					RestRequestType.GET);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
 					(Boolean) mMapRequest.get("connectionError"));
@@ -504,8 +516,9 @@ public class ManagerData {
 			ticketObj.put("telefono", telemamanger.getLine1Number());
 
 			return mRest.restRequest(
-					new String[] { "/ticket/send", ticketObj.toString() },
-					RestRequestType.POST);
+					new String[] {
+							mContext.getString(R.string.URL_SEND_TICKET),
+							ticketObj.toString() }, RestRequestType.POST);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -519,7 +532,8 @@ public class ManagerData {
 
 		try {
 			Map<String, Object> mMapRequest = mRest.restRequest(new String[] {
-					"/domanda", domanda }, RestRequestType.POST);
+					mContext.getString(R.string.URL_DOMANDA), domanda },
+					RestRequestType.POST);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
 					(Boolean) mMapRequest.get("connectionError"));
@@ -549,8 +563,10 @@ public class ManagerData {
 	public static Map<String, Object> getAllRisposte() {
 		ArrayList<ExtendedAnswer> mListaRisposte = new ArrayList<ExtendedAnswer>();
 		try {
-			Map<String, Object> mMapRequest = mRest.restRequest(
-					new String[] { "/all_domanda" }, RestRequestType.POST);
+			Map<String, Object> mMapRequest = mRest
+					.restRequest(new String[] { mContext
+							.getString(R.string.URL_ALL_DOMANDA) },
+							RestRequestType.POST);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
 					(Boolean) mMapRequest.get("connectionError"));
@@ -587,8 +603,8 @@ public class ManagerData {
 			Map<String, Object> mMapRequest = null;
 			if (luogo != null && categoria != null) {
 				mMapRequest = mRest.restRequest(
-						new String[] { "/turni/" + date + "/"
-								+ luogo.replace(" ", "%20") + "/"
+						new String[] { mContext.getString(R.string.URL_TURNI)
+								+ date + "/" + luogo.replace(" ", "%20") + "/"
 								+ categoria.replace(" ", "%20") },
 						RestRequestType.GET);
 				mResult.put("connectionError",
@@ -597,17 +613,20 @@ public class ManagerData {
 					arrayTurni = new JSONArray(
 							(String) mMapRequest.get("params"));
 			} else if (luogo != null) {
-				mMapRequest = mRest.restRequest(new String[] { "/turni/" + date
-						+ "/" + luogo.replace(" ", "%20") + "/\"\"" },
-						RestRequestType.GET);
+				mMapRequest = mRest.restRequest(
+						new String[] { mContext.getString(R.string.URL_TURNI)
+								+ date + "/" + luogo.replace(" ", "%20")
+								+ "/\"\"" }, RestRequestType.GET);
 				mResult.put("connectionError",
 						(Boolean) mMapRequest.get("connectionError"));
 				if (!((Boolean) mMapRequest.get("connectionError")))
 					arrayTurni = new JSONArray(
 							(String) mMapRequest.get("params"));
 			} else if (categoria != null) {
-				mMapRequest = mRest.restRequest(new String[] { "/turni/" + date
-						+ "/\"\"/" + categoria.replace(" ", "%20") },
+				mMapRequest = mRest.restRequest(
+						new String[] { mContext.getString(R.string.URL_TURNI)
+								+ date + "/\"\"/"
+								+ categoria.replace(" ", "%20") },
 						RestRequestType.GET);
 				mResult.put("connectionError",
 						(Boolean) mMapRequest.get("connectionError"));
@@ -615,8 +634,9 @@ public class ManagerData {
 					arrayTurni = new JSONArray(
 							(String) mMapRequest.get("params"));
 			} else {
-				mMapRequest = mRest.restRequest(new String[] { "/turni/" + date
-						+ "/\"\"/\"\"" }, RestRequestType.GET);
+				mMapRequest = mRest.restRequest(
+						new String[] { mContext.getString(R.string.URL_TURNI)
+								+ date + "/\"\"/\"\"" }, RestRequestType.GET);
 				mResult.put("connectionError",
 						(Boolean) mMapRequest.get("connectionError"));
 				if (!((Boolean) mMapRequest.get("connectionError")))
@@ -653,9 +673,10 @@ public class ManagerData {
 			params.put("oraInizio", turno.getOraInizio());
 			params.put("oraFine", turno.getOraFine());
 
-			Map<String, Object> mMapReqeust = mRest.restRequest(new String[] {
-					"/users_for_turn", params.toString() },
-					RestRequestType.POST);
+			Map<String, Object> mMapReqeust = mRest.restRequest(
+					new String[] {
+							mContext.getString(R.string.URL_UTENTI_PER_TURNO),
+							params.toString() }, RestRequestType.POST);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
 					(Boolean) mMapReqeust.get("connectionError"));

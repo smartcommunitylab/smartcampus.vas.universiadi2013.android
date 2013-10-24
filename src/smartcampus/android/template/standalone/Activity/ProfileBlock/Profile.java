@@ -93,9 +93,9 @@ public class Profile extends Activity {
 					funzione = (ArrayList<String>) ManagerData
 							.getFunzioneForUser(user).get("params");
 				}
-				 mListaSuperiori = (ArrayList<Utente>) (ManagerData
-				 .getSuperioriForUser(user, funzione.get(0))
-				 .get("params"));
+				mListaSuperiori = (ArrayList<Utente>) (ManagerData
+						.getSuperioriForUser(user, funzione.get(0))
+						.get("params"));
 				return null;
 			}
 
@@ -307,39 +307,59 @@ public class Profile extends Activity {
 									final Utente mUtente = mListaSuperiori
 											.get(arg2);
 
-									AlertDialog.Builder builder = new AlertDialog.Builder(
-											Profile.this);
-									builder.setTitle("Contatto");
-									builder.setMessage("Vuoi chiamare "
-											+ mUtente.getNome() + " al numero "
-											+ mUtente.getNumeroTelefonico());
-									builder.setCancelable(false);
-									builder.setPositiveButton(
-											"Chiama",
-											new android.content.DialogInterface.OnClickListener() {
-												public void onClick(
-														DialogInterface dialog,
-														int id) {
-													dialog.dismiss();
-													Intent intent = new Intent(
-															Intent.ACTION_CALL);
-													intent.setData(Uri.parse("tel:"
-															+ mUtente
-																	.getNumeroTelefonico()));
-													startActivityForResult(
-															intent, 0);
-												}
-											});
-									builder.setNegativeButton(
-											"Chiudi",
-											new android.content.DialogInterface.OnClickListener() {
-												public void onClick(
-														DialogInterface dialog,
-														int id) {
-													dialog.dismiss();
-												}
-											});
-									builder.create().show();
+									if (mUtente.getNumeroTelefonico()
+											.equalsIgnoreCase("")) {
+										AlertDialog.Builder builder = new AlertDialog.Builder(
+												Profile.this);
+										builder.setTitle(getString(R.string.CONTATTO));
+										builder.setMessage(getString(R.string.NESSUN_NUMERO));
+										builder.setCancelable(false);
+										builder.setNeutralButton(
+												getString(R.string.CHIUDI),
+												new android.content.DialogInterface.OnClickListener() {
+													public void onClick(
+															DialogInterface dialog,
+															int id) {
+														dialog.dismiss();
+													}
+												});
+										builder.create().show();
+									} else {
+										AlertDialog.Builder builder = new AlertDialog.Builder(
+												Profile.this);
+										builder.setTitle(getString(R.string.CONTATTO));
+										builder.setMessage("Vuoi chiamare "
+												+ mUtente.getNome()
+												+ " al numero "
+												+ mUtente.getNumeroTelefonico());
+										builder.setCancelable(false);
+										builder.setPositiveButton(
+												getString(R.string.CHIAMA),
+												new android.content.DialogInterface.OnClickListener() {
+													public void onClick(
+															DialogInterface dialog,
+															int id) {
+														dialog.dismiss();
+														Intent intent = new Intent(
+																Intent.ACTION_CALL);
+														intent.setData(Uri.parse("tel:"
+																+ mUtente
+																		.getNumeroTelefonico()));
+														startActivityForResult(
+																intent, 0);
+													}
+												});
+										builder.setNegativeButton(
+												getString(R.string.CHIUDI),
+												new android.content.DialogInterface.OnClickListener() {
+													public void onClick(
+															DialogInterface dialog,
+															int id) {
+														dialog.dismiss();
+													}
+												});
+										builder.create().show();
+									}
 								}
 							});
 				} else

@@ -94,16 +94,16 @@ public class ResultSearch extends Activity {
 					mListaObj = (ArrayList<JSONObject>) mResult.get("params");
 					try {
 						if (getIntent().getStringExtra("rest")
-								.equalsIgnoreCase("/search/eventi")) {
+								.equalsIgnoreCase("/evento/search")) {
 							for (JSONObject obj : mListaObj) {
 								Evento evento = new Evento(null,
 										obj.getString("title"),
 										obj.getLong("fromTime"),
 										obj.getString("description"), obj
-												.getJSONObject("location")
-												.getDouble("0"), obj
-												.getJSONObject("location")
-												.getDouble("1"), "Sport 1",
+												.getJSONArray("location")
+												.getDouble(0), obj
+												.getJSONArray("location")
+												.getDouble(1), "Sport 1",
 										downloadImageFormURL(obj.getJSONObject(
 												"customData").getString(
 												"imageUrl")));
@@ -111,7 +111,7 @@ public class ResultSearch extends Activity {
 								mListaEvento.add(evento);
 							}
 						} else if (getIntent().getStringExtra("rest")
-								.equalsIgnoreCase("/search/poi")) {
+								.equalsIgnoreCase("/poi/search")) {
 							for (JSONObject obj : mListaObj) {
 								POI poi = new POI(null, obj.getString("nome"),
 										obj.getString("categoria"), obj
@@ -123,7 +123,7 @@ public class ResultSearch extends Activity {
 								mListaPOI.add(poi);
 							}
 						} else if (getIntent().getStringExtra("rest")
-								.equalsIgnoreCase("/search/sport")) {
+								.equalsIgnoreCase("/sport/search")) {
 							for (JSONObject obj : mListaObj) {
 								Sport sport = new Sport(obj.getString("nome"),
 										SportImageConstant.resourcesFromID(
@@ -168,7 +168,7 @@ public class ResultSearch extends Activity {
 					});
 				} else {
 					if (getIntent().getStringExtra("rest").equalsIgnoreCase(
-							"/search/eventi")) {
+							"/evento/search")) {
 
 						if (mListaEvento.size() != 0) {
 							((ListView) findViewById(R.id.lista_risultati_search))
@@ -204,7 +204,7 @@ public class ResultSearch extends Activity {
 									.setVisibility(View.VISIBLE);
 
 					} else if (getIntent().getStringExtra("rest")
-							.equalsIgnoreCase("/search/poi")) {
+							.equalsIgnoreCase("/poi/search")) {
 
 						if (mListaPOI.size() != 0) {
 							((ListView) findViewById(R.id.lista_risultati_search))
@@ -235,7 +235,7 @@ public class ResultSearch extends Activity {
 									.setVisibility(View.VISIBLE);
 
 					} else if (getIntent().getStringExtra("rest")
-							.equalsIgnoreCase("/search/sport")) {
+							.equalsIgnoreCase("/sport/search")) {
 
 						if (mListaSport.size() != 0) {
 							((ListView) findViewById(R.id.lista_risultati_search))
@@ -303,7 +303,7 @@ public class ResultSearch extends Activity {
 			View rowView = null;
 
 			if (getIntent().getStringExtra("rest").equalsIgnoreCase(
-					"/search/eventi")) {
+					"/evento/search")) {
 				if (values.size() != 0) {
 					rowView = inflater.inflate(R.layout.row_eventi, parent,
 							false);
@@ -325,7 +325,7 @@ public class ResultSearch extends Activity {
 										+ "...");
 				}
 			} else if (getIntent().getStringExtra("rest").equalsIgnoreCase(
-					"/search/poi")) {
+					"/poi/search")) {
 				if (values.size() != 0) {
 					rowView = inflater.inflate(R.layout.row_poi, parent, false);
 					POI poi = (POI) values.get(position);
@@ -338,7 +338,7 @@ public class ResultSearch extends Activity {
 							.setText(poi.getCategoria());
 				}
 			} else if (getIntent().getStringExtra("rest").equalsIgnoreCase(
-					"/search/sport")) {
+					"/sport/search")) {
 				if (values.size() != 0) {
 					rowView = inflater.inflate(R.layout.row_sport, parent,
 							false);

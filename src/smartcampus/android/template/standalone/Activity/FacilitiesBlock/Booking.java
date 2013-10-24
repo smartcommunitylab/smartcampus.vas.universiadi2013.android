@@ -80,10 +80,14 @@ public class Booking extends FragmentActivity implements LocationListener,
 		setContentView(R.layout.activity_booking);
 
 		final ArrayList<POICategory> mValues = new ArrayList<POICategory>();
-		mValues.add(new POICategory("Stadio del Ghiaccio", "stadioghiaccio"));
-		mValues.add(new POICategory("Impianto Scii", "impiantosci"));
-		mValues.add(new POICategory("Snowpark", "snowpark"));
-		mValues.add(new POICategory("Stadio di salto", "stadiosalto"));
+		mValues.add(new POICategory(
+				getString(R.string.CATEGORIA_STADIO_GHIACCIO), "stadioghiaccio"));
+		mValues.add(new POICategory(getString(R.string.CATEGORIA_IMPIANTO),
+				"impiantosci"));
+		mValues.add(new POICategory(getString(R.string.CATEGORIA_SNOWPARK),
+				"snowpark"));
+		mValues.add(new POICategory(getString(R.string.CATEGORIA_STADIO_SALTO),
+				"stadiosalto"));
 
 		dialogSelectPOI = new Dialog(Booking.this);
 		dialogSelectPOI.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -574,7 +578,8 @@ public class Booking extends FragmentActivity implements LocationListener,
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
 				mResult = ManagerData.getSearchForFilter(getIntent()
-						.getStringExtra("searchString"), "/search/poi");
+						.getStringExtra("searchString"),
+						getString(R.string.URL_POI_SEARCH));
 				if (!((Boolean) mResult.get("connectionError"))) {
 					mListaPOI = (ArrayList<JSONObject>) mResult.get("params");
 					JSONObject obj = mListaPOI.get(getIntent().getIntExtra(

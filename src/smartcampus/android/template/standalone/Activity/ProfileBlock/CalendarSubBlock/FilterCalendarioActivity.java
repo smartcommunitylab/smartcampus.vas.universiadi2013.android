@@ -42,7 +42,7 @@ public class FilterCalendarioActivity extends Activity {
 		builder.setTitle("Avviso");
 		builder.setMessage("Calendario in fase Beta\nPotrebbe risultare lento");
 		builder.setCancelable(false);
-		builder.setPositiveButton("Chiudi",
+		builder.setPositiveButton(getString(R.string.CHIUDI),
 				new android.content.DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						dialog.dismiss();
