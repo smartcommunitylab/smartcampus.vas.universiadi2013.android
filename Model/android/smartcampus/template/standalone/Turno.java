@@ -5,16 +5,17 @@ public class Turno {
 	private long data;
 	private String luogo;
 	private String categoria;
-	private long oraInizio;
-	private long oraFine;
-
-	public Turno(long data, String luogo, String categoria, long oraInizio, long oraFine) {
+	private String oraInizio;
+	private String oraFine;
+	
+	public Turno(long data, String luogo, String categoria, String oraInizio,
+			String oraFine) {
 		super();
 		this.data = data;
 		this.luogo = luogo;
+		this.categoria = categoria;
 		this.oraInizio = oraInizio;
 		this.oraFine = oraFine;
-		this.categoria = categoria;
 	}
 
 	public long getData() {
@@ -33,27 +34,27 @@ public class Turno {
 		this.luogo = luogo;
 	}
 
-	public long getOraInizio() {
-		return oraInizio;
-	}
-
-	public void setOraInizio(long oraInizio) {
-		this.oraInizio = oraInizio;
-	}
-
-	public long getOraFine() {
-		return oraFine;
-	}
-
-	public void setOraFine(long oraFine) {
-		this.oraFine = oraFine;
-	}
-
 	public String getCategoria() {
 		return categoria;
 	}
 
 	public void setCategoria(String categoria) {
 		this.categoria = categoria;
+	}
+
+	public String getOraInizio() {
+		return oraInizio;
+	}
+
+	public void setOraInizio(String oraInizio) {
+		this.oraInizio = oraInizio;
+	}
+
+	public String getOraFine() {
+		return oraFine;
+	}
+
+	public void setOraFine(String oraFine) {
+		this.oraFine = oraFine;
 	}
 }

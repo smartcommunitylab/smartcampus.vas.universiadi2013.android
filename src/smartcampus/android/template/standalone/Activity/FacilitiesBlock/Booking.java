@@ -12,6 +12,9 @@ import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.EventiBlock.Evento;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
+import smartcampus.android.template.standalone.Utilities.MapUtilities;
+import smartcampus.android.template.standalone.Utilities.MapUtilities.ErrorType;
+import smartcampus.android.template.standalone.Utilities.MapUtilities.ILocation;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -57,14 +60,11 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class Booking extends FragmentActivity implements LocationListener,
-		GooglePlayServicesClient.ConnectionCallbacks,
-		OnConnectionFailedListener {
+public class Booking extends FragmentActivity implements ILocation {
 
 	private GoogleMap mMappa;
+	private MapUtilities mMapUtilities;
 	private ImageView mButtonPOI;
-	private LocationManager locationManager;
-	private LocationClient mLocationClient;
 	private ArrayList<POI> mListaPOI;
 	private ArrayList<MarkerOptions> mListaMarkerOptions = new ArrayList<MarkerOptions>();
 
@@ -150,8 +150,12 @@ public class Booking extends FragmentActivity implements LocationListener,
 					@Override
 					protected Void doInBackground(Void... params) {
 						// TODO Auto-generated method stub
-						mResult = ManagerData.getPOIForType(mValues.get(arg2)
-								.getPrivateName());
+						mResult = ManagerData.getPOIForType("party");/*
+																	 * mValues.get
+																	 * (arg2) .
+																	 * getPrivateName
+																	 * ());
+																	 */
 						if (!((Boolean) mResult.get("connectionError"))) {
 							mListaPOI = (ArrayList<POI>) mResult.get("params");
 							for (POI obj : mListaPOI) {
@@ -226,6 +230,8 @@ public class Booking extends FragmentActivity implements LocationListener,
 		mMappa = ((SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.mappa)).getMap();
 
+		mMapUtilities = new MapUtilities(this, this);
+
 		UiSettings mMapController = mMappa.getUiSettings();
 
 		mMapController.setCompassEnabled(true);
@@ -233,6 +239,46 @@ public class Booking extends FragmentActivity implements LocationListener,
 		mMapController.setZoomControlsEnabled(false);
 
 		mMappa.setMyLocationEnabled(true);
+
+		if (!(getIntent().getBooleanExtra("search", false))) {
+			if (mMapUtilities.getLastKnownLocation() != null) {
+				final LatLng mMyMarker = new LatLng(mMapUtilities
+						.getLastKnownLocation().getLatitude(), mMapUtilities
+						.getLastKnownLocation().getLongitude());
+				if (mMyMarker != null) {
+					mMappa.setOnCameraChangeListener(new OnCameraChangeListener() {
+
+						@Override
+						public void onCameraChange(CameraPosition position) {
+							// TODO Auto-generated method stub
+							mMappa.animateCamera(CameraUpdateFactory
+									.newLatLngZoom(mMyMarker, 1));
+							mMappa.setOnCameraChangeListener(null);
+						}
+					});
+				}
+			}
+		} else {
+			setMapForSearch();
+			// LatLng mMyMarker = null;
+			// if (mMapUtilities.getLastKnownLocation() != null)
+			// mMyMarker = new LatLng(mMapUtilities.getLastKnownLocation()
+			// .getLatitude(), mMapUtilities.getLastKnownLocation()
+			// .getLongitude());
+			//
+			// LatLngBounds.Builder builder = new LatLngBounds.Builder();
+			//
+			// builder.include(new LatLng(poiForSearch.getLatGPS(), poiForSearch
+			// .getLngGPS()));
+			//
+			// if (mMyMarker != null)
+			// builder.include(mMyMarker);
+			// LatLngBounds bounds = builder.build();
+			//
+			// mMappa.animateCamera(CameraUpdateFactory
+			// .newLatLngBounds(bounds, 50));
+		}
+
 		mMappa.setOnMarkerClickListener(new OnMarkerClickListener() {
 
 			@Override
@@ -321,40 +367,6 @@ public class Booking extends FragmentActivity implements LocationListener,
 				}
 				if (arg1.getAction() == MotionEvent.ACTION_UP) {
 					mButtonPOI.setImageResource(R.drawable.button_poi_up);
-					// if
-					// (getSupportFragmentManager().findFragmentByTag("select")
-					// == null) {
-					// TranslateAnimation anim = new TranslateAnimation(0, 0,
-					// 0, -500);
-					// anim.setDuration(500);
-					// anim.setFillAfter(true);
-					// mButtonPOI.startAnimation(anim);
-					// mButtonPOI.setVisibility(View.GONE);
-					//
-					// FragmentManager fragmentManager =
-					// getSupportFragmentManager();
-					// FragmentTransaction fragmentTransaction = fragmentManager
-					// .beginTransaction();
-					// fragmentTransaction
-					// .setCustomAnimations(R.anim.slide_in_bottom,
-					// R.anim.slide_out_bottom,
-					// R.anim.slide_in_bottom,
-					// R.anim.slide_out_bottom);
-					// fragmentTransaction.addToBackStack(null);
-					// fragmentTransaction.add(R.id.container_select,
-					// new SelectBooking(fragmentManager, mButtonPOI,
-					// mMappa, mLocationClient), "select");
-					// fragmentTransaction.commit();
-					// } else {
-					// getSupportFragmentManager().popBackStack();
-					//
-					// TranslateAnimation anim = new TranslateAnimation(0, 0,
-					// -500, 0);
-					// anim.setDuration(300);
-					// anim.setFillAfter(true);
-					// mButtonPOI.startAnimation(anim);
-					// mButtonPOI.setVisibility(View.VISIBLE);
-					// }
 					if (dialogSelectPOI.isShowing()) {
 						dialogSelectPOI.dismiss();
 						TranslateAnimation anim = new TranslateAnimation(0, 0,
@@ -378,32 +390,6 @@ public class Booking extends FragmentActivity implements LocationListener,
 			}
 
 		});
-
-		// Otteniamo il riferimento al LocationManager
-		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-		if (locationManager != null) {
-			boolean gpsIsEnabled = locationManager
-					.isProviderEnabled(LocationManager.GPS_PROVIDER);
-			boolean networkIsEnabled = locationManager
-					.isProviderEnabled(LocationManager.PASSIVE_PROVIDER);
-
-			if (networkIsEnabled) {
-				locationManager.requestLocationUpdates(
-						LocationManager.GPS_PROVIDER, 0, 100, this);
-			} else if (gpsIsEnabled) {
-				locationManager.requestLocationUpdates(
-						LocationManager.PASSIVE_PROVIDER, 0, 100, this);
-			}
-		}
-
-		if (getIntent().getBooleanExtra("search", false))
-			setMapForSearch(getIntent().getStringExtra("searchString"));
-		else {
-			mLocationClient = new LocationClient(this, this, this);
-			mLocationClient.connect();
-		}
-
 	}
 
 	@Override
@@ -425,8 +411,8 @@ public class Booking extends FragmentActivity implements LocationListener,
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-
-		locationManager.removeUpdates(this);
+		if (mMapUtilities != null)
+			mMapUtilities.close();
 	}
 
 	@Override
@@ -434,105 +420,15 @@ public class Booking extends FragmentActivity implements LocationListener,
 		// TODO Auto-generated method stub
 		super.onResume();
 
-		if (locationManager != null) {
-			boolean gpsIsEnabled = locationManager
-					.isProviderEnabled(LocationManager.GPS_PROVIDER);
-			boolean networkIsEnabled = locationManager
-					.isProviderEnabled(LocationManager.PASSIVE_PROVIDER);
-
-			if (networkIsEnabled) {
-				locationManager.requestLocationUpdates(
-						LocationManager.GPS_PROVIDER, 0, 100, this);
-			} else if (gpsIsEnabled) {
-				locationManager.requestLocationUpdates(
-						LocationManager.PASSIVE_PROVIDER, 0, 100, this);
-			}
-		}
-	}
-
-	@Override
-	public void onConnectionFailed(ConnectionResult result) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onConnected(Bundle connectionHint) {
-		// TODO Auto-generated method stub
-		if (!(getIntent().getBooleanExtra("search", false))) {
-			if (mLocationClient.getLastLocation() != null) {
-				final LatLng mMyMarker = new LatLng(mLocationClient
-						.getLastLocation().getLatitude(), mLocationClient
-						.getLastLocation().getLongitude());
-				if (mMyMarker != null) {
-					mMappa.setOnCameraChangeListener(new OnCameraChangeListener() {
-
-						@Override
-						public void onCameraChange(CameraPosition position) {
-							// TODO Auto-generated method stub
-							mMappa.animateCamera(CameraUpdateFactory
-									.newLatLngZoom(mMyMarker, 1));
-							mMappa.setOnCameraChangeListener(null);
-						}
-					});
-				}
-			}
-		} else {
-			LatLng mMyMarker = null;
-			if (mLocationClient.getLastLocation() != null)
-				mMyMarker = new LatLng(mLocationClient.getLastLocation()
-						.getLatitude(), mLocationClient.getLastLocation()
-						.getLongitude());
-
-			LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-			builder.include(new LatLng(poiForSearch.getLatGPS(), poiForSearch
-					.getLngGPS()));
-
-			if (mMyMarker != null)
-				builder.include(mMyMarker);
-			LatLngBounds bounds = builder.build();
-
-			mMappa.animateCamera(CameraUpdateFactory
-					.newLatLngBounds(bounds, 50));
-		}
-	}
-
-	@Override
-	public void onDisconnected() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onLocationChanged(Location location) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-
+		if (mMapUtilities == null)
+			mMapUtilities = new MapUtilities(this, this);
 	}
 
 	private void setPOIsMap(ArrayList<POI> list) {
 		LatLng mMyMarker = null;
-		if (mLocationClient.getLastLocation() != null)
-			mMyMarker = new LatLng(mLocationClient.getLastLocation()
-					.getLatitude(), mLocationClient.getLastLocation()
+		if (mMapUtilities.getLastKnownLocation() != null)
+			mMyMarker = new LatLng(mMapUtilities.getLastKnownLocation()
+					.getLatitude(), mMapUtilities.getLastKnownLocation()
 					.getLongitude());
 
 		LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -544,7 +440,7 @@ public class Booking extends FragmentActivity implements LocationListener,
 		bounds = builder.build();
 	}
 
-	private void setMapForSearch(String string) {
+	private void setMapForSearch() {
 		new AsyncTask<Void, Void, Void>() {
 			private Dialog dialog;
 			private ArrayList<JSONObject> mListaPOI;
@@ -634,9 +530,6 @@ public class Booking extends FragmentActivity implements LocationListener,
 									poiForSearch.getCategoria() + "/"
 											+ poiForSearch.getLatGPS() + "-"
 											+ poiForSearch.getLngGPS()));
-					mLocationClient = new LocationClient(Booking.this,
-							Booking.this, Booking.this);
-					mLocationClient.connect();
 				}
 				// END ONPOST
 			}
@@ -716,5 +609,23 @@ public class Booking extends FragmentActivity implements LocationListener,
 		public void setPrivateName(String privateName) {
 			this.privateName = privateName;
 		}
+	}
+
+	@Override
+	public void onLocationChaged(Location l) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onErrorOccured(ErrorType ex, String provider) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onStatusChanged(String provider, boolean isActive) {
+		// TODO Auto-generated method stub
+
 	}
 }

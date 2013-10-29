@@ -16,7 +16,10 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
-            android:text="FontTextView" />
+            android:gravity="center"
+            android:text="FontTextView"
+            android:textColor="#3293AC" />
+
     </RelativeLayout>
 
     <RelativeLayout

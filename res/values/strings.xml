@@ -55,7 +55,7 @@
     <!-- Backend String -->
     <string name="OBJECT_TYPE_POST">application/x-www-form-urlencoded</string>
     <string name="AUTH_TOKEN">aee58a92-d42d-42e8-b55e-12e4289586fc</string>
-    <string name="JUNIPER_CLIENT_ID">23e47820-fe2e-4e5e-9a2c-6a24fad9fa92</string>
+    <string name="JUNIPER_CLIENT_ID"></string>
     <string name="JUNIPER_USER_DATA_AUTH">Bearer d13396ec22b37d4d6da70efd8dcf2bbcad4bb0e1</string>
     <string name="URL_ANONYMOUS_LOGIN">/anonymus_login</string>
     <string name="URL_USER_DATA">/getUserData</string>
@@ -66,17 +66,18 @@
     <string name="URL_POI_SEARCH">/poi/search</string>
     <string name="URL_INVALIDATE">/invalidate</string>
     <string name="URL_EVENTO_PER_DATA">/evento/data/</string>
-    <string name="URL_EVENTO_PER_SPORT">/evento_sport/</string>
+    <string name="URL_EVENTO_PER_SPORT">/evento/sport/</string>
     <string name="URL_EVENTO_PER_POI">/poi_evento</string>
     <string name="URL_MY_AGENDA">/meeting/</string>
     <string name="URL_ATLETI_PER_EVENTO">/atleti_evento</string>
-    <string name="URL_POI_PER_TIPO">/poi/party</string>
+    <string name="URL_POI_PER_TIPO">/poi/</string>
     <string name="URL_CATEGORIE_VOLONTARI">/volontari/categorie</string>
     <string name="URL_SEND_TICKET">/ticket/send</string>
     <string name="URL_DOMANDA">/domanda</string>
     <string name="URL_ALL_DOMANDA">/all_domanda</string>
     <string name="URL_TURNI">/turni/</string>
     <string name="URL_UTENTI_PER_TURNO">/users_for_turn</string>
+    <string name="URL_SAVE_UTENTE">/utente/save</string>
 
     <!-- Activity String -->
     <string name="ROUTE_FOR">Route per </string>

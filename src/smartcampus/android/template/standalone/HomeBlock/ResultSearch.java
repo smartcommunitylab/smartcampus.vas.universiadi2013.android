@@ -99,11 +99,13 @@ public class ResultSearch extends Activity {
 								Evento evento = new Evento(null,
 										obj.getString("title"),
 										obj.getLong("fromTime"),
-										obj.getString("description"), obj
+										obj.getString("description"),
+										(!obj.isNull("location")) ? obj
 												.getJSONArray("location")
-												.getDouble(0), obj
+												.getDouble(0) : 0,
+										(!obj.isNull("location")) ? obj
 												.getJSONArray("location")
-												.getDouble(1), "Sport 1",
+												.getDouble(1) : 0, "Sport 1",
 										downloadImageFormURL(obj.getJSONObject(
 												"customData").getString(
 												"imageUrl")));

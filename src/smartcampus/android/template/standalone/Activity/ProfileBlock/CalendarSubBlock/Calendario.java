@@ -1,5 +1,6 @@
 package smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,6 +24,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.smartcampus.template.standalone.Turno;
 import android.smartcampus.template.standalone.Utente;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -78,9 +80,13 @@ public class Calendario extends Activity implements ScrollViewListener {
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
-				mResult = ManagerData.getTurniForDataAndLuogoAndCategoria(
-						getIntent().getLongExtra("data", 0), getIntent()
-								.getStringExtra("luogo"), getIntent()
+				// mResult = ManagerData.getTurniForDataAndLuogoAndCategoria(
+				// getIntent().getLongExtra("data", 0), getIntent()
+				// .getStringExtra("luogo"), getIntent()
+				// .getStringExtra("categoria"));
+				mResult = ContainerTurno.getTurniWithAmbitoELuogo(getIntent()
+						.getLongExtra("data", 0),
+						getIntent().getStringExtra("luogo"), getIntent()
 								.getStringExtra("categoria"));
 				if (!((Boolean) mResult.get("connectionError")))
 					listTurni = (ArrayList<Turno>) mResult.get("params");
@@ -379,6 +385,8 @@ public class Calendario extends Activity implements ScrollViewListener {
 
 	private ExtendedTurno[] parseTurno(ArrayList<Turno> list) {
 		ExtendedTurno[] mResult = new ExtendedTurno[21];
+		for (int i = 0; i < mResult.length; i++)
+			mResult[i] = new ExtendedTurno(null, -1, null, -1);
 
 		Calendar tmp = Calendar.getInstance(Locale.getDefault());
 		tmp.set(Calendar.HOUR, 6);
@@ -391,54 +399,35 @@ public class Calendario extends Activity implements ScrollViewListener {
 
 		int numeroTurno = 0;
 
+		ArrayList<Utente> mUtentiFake = new ArrayList<Utente>();
+		mUtentiFake.add(new Utente("Gabriele", "Zacco", "", "", new byte[1],
+				"000", "", "", ""));
+
 		for (Turno turno : list) {
 
 			tmp.set(Calendar.HOUR, 8);
 			tmp.set(Calendar.AM_PM, Calendar.AM);
 			Date index = (Date) tmp.getTime().clone();
 
-			Calendar turnoCal = Calendar.getInstance(Locale.getDefault());
-			turnoCal.setTimeInMillis(turno.getOraInizio());
-			Date inizioTurno = (Date) turnoCal.getTime().clone();
-
-			turnoCal.setTimeInMillis(turno.getOraFine());
-			Date fineTurno = (Date) turnoCal.getTime().clone();
-
 			int i = 0;
 
-			while (index.before(fine) || index.compareTo(fine) == 0) {
-				if ((index.after(inizioTurno) || index.compareTo(inizioTurno) == 0)
-						&& (index.before(fineTurno) || index
-								.compareTo(fineTurno) == 0)) {
-					Map<String, Object> mMapUtentiTurno = ManagerData
-							.getUtentiForTurno(turno);
-					if ((Boolean) mMapUtentiTurno.get("connectionError")) {
-						Dialog noConnection = new Dialog(Calendario.this);
-						noConnection
-								.requestWindowFeature(Window.FEATURE_NO_TITLE);
-						noConnection
-								.setContentView(R.layout.dialog_no_connection);
-						noConnection.getWindow().setBackgroundDrawableResource(
-								R.drawable.dialog_rounded_corner_light_black);
-						noConnection.show();
-						noConnection.setCancelable(true);
-						noConnection.setOnCancelListener(new OnCancelListener() {
+			boolean startTurno = false;
 
-							@Override
-							public void onCancel(DialogInterface dialog) {
-								// TODO Auto-generated method stub
-								finish();
-							}
-						});
-					} else
-						mResult[i] = new ExtendedTurno((Date) index.clone(),
-								getNumeroVolontari(turno),
-								(ArrayList<Utente>) mMapUtentiTurno
-										.get("paras"), numeroTurno);
-				} else if (mResult[i] == null
-						|| mResult[i].getNumberTurno() == -1) {
-					mResult[i] = new ExtendedTurno((Date) index.clone(), -1,
-							null, -1);
+			SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm",
+					Locale.getDefault());
+			while (index.before(fine) || index.compareTo(fine) == 0) {
+				String stringIndex = dateFormatter.format(index);
+				if (stringIndex.equalsIgnoreCase(turno.getOraInizio())
+						&& !startTurno) {
+					mResult[i] = new ExtendedTurno((Date) index.clone(),
+							mUtentiFake.size(), mUtentiFake, numeroTurno);
+					startTurno = true;
+				} else if (!stringIndex.equalsIgnoreCase(turno.getOraFine())
+						&& startTurno) {
+					mResult[i] = new ExtendedTurno((Date) index.clone(),
+							mUtentiFake.size(), mUtentiFake, numeroTurno);
+				} else if (stringIndex.equalsIgnoreCase(turno.getOraFine())) {
+					startTurno = false;
 				}
 				i++;
 				index.setTime(index.getTime() + (60 * 30 * 1000));

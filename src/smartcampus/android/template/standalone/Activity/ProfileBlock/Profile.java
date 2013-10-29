@@ -65,6 +65,7 @@ public class Profile extends Activity {
 				// TODO Auto-generated method stub
 				super.onPreExecute();
 
+				Log.i("", "First dialog");
 				dialog = new Dialog(Profile.this);
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 				dialog.setContentView(R.layout.dialog_wait);
@@ -93,9 +94,9 @@ public class Profile extends Activity {
 					funzione = (ArrayList<String>) ManagerData
 							.getFunzioneForUser(user).get("params");
 				}
-				mListaSuperiori = (ArrayList<Utente>) (ManagerData
-						.getSuperioriForUser(user, funzione.get(0))
-						.get("params"));
+				// mListaSuperiori = (ArrayList<Utente>) (ManagerData
+				// .getSuperioriForUser(user, funzione.get(0))
+				// .get("params"));
 				return null;
 			}
 
@@ -103,8 +104,6 @@ public class Profile extends Activity {
 			protected void onPostExecute(Void result) {
 				// TODO Auto-generated method stub
 				super.onPostExecute(result);
-
-				dialog.dismiss();
 
 				// START ONPOST
 
@@ -133,138 +132,208 @@ public class Profile extends Activity {
 					((Spinner) findViewById(R.id.spinner_multiple_funzioni))
 							.setAdapter(new SpinnerAdapter(Profile.this,
 									funzione));
-					if (funzione.size() == 1) {
-						// String[] funzioneTokenized =
-						// funzione.get(0).split(":");
-						// ((TextView) findViewById(R.id.text_role))
-						// .setText(funzioneTokenized[funzioneTokenized.length -
-						// 1]);
-						// ((TextView)
-						// findViewById(R.id.text_role)).setTextSize(
-						// 12, TypedValue.COMPLEX_UNIT_SP);
-						// ((Spinner)
-						// findViewById(R.id.spinner_multiple_funzioni))
-						// .setVisibility(View.GONE);
-						((Spinner) findViewById(R.id.spinner_multiple_funzioni))
-								.setClickable(false);
-					} else {
-						((Spinner) findViewById(R.id.spinner_multiple_funzioni))
-								.setOnItemSelectedListener(new OnItemSelectedListener() {
+					((Spinner) findViewById(R.id.spinner_multiple_funzioni))
+							.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-									@Override
-									public void onItemSelected(
-											AdapterView<?> arg0, View arg1,
-											final int arg2, long arg3) {
-										// TODO Auto-generated method stub
+								@Override
+								public void onItemSelected(AdapterView<?> arg0,
+										View arg1, final int arg2, long arg3) {
+									// TODO Auto-generated method stub
 
-										new AsyncTask<Void, Void, Void>() {
-											private Dialog dialog;
-											private Map<String, Object> mMapListaSuperiori;
+									new AsyncTask<Void, Void, Void>() {
+										private Dialog dialog;
+										private Map<String, Object> mMapListaSuperiori;
 
-											@Override
-											protected void onPreExecute() {
-												// TODO Auto-generated method
-												// stub
-												super.onPreExecute();
+										@Override
+										protected void onPreExecute() {
+											// TODO Auto-generated method
+											// stub
+											super.onPreExecute();
 
-												dialog = new Dialog(
+											Log.i("", "Second dialog");
+											dialog = new Dialog(Profile.this);
+											dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+											dialog.setContentView(R.layout.dialog_wait);
+											dialog.getWindow()
+													.setBackgroundDrawableResource(
+															R.drawable.dialog_rounded_corner_light_black);
+											dialog.show();
+											dialog.setCancelable(true);
+											dialog.setOnCancelListener(new OnCancelListener() {
+
+												@Override
+												public void onCancel(
+														DialogInterface dialog) {
+													// TODO Auto-generated
+													// method stub
+													cancel(true);
+													finish();
+												}
+											});
+
+										}
+
+										@Override
+										protected Void doInBackground(
+												Void... params) {
+											// TODO Auto-generated method
+											// stub
+											mMapListaSuperiori = ManagerData
+													.getSuperioriForUser(user,
+															funzione.get(arg2));
+											if (!((Boolean) mMapListaSuperiori
+													.get("connectionError"))) {
+												mListaSuperiori = (ArrayList<Utente>) mMapListaSuperiori
+														.get("params");
+											}
+											return null;
+										}
+
+										@Override
+										protected void onPostExecute(Void result) {
+											// TODO Auto-generated method
+											// stub
+											super.onPostExecute(result);
+
+											// START ONPOST
+
+											if ((Boolean) mMapUserData
+													.get("connectionError")) {
+												Dialog noConnection = new Dialog(
 														Profile.this);
-												dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-												dialog.setContentView(R.layout.dialog_wait);
-												dialog.getWindow()
+												noConnection
+														.requestWindowFeature(Window.FEATURE_NO_TITLE);
+												noConnection
+														.setContentView(R.layout.dialog_no_connection);
+												noConnection
+														.getWindow()
 														.setBackgroundDrawableResource(
 																R.drawable.dialog_rounded_corner_light_black);
-												dialog.show();
-												dialog.setCancelable(true);
-												dialog.setOnCancelListener(new OnCancelListener() {
+												noConnection
+														.setCancelable(true);
+												noConnection.show();
+												noConnection
+														.setOnCancelListener(new OnCancelListener() {
 
-													@Override
-													public void onCancel(
-															DialogInterface dialog) {
-														// TODO Auto-generated
-														// method stub
-														cancel(true);
-														finish();
-													}
-												});
+															@Override
+															public void onCancel(
+																	DialogInterface dialog) {
+																// TODO
+																// Auto-generated
+																// method
+																// stub
+																finish();
+															}
+														});
 
-											}
-
-											@Override
-											protected Void doInBackground(
-													Void... params) {
-												// TODO Auto-generated method
-												// stub
-												mMapListaSuperiori = ManagerData.getSuperioriForUser(
-														user,
-														funzione.get(arg2));
-												if (!((Boolean) mMapListaSuperiori
-														.get("connectionError"))) {
-													mListaSuperiori = (ArrayList<Utente>) mMapListaSuperiori
-															.get("params");
-												}
-												return null;
-											}
-
-											@Override
-											protected void onPostExecute(
-													Void result) {
-												// TODO Auto-generated method
-												// stub
-												super.onPostExecute(result);
-
-												dialog.dismiss();
-
-												// START ONPOST
-
-												if ((Boolean) mMapUserData
-														.get("connectionError")) {
-													Dialog noConnection = new Dialog(
-															Profile.this);
-													noConnection
-															.requestWindowFeature(Window.FEATURE_NO_TITLE);
-													noConnection
-															.setContentView(R.layout.dialog_no_connection);
-													noConnection
-															.getWindow()
-															.setBackgroundDrawableResource(
-																	R.drawable.dialog_rounded_corner_light_black);
-													noConnection
-															.setCancelable(true);
-													noConnection.show();
-													noConnection
-															.setOnCancelListener(new OnCancelListener() {
-
-																@Override
-																public void onCancel(
-																		DialogInterface dialog) {
-																	// TODO
-																	// Auto-generated
-																	// method
-																	// stub
-																	finish();
-																}
-															});
-
-												} else {
+											} else {
+												if (mListaSuperiori.size() != 0) {
 													mAdapter = new RowVolontario(
 															getApplicationContext(),
 															mListaSuperiori);
 													listSuperiori
 															.setAdapter(mAdapter);
-													mAdapter.notifyDataSetChanged();
-												}
+													listSuperiori
+															.setOnItemClickListener(new OnItemClickListener() {
+
+																@Override
+																public void onItemClick(
+																		AdapterView<?> arg0,
+																		View arg1,
+																		int arg2,
+																		long arg3) {
+																	// TODO
+																	// Auto-generated
+																	// method
+																	// stub
+																	final Utente mUtente = mListaSuperiori
+																			.get(arg2);
+
+																	if (mUtente
+																			.getNumeroTelefonico()
+																			.equalsIgnoreCase(
+																					"")) {
+																		AlertDialog.Builder builder = new AlertDialog.Builder(
+																				Profile.this);
+																		builder.setTitle(getString(R.string.CONTATTO));
+																		builder.setMessage(getString(R.string.NESSUN_NUMERO));
+																		builder.setCancelable(false);
+																		builder.setNeutralButton(
+																				getString(R.string.CHIUDI),
+																				new android.content.DialogInterface.OnClickListener() {
+																					public void onClick(
+																							DialogInterface dialog,
+																							int id) {
+																						dialog.dismiss();
+																					}
+																				});
+																		builder.create()
+																				.show();
+																	} else {
+																		AlertDialog.Builder builder = new AlertDialog.Builder(
+																				Profile.this);
+																		builder.setTitle(getString(R.string.CONTATTO));
+																		builder.setMessage("Vuoi chiamare "
+																				+ mUtente
+																						.getNome()
+																				+ " al numero "
+																				+ mUtente
+																						.getNumeroTelefonico());
+																		builder.setCancelable(false);
+																		builder.setPositiveButton(
+																				getString(R.string.CHIAMA),
+																				new android.content.DialogInterface.OnClickListener() {
+																					public void onClick(
+																							DialogInterface dialog,
+																							int id) {
+																						dialog.dismiss();
+																						Intent intent = new Intent(
+																								Intent.ACTION_CALL);
+																						intent.setData(Uri
+																								.parse("tel:"
+																										+ mUtente
+																												.getNumeroTelefonico()));
+																						startActivityForResult(
+																								intent,
+																								0);
+																					}
+																				});
+																		builder.setNegativeButton(
+																				getString(R.string.CHIUDI),
+																				new android.content.DialogInterface.OnClickListener() {
+																					public void onClick(
+																							DialogInterface dialog,
+																							int id) {
+																						dialog.dismiss();
+																					}
+																				});
+																		builder.create()
+																				.show();
+																	}
+																}
+															});
+												} else
+													((TextView) findViewById(R.id.text_nessun_superiore))
+															.setVisibility(View.VISIBLE);
 											}
-										}.execute();
-									}
 
-									@Override
-									public void onNothingSelected(
-											AdapterView<?> arg0) {
-										// TODO Auto-generated method stub
+											dialog.dismiss();
+										}
+									}.execute();
+								}
 
-									}
-								});
+								@Override
+								public void onNothingSelected(
+										AdapterView<?> arg0) {
+									// TODO Auto-generated method stub
+
+								}
+							});
+
+					if (funzione.size() == 1)
+						((Spinner) findViewById(R.id.spinner_multiple_funzioni))
+								.setClickable(false);
+					else {
 						((RelativeLayout) findViewById(R.id.btn_open_spinner_funzioni))
 								.setOnTouchListener(new OnTouchListener() {
 
@@ -293,80 +362,9 @@ public class Profile extends Activity {
 					}
 				}
 
-				if (mListaSuperiori.size() != 0) {
-					mAdapter = new RowVolontario(getApplicationContext(),
-							mListaSuperiori);
-					listSuperiori.setAdapter(mAdapter);
-					listSuperiori
-							.setOnItemClickListener(new OnItemClickListener() {
-
-								@Override
-								public void onItemClick(AdapterView<?> arg0,
-										View arg1, int arg2, long arg3) {
-									// TODO Auto-generated method stub
-									final Utente mUtente = mListaSuperiori
-											.get(arg2);
-
-									if (mUtente.getNumeroTelefonico()
-											.equalsIgnoreCase("")) {
-										AlertDialog.Builder builder = new AlertDialog.Builder(
-												Profile.this);
-										builder.setTitle(getString(R.string.CONTATTO));
-										builder.setMessage(getString(R.string.NESSUN_NUMERO));
-										builder.setCancelable(false);
-										builder.setNeutralButton(
-												getString(R.string.CHIUDI),
-												new android.content.DialogInterface.OnClickListener() {
-													public void onClick(
-															DialogInterface dialog,
-															int id) {
-														dialog.dismiss();
-													}
-												});
-										builder.create().show();
-									} else {
-										AlertDialog.Builder builder = new AlertDialog.Builder(
-												Profile.this);
-										builder.setTitle(getString(R.string.CONTATTO));
-										builder.setMessage("Vuoi chiamare "
-												+ mUtente.getNome()
-												+ " al numero "
-												+ mUtente.getNumeroTelefonico());
-										builder.setCancelable(false);
-										builder.setPositiveButton(
-												getString(R.string.CHIAMA),
-												new android.content.DialogInterface.OnClickListener() {
-													public void onClick(
-															DialogInterface dialog,
-															int id) {
-														dialog.dismiss();
-														Intent intent = new Intent(
-																Intent.ACTION_CALL);
-														intent.setData(Uri.parse("tel:"
-																+ mUtente
-																		.getNumeroTelefonico()));
-														startActivityForResult(
-																intent, 0);
-													}
-												});
-										builder.setNegativeButton(
-												getString(R.string.CHIUDI),
-												new android.content.DialogInterface.OnClickListener() {
-													public void onClick(
-															DialogInterface dialog,
-															int id) {
-														dialog.dismiss();
-													}
-												});
-										builder.create().show();
-									}
-								}
-							});
-				} else
-					((TextView) findViewById(R.id.text_nessun_superiore))
-							.setVisibility(View.VISIBLE);
-
 				// END ONPOST
+
+				dialog.dismiss();
 			}
 
 		}.execute();
@@ -444,7 +442,7 @@ public class Profile extends Activity {
 		private ArrayList<String> values;
 
 		public SpinnerAdapter(Context context, ArrayList<String> values) {
-			super(context, R.layout.row_spinner_funzioni, values);
+			super(context, android.R.layout.simple_list_item_1, values);
 			this.context = context;
 			this.values = values;
 		}
@@ -475,15 +473,21 @@ public class Profile extends Activity {
 			// return super.getView(position, convertView, parent);
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View rowView = inflater.inflate(R.layout.row_spinner_funzioni,
-					parent, false);
+			View rowView = inflater.inflate(
+					android.R.layout.simple_list_item_1, parent, false);
 
 			String[] funzioneTokenized = values.get(position).split(":");
-			((TextView) rowView.findViewById(R.id.text_spinner_funzione))
+			((TextView) rowView.findViewById(android.R.id.text1))
 					.setText(funzioneTokenized[funzioneTokenized.length - 1]);
-			if (values.get(position).length() >= 13)
-				((TextView) rowView.findViewById(R.id.text_spinner_funzione))
-						.setTextSize(12, TypedValue.COMPLEX_UNIT_SP);
+			((TextView) rowView.findViewById(android.R.id.text1))
+					.setTextColor(color);
+			((TextView) rowView.findViewById(android.R.id.text1))
+					.setTypeface(Typeface.createFromAsset(
+							getApplicationContext().getAssets(),
+							"PatuaOne-Regular.otf"));
+			if (values.get(position).length() > 13)
+				((TextView) rowView.findViewById(android.R.id.text1))
+						.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 
 			return rowView;
 		}
