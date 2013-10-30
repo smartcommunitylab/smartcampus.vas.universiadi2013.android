@@ -1,18 +1,20 @@
 package android.smartcampus.template.standalone;
 
+import java.util.ArrayList;
+
 public class Turno {
 
 	private long data;
-	private String luogo;
+	private ArrayList<Utente> volontari;
 	private String categoria;
 	private String oraInizio;
 	private String oraFine;
 	
-	public Turno(long data, String luogo, String categoria, String oraInizio,
-			String oraFine) {
+	public Turno(long data, ArrayList<Utente> volontari, String categoria,
+			String oraInizio, String oraFine) {
 		super();
 		this.data = data;
-		this.luogo = luogo;
+		this.volontari = volontari;
 		this.categoria = categoria;
 		this.oraInizio = oraInizio;
 		this.oraFine = oraFine;
@@ -26,12 +28,12 @@ public class Turno {
 		this.data = data;
 	}
 
-	public String getLuogo() {
-		return luogo;
+	public ArrayList<Utente> getVolontari() {
+		return volontari;
 	}
 
-	public void setLuogo(String luogo) {
-		this.luogo = luogo;
+	public void setVolontari(ArrayList<Utente> volontari) {
+		this.volontari = volontari;
 	}
 
 	public String getCategoria() {

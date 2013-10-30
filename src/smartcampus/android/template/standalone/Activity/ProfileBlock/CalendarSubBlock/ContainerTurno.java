@@ -17,7 +17,7 @@ public class ContainerTurno {
 
 	public static Map<String, Object> getTurniWithAmbitoELuogo(Long date,
 			String luogo, String ambito) {
-		fillListTurni();
+		//fillListTurni();
 		ArrayList<Turno> mReturn = new ArrayList<Turno>();
 		for (Turno turno : mListaTurni) {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("dd.MM.yyyy",
@@ -31,8 +31,8 @@ public class ContainerTurno {
 					mReturn.add(turno);
 
 			} else if (ambito == null) {
-				if (dateTurno.equalsIgnoreCase(dateFilter)
-						&& turno.getLuogo().equalsIgnoreCase(luogo))
+				if (dateTurno.equalsIgnoreCase(dateFilter))
+//						&& turno.getLuogo().equalsIgnoreCase(luogo))
 					mReturn.add(turno);
 
 			} else if (luogo == null) {
@@ -43,7 +43,7 @@ public class ContainerTurno {
 			} else {
 				if (dateTurno.equalsIgnoreCase(dateFilter)
 						&& turno.getCategoria().equalsIgnoreCase(ambito)
-						&& turno.getLuogo().equalsIgnoreCase(luogo))
+						)
 					mReturn.add(turno);
 			}
 		}
@@ -54,30 +54,30 @@ public class ContainerTurno {
 		return mResult;
 	}
 
-	private static void fillListTurni() {
-		Calendar day = Calendar.getInstance();
-		for (int i = 0; i < 100; i++) {
-			// SimpleDateFormat dateFormatter = new
-			// SimpleDateFormat("dd.MM.yyyy",
-			// Locale.getDefault());
-			// Log.i("Today", dateFormatter.format(day.getTime()));
-			mListaTurni.add(new Turno(day.getTimeInMillis(), "Luogo 1",
-					"Ambito 1", "08:30", "10:30"));
-			mListaTurni.add(new Turno(day.getTimeInMillis(), "Luogo 1",
-					"Ambito 1", "14:30", "18:00"));
-			mListaTurni.add(new Turno(day.getTimeInMillis(), "Luogo 1",
-					"Ambito 2", "09:30", "10:30"));
-			mListaTurni.add(new Turno(day.getTimeInMillis(), "Luogo 1",
-					"Ambito 2", "14:30", "16:00"));
-			mListaTurni.add(new Turno(day.getTimeInMillis(), "Luogo 2",
-					"Ambito 1", "08:00", "10:30"));
-			mListaTurni.add(new Turno(day.getTimeInMillis(), "Luogo 2",
-					"Ambito 1", "14:30", "18:00"));
-			mListaTurni.add(new Turno(day.getTimeInMillis(), "Luogo 3",
-					"Ambito 3", "08:00", "18:00"));
-
-			day.setTimeInMillis(day.getTimeInMillis() + (3600 * 1000 * 24));
-		}
-	}
+//	private static void fillListTurni() {
+//		Calendar day = Calendar.getInstance();
+//		for (int i = 0; i < 100; i++) {
+//			// SimpleDateFormat dateFormatter = new
+//			// SimpleDateFormat("dd.MM.yyyy",
+//			// Locale.getDefault());
+//			// Log.i("Today", dateFormatter.format(day.getTime()));
+//			mListaTurni.add(new Turno(day.getTimeInMillis(), "Luogo 1",
+//					"Ambito 1", "08:30", "10:30"));
+//			mListaTurni.add(new Turno(day.getTimeInMillis(), "Luogo 1",
+//					"Ambito 1", "14:30", "18:00"));
+//			mListaTurni.add(new Turno(day.getTimeInMillis(), "Luogo 1",
+//					"Ambito 2", "09:30", "10:30"));
+//			mListaTurni.add(new Turno(day.getTimeInMillis(), "Luogo 1",
+//					"Ambito 2", "14:30", "16:00"));
+//			mListaTurni.add(new Turno(day.getTimeInMillis(), "Luogo 2",
+//					"Ambito 1", "08:00", "10:30"));
+//			mListaTurni.add(new Turno(day.getTimeInMillis(), "Luogo 2",
+//					"Ambito 1", "14:30", "18:00"));
+//			mListaTurni.add(new Turno(day.getTimeInMillis(), "Luogo 3",
+//					"Ambito 3", "08:00", "18:00"));
+//
+//			day.setTimeInMillis(day.getTimeInMillis() + (3600 * 1000 * 24));
+//		}
+//	}
 
 }

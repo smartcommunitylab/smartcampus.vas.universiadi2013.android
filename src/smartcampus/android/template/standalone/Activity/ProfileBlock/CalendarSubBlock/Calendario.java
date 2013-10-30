@@ -84,10 +84,12 @@ public class Calendario extends Activity implements ScrollViewListener {
 				// getIntent().getLongExtra("data", 0), getIntent()
 				// .getStringExtra("luogo"), getIntent()
 				// .getStringExtra("categoria"));
-				mResult = ContainerTurno.getTurniWithAmbitoELuogo(getIntent()
-						.getLongExtra("data", 0),
-						getIntent().getStringExtra("luogo"), getIntent()
-								.getStringExtra("categoria"));
+				mResult = ManagerData.getTurniForDataAndFunzione(getIntent()
+						.getLongExtra("dataFrom", 0),
+						getIntent().getLongExtra("dataTo", 0), getIntent()
+								.getStringExtra("personale"),
+						(FunzioneObj) (getIntent()
+								.getSerializableExtra("funzione")));
 				if (!((Boolean) mResult.get("connectionError")))
 					listTurni = (ArrayList<Turno>) mResult.get("params");
 				return null;
@@ -143,36 +145,28 @@ public class Calendario extends Activity implements ScrollViewListener {
 					mScroll.setScrollViewListener(Calendario.this);
 					mAllAScrollView.add(mScroll);
 
-					ArrayList<String> mLuoghi = getLuoghi(listTurni);
-					ArrayList<String> mCategorie = getCategorie(listTurni);
+					ArrayList<String> mListaGiorni = getListaGiorni();
+					ArrayList<View> list = new ArrayList<View>();
 
-					for (int i = 0; i < mLuoghi.size(); i++) // # luoghi
+					for (int i = 0; i < mListaGiorni.size(); i++) // # giorni
 					{
-						ArrayList<View> list = new ArrayList<View>();
-						for (int j = 0; j < mCategorie.size(); j++) // #
-																	// categorie
-																	// per luogo
-						{
-							if (getTurniPerLuogoECategoria(mLuoghi.get(i),
-									mCategorie.get(j)).size() != 0) {
-								View base = createBaseColoumn(
-										mCategorie.get(j),
-										getTurniPerLuogoECategoria(
-												mLuoghi.get(i),
-												mCategorie.get(j)));
-								list.add(base);
-							}
-						}
 
-						View complex = createComplexColoumn(mLuoghi.get(i),
-								list);
-						complex.setLayoutParams(new LayoutParams(
-								LayoutParams.MATCH_PARENT,
-								LayoutParams.MATCH_PARENT, 0.5f));
+						View base = createBaseColoumn(mListaGiorni.get(i),
+								listTurni);
+						list.add(base);
 
-						LinearLayout mContainer = (LinearLayout) findViewById(R.id.container_complex_coloumn);
-						mContainer.addView(complex);
 					}
+
+					View complex = createComplexColoumn(
+							((FunzioneObj) (getIntent().getSerializableExtra("funzione")))
+									.getFunzione(), list);
+					complex.setLayoutParams(new LayoutParams(
+							LayoutParams.MATCH_PARENT,
+							LayoutParams.MATCH_PARENT, 0.5f));
+
+					LinearLayout mContainer = (LinearLayout) findViewById(R.id.container_complex_coloumn);
+					mContainer.addView(complex);
+
 				}
 
 				// END ONPOST
@@ -182,12 +176,23 @@ public class Calendario extends Activity implements ScrollViewListener {
 
 	}
 
-	private View createBaseColoumn(String categoria, ArrayList<Turno> list) {
+	private ArrayList<String> getListaGiorni() {
+		ArrayList<String> mReturn = new ArrayList<String>();
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE dd.MM",
+				Locale.getDefault());
+		Long date = getIntent().getLongExtra("dataFrom", 0);
+		while (date <= getIntent().getLongExtra("dataTo", 0)) {
+			mReturn.add(dateFormatter.format(date));
+			date = date + (3600 * 1000 * 24);
+		}
+		return mReturn;
+	}
+
+	private View createBaseColoumn(String data, ArrayList<Turno> list) {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View coloumn = inflater.inflate(R.layout.base_coloumn, null, false);
 
-		((TextView) coloumn.findViewById(R.id.text_categoria))
-				.setText(categoria);
+		((TextView) coloumn.findViewById(R.id.text_categoria)).setText(data);
 
 		ObservableScrollView mScroll = (ObservableScrollView) coloumn
 				.findViewById(R.id.scrollView1);
@@ -342,46 +347,46 @@ public class Calendario extends Activity implements ScrollViewListener {
 			child.scrollTo(x, y);
 	}
 
-	private ArrayList<String> getLuoghi(ArrayList<Turno> mList) {
-		ArrayList<String> mResult = new ArrayList<String>();
-		for (int i = 0; i < mList.size(); i++) {
-			if (!mResult.contains(mList.get(i).getLuogo()))
-				mResult.add(mList.get(i).getLuogo());
-		}
-		return mResult;
-	}
+	// private ArrayList<String> getLuoghi(ArrayList<Turno> mList) {
+	// ArrayList<String> mResult = new ArrayList<String>();
+	// for (int i = 0; i < mList.size(); i++) {
+	// if (!mResult.contains(mList.get(i).getLuogo()))
+	// mResult.add(mList.get(i).getLuogo());
+	// }
+	// return mResult;
+	// }
 
-	private ArrayList<String> getCategorie(ArrayList<Turno> mList) {
-		ArrayList<String> mResult = new ArrayList<String>();
-		for (int i = 0; i < mList.size(); i++) {
-			if (!mResult.contains(mList.get(i).getCategoria()))
-				mResult.add(mList.get(i).getCategoria());
-		}
-		return mResult;
-	}
+//	private ArrayList<String> getCategorie(ArrayList<Turno> mList) {
+//		ArrayList<String> mResult = new ArrayList<String>();
+//		for (int i = 0; i < mList.size(); i++) {
+//			if (!mResult.contains(mList.get(i).getCategoria()))
+//				mResult.add(mList.get(i).getCategoria());
+//		}
+//		return mResult;
+//	}
 
-	private ArrayList<Turno> getTurniPerLuogo(String luogo) {
-		ArrayList<Turno> mResult = new ArrayList<Turno>();
-		for (int i = 0; i < listTurni.size(); i++) {
-			if (listTurni.get(i).getLuogo().equalsIgnoreCase(luogo))
-				mResult.add(listTurni.get(i));
-		}
+	// private ArrayList<Turno> getTurniPerLuogo(String luogo) {
+	// ArrayList<Turno> mResult = new ArrayList<Turno>();
+	// for (int i = 0; i < listTurni.size(); i++) {
+	// if (listTurni.get(i).getLuogo().equalsIgnoreCase(luogo))
+	// mResult.add(listTurni.get(i));
+	// }
+	//
+	// return mResult;
+	// }
 
-		return mResult;
-	}
-
-	private ArrayList<Turno> getTurniPerLuogoECategoria(String luogo,
-			String categoria) {
-		ArrayList<Turno> mResult = new ArrayList<Turno>();
-		for (int i = 0; i < listTurni.size(); i++) {
-			if (listTurni.get(i).getLuogo().equalsIgnoreCase(luogo)
-					&& listTurni.get(i).getCategoria()
-							.equalsIgnoreCase(categoria))
-				mResult.add(listTurni.get(i));
-		}
-
-		return mResult;
-	}
+	// private ArrayList<Turno> getTurniPerLuogoECategoria(String luogo,
+	// String categoria) {
+	// ArrayList<Turno> mResult = new ArrayList<Turno>();
+	// for (int i = 0; i < listTurni.size(); i++) {
+	// if (listTurni.get(i).getLuogo().equalsIgnoreCase(luogo)
+	// && listTurni.get(i).getCategoria()
+	// .equalsIgnoreCase(categoria))
+	// mResult.add(listTurni.get(i));
+	// }
+	//
+	// return mResult;
+	// }
 
 	private ExtendedTurno[] parseTurno(ArrayList<Turno> list) {
 		ExtendedTurno[] mResult = new ExtendedTurno[21];
@@ -438,9 +443,9 @@ public class Calendario extends Activity implements ScrollViewListener {
 		return mResult;
 	}
 
-	private int getNumeroVolontari(Turno turno) {
-		return ManagerData.getUtentiForTurno(turno).size();
-	}
+	// private int getNumeroVolontari(Turno turno) {
+	// return ManagerData.getUtentiForTurno(turno).size();
+	// }
 
 	private class ExtendedTurno {
 		Date date;

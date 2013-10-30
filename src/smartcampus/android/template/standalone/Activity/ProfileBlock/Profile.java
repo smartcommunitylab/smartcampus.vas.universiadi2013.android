@@ -8,6 +8,7 @@ import java.util.Map;
 import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.HomeBlock.Home;
+import smartcampus.android.template.standalone.IntroBlock.UserConstant;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -88,11 +89,10 @@ public class Profile extends Activity {
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
-				mMapUserData = ManagerData.readUserData();
+				user = UserConstant.getUser();
+				mMapUserData = ManagerData.getFunzioneForUser(user);
 				if (!((Boolean) mMapUserData.get("connectionError"))) {
-					user = (Utente) mMapUserData.get("params");
-					funzione = (ArrayList<String>) ManagerData
-							.getFunzioneForUser(user).get("params");
+					funzione = (ArrayList<String>) mMapUserData.get("params");
 				}
 				// mListaSuperiori = (ArrayList<Utente>) (ManagerData
 				// .getSuperioriForUser(user, funzione.get(0))

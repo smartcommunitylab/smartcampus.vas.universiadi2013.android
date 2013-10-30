@@ -11,8 +11,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.http.util.ByteArrayBuffer;
@@ -20,7 +22,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FunzioneObj;
 import smartcampus.android.template.standalone.Activity.SportBlock.SportImageConstant;
+import smartcampus.android.template.standalone.IntroBlock.UserConstant;
 import smartcampus.android.template.universiadi.R;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -404,7 +408,7 @@ public class ManagerData {
 	}
 
 	public static Map<String, Object> getCategorieVolontari() {
-		ArrayList<String> mListaCategorie = new ArrayList<String>();
+		ArrayList<FunzioneObj> mListaCategorie = new ArrayList<FunzioneObj>();
 
 		try {
 			Map<String, Object> mMapRequest = mRest.restRequest(
@@ -423,7 +427,9 @@ public class ManagerData {
 					String categoria = utentiComitato.getJSONObject(i)
 							.getString("path")
 							.replace("Organising Committee:", "");
-					mListaCategorie.add(categoria);
+					int id = utentiComitato.getJSONObject(i).getInt("id");
+					FunzioneObj funzione = new FunzioneObj(categoria, id);
+					mListaCategorie.add(funzione);
 				}
 			}
 			mResult.put("params", mListaCategorie);
@@ -632,119 +638,88 @@ public class ManagerData {
 		return null;
 	}
 
-	// public static Map<String, Object> getTurniForDataAndLuogoAndCategoria(
-	// Long date, String luogo, String categoria) {
-	// ArrayList<Turno> mListaTurni = new ArrayList<Turno>();
-	// JSONArray arrayTurni = null;
-	// try {
-	//
-	// Map<String, Object> mResult = new HashMap<String, Object>();
-	// Map<String, Object> mMapRequest = null;
-	// if (luogo != null && categoria != null) {
-	// mMapRequest = mRest.restRequest(
-	// new String[] { mContext.getString(R.string.URL_TURNI)
-	// + date + "/" + luogo.replace(" ", "%20") + "/"
-	// + categoria.replace(" ", "%20") },
-	// RestRequestType.GET);
-	// mResult.put("connectionError",
-	// (Boolean) mMapRequest.get("connectionError"));
-	// if (!((Boolean) mMapRequest.get("connectionError")))
-	// arrayTurni = new JSONArray(
-	// (String) mMapRequest.get("params"));
-	// } else if (luogo != null) {
-	// mMapRequest = mRest.restRequest(
-	// new String[] { mContext.getString(R.string.URL_TURNI)
-	// + date + "/" + luogo.replace(" ", "%20")
-	// + "/\"\"" }, RestRequestType.GET);
-	// mResult.put("connectionError",
-	// (Boolean) mMapRequest.get("connectionError"));
-	// if (!((Boolean) mMapRequest.get("connectionError")))
-	// arrayTurni = new JSONArray(
-	// (String) mMapRequest.get("params"));
-	// } else if (categoria != null) {
-	// mMapRequest = mRest.restRequest(
-	// new String[] { mContext.getString(R.string.URL_TURNI)
-	// + date + "/\"\"/"
-	// + categoria.replace(" ", "%20") },
-	// RestRequestType.GET);
-	// mResult.put("connectionError",
-	// (Boolean) mMapRequest.get("connectionError"));
-	// if (!((Boolean) mMapRequest.get("connectionError")))
-	// arrayTurni = new JSONArray(
-	// (String) mMapRequest.get("params"));
-	// } else {
-	// mMapRequest = mRest.restRequest(
-	// new String[] { mContext.getString(R.string.URL_TURNI)
-	// + date + "/\"\"/\"\"" }, RestRequestType.GET);
-	// mResult.put("connectionError",
-	// (Boolean) mMapRequest.get("connectionError"));
-	// if (!((Boolean) mMapRequest.get("connectionError")))
-	// arrayTurni = new JSONArray(
-	// (String) mMapRequest.get("params"));
-	// }
-	// if (!((Boolean) mMapRequest.get("connectionError"))) {
-	// for (int i = 0; i < arrayTurni.length(); i++) {
-	// JSONObject obj = arrayTurni.getJSONObject(i);
-	// Turno turno = new Turno(obj.getLong("data"),
-	// obj.getString("luogo"), obj.getString("categoria"),
-	// obj.getLong("oraInizio"), obj.getLong("oraFine"));
-	// mListaTurni.add(turno);
-	// }
-	//
-	// mResult.put("params", mListaTurni);
-	// }
-	// return mResult;
-	// } catch (JSONException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	//
-	// return null;
-	// }
-
-	public static Map<String, Object> getUtentiForTurno(Turno turno) {
-		ArrayList<Utente> mListaUtenti = new ArrayList<Utente>();
-		JSONObject params = new JSONObject();
-		try {
-			params.put("data", turno.getData());
-			params.put("categoria", turno.getCategoria());
-			params.put("luogo", turno.getLuogo());
-			params.put("oraInizio", turno.getOraInizio());
-			params.put("oraFine", turno.getOraFine());
-
-			Map<String, Object> mMapReqeust = mRest.restRequest(
-					new String[] {
-							mContext.getString(R.string.URL_UTENTI_PER_TURNO),
-							params.toString() }, RestRequestType.POST);
-			Map<String, Object> mResult = new HashMap<String, Object>();
-			mResult.put("connectionError",
-					(Boolean) mMapReqeust.get("connectionError"));
-
-			if (!((Boolean) (mMapReqeust.get("connectionError")))) {
-				JSONArray arrayUtenti = new JSONArray(
-						(String) mMapReqeust.get("params"));
-
-				for (int i = 0; i < arrayUtenti.length(); i++) {
-					JSONObject obj = arrayUtenti.getJSONObject(i);
-					Utente utente = new Utente(obj.getString("firstname"),
-							obj.getString("lastname"),
-							obj.getString("afunction"), obj.getString("arole"),
-							obj.getString("photo").getBytes("UTF-8"),
-							obj.getString("mobile"), obj.getString("email"),
-							Integer.toString(obj.getInt("id")),
-							obj.getString("uuid"));
-					mListaUtenti.add(utente);
+	public static Map<String, Object> getTurniForDataAndFunzione(Long dateFrom,
+			Long dateTo, String personale, FunzioneObj funzione) {
+		ArrayList<Turno> mListaTurni = new ArrayList<Turno>();
+		JSONArray arrayTurni = new JSONArray();
+		Map<String, Object> mResult = new HashMap<String, Object>();
+		Map<String, Object> mMapRequest = null;
+		Long date = dateFrom;
+		while (date <= dateTo) {
+			if (personale.equalsIgnoreCase("Turni personale")) {
+				mMapRequest = mRest.restRequest(
+						new String[] { mContext.getString(R.string.URL_TURNI)
+								+ date + "/" + funzione.getId() + "/"
+								+ UserConstant.getUser().getId() },
+						RestRequestType.GET);
+				mResult.put("connectionError",
+						(Boolean) mMapRequest.get("connectionError"));
+				try {
+					if (!((Boolean) mMapRequest.get("connectionError"))
+							&& new JSONArray(mMapRequest.get("params")
+									.toString()).length() != 0)
+						arrayTurni.put((String) mMapRequest.get("params"));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				mMapRequest = mRest.restRequest(
+						new String[] { mContext.getString(R.string.URL_TURNI)
+								+ date + "/" + funzione.getId() },
+						RestRequestType.GET);
+				mResult.put("connectionError",
+						(Boolean) mMapRequest.get("connectionError"));
+				try {
+					if (!((Boolean) mMapRequest.get("connectionError"))
+							&& new JSONArray(mMapRequest.get("params")
+									.toString()).length() != 0)
+						arrayTurni.put((String) mMapRequest.get("params"));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
-			mResult.put("params", mListaUtenti);
+			date = date + (3600 * 1000 * 24);
+		}
+
+		try {
+			if (arrayTurni.length() != 0) {
+				if (!((Boolean) mMapRequest.get("connectionError"))) {
+					for (int i = 0; i < arrayTurni.length(); i++) {
+						JSONObject obj;
+						obj = arrayTurni.getJSONObject(i);
+
+						SimpleDateFormat dateFormatter = new SimpleDateFormat(
+								"HH:mm", Locale.getDefault());
+						JSONArray arrayVolontari = new JSONArray(
+								obj.getString("volontari"));
+						ArrayList<Utente> mListaVolontari = new ArrayList<Utente>();
+						for (int j = 0; j < arrayVolontari.length(); j++) {
+							JSONObject objUser = arrayVolontari
+									.getJSONObject(j);
+							mListaVolontari.add(new Utente(objUser.getString(
+									"label").split(" ")[1], objUser.getString(
+									"label").split(" ")[0], null, null,
+									new byte[1], null, null, objUser
+											.getString("id"), null));
+						}
+						Turno turno = new Turno(obj.getLong("start"),
+								mListaVolontari, funzione.getFunzione(),
+								dateFormatter.format(obj.getLong("start")),
+								dateFormatter.format(obj.getLong("end")));
+						mListaTurni.add(turno);
+					}
+
+				}
+			}
+			mResult.put("params", mListaTurni);
 			return mResult;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+
 		return null;
 	}
 

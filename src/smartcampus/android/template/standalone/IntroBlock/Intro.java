@@ -183,6 +183,8 @@ public class Intro extends Activity {
 														.getWindowToken(), 0);
 
 										loginSuccess.put("success", true);
+										// NEW SAVE UTENTE
+										saveUtente();
 									} else if (loginResult == Intro.LOGIN_FAILED) {
 										loginSuccess.put("success", false);
 										loginSuccess.put("notfound", true);
@@ -333,6 +335,8 @@ public class Intro extends Activity {
 
 	private void saveUtente() {
 		Utente user = (Utente) ManagerData.readUserData().get("params");
+		user.setAmbito("Corporate");
+		UserConstant.setUser(user);
 		Map<String, Object> mMapResult = ManagerData.saveUserInfo(user);
 	}
 
