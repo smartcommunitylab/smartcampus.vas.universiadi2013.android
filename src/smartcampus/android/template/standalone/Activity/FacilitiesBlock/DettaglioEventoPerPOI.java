@@ -2,7 +2,9 @@ package smartcampus.android.template.standalone.Activity.FacilitiesBlock;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
+import java.util.Map;
 
 import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
@@ -67,9 +69,29 @@ public class DettaglioEventoPerPOI extends Activity {
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
-				mListaEventiForPOI = ManagerData.getEventiForPOI(new POI(null,
-						null, null, getIntent().getDoubleExtra("latGPS", 0),
-						getIntent().getDoubleExtra("lngGPS", 0)));
+				Map<String, Object> mResult = ManagerData
+						.getEventiForPOI(new POI(null, null, null, getIntent()
+								.getDoubleExtra("latGPS", 0), getIntent()
+								.getDoubleExtra("lngGPS", 0)));
+				if ((Boolean) mResult.get("connectionError")) {
+					Dialog noConnection = new Dialog(DettaglioEventoPerPOI.this);
+					noConnection.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					noConnection.setContentView(R.layout.dialog_no_connection);
+					noConnection.getWindow().setBackgroundDrawableResource(
+							R.drawable.dialog_rounded_corner_light_black);
+					noConnection.show();
+					noConnection.setCancelable(true);
+					noConnection.setOnCancelListener(new OnCancelListener() {
+
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							// TODO Auto-generated method stub
+							finish();
+						}
+					});
+				} else
+					mListaEventiForPOI = (ArrayList<Evento>) mResult
+							.get("params");
 				return null;
 			}
 

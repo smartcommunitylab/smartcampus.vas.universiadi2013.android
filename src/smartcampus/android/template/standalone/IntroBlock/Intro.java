@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import smartcampus.android.template.universiadi.R;
+import smartcampus.android.template.standalone.Activity.EventiBlock.Evento;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.HomeBlock.Home;
 import android.app.Activity;
@@ -31,6 +32,9 @@ import android.widget.TextView.OnEditorActionListener;
 public class Intro extends Activity {
 
 	public Map<String, Boolean> loginSuccess = new HashMap<String, Boolean>();
+	private static final int CONNECTION_ERROR = 0;
+	private static final int LOGIN_SUCCESS = 1;
+	private static final int LOGIN_FAILED = 2;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +135,7 @@ public class Intro extends Activity {
 						// TODO Auto-generated method stub
 						new AsyncTask<Void, Void, Void>() {
 							private Dialog dialog;
+							private boolean connectionError;
 
 							@Override
 							protected void onPreExecute() {
@@ -160,24 +165,30 @@ public class Intro extends Activity {
 							@Override
 							protected Void doInBackground(Void... params) {
 								// TODO Auto-generated method stub
-								if (controlCredential())
-									if (login(
+								if (controlCredential()) {
+									int loginResult = login(
 											((EditText) findViewById(R.id.text_username))
-													.getText().toString(),
+													.getText().toString()
+													.replace(" ", ""),
 											((EditText) findViewById(R.id.text_password))
-													.getText().toString())) {
+													.getText().toString());
+
+									if (loginResult == Intro.CONNECTION_ERROR) {
+										connectionError = true;
+									} else if (loginResult == Intro.LOGIN_SUCCESS) {
 										InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 										imm.hideSoftInputFromWindow(
 												((EditText) findViewById(R.id.text_password))
 														.getWindowToken(), 0);
 
 										loginSuccess.put("success", true);
-
-									} else {
+									} else if (loginResult == Intro.LOGIN_FAILED) {
 										loginSuccess.put("success", false);
 										loginSuccess.put("notfound", true);
+
 									}
-								else {
+
+								} else {
 									loginSuccess.put("success", false);
 									loginSuccess.put("notfound", false);
 								}
@@ -193,7 +204,20 @@ public class Intro extends Activity {
 
 								// START ONPOST
 
-								controlAfterLogin();
+								if (connectionError) {
+									Dialog noConnection = new Dialog(Intro.this);
+									noConnection
+											.requestWindowFeature(Window.FEATURE_NO_TITLE);
+									noConnection
+											.setContentView(R.layout.dialog_no_connection);
+									noConnection
+											.getWindow()
+											.setBackgroundDrawableResource(
+													R.drawable.dialog_rounded_corner_light_black);
+									noConnection.show();
+									noConnection.setCancelable(true);
+								} else
+									controlAfterLogin();
 
 								// END ONPOST
 							}
@@ -221,6 +245,7 @@ public class Intro extends Activity {
 						if (actionId == EditorInfo.IME_ACTION_DONE) {
 							new AsyncTask<Void, Void, Void>() {
 								private Dialog dialog;
+								private boolean connectionError;
 
 								@Override
 								protected void onPreExecute() {
@@ -251,25 +276,30 @@ public class Intro extends Activity {
 								@Override
 								protected Void doInBackground(Void... params) {
 									// TODO Auto-generated method stub
-									if (controlCredential())
-										if (login(
+									if (controlCredential()) {
+										int loginResult = login(
 												((EditText) findViewById(R.id.text_username))
-														.getText().toString(),
+														.getText().toString()
+														.replace(" ", ""),
 												((EditText) findViewById(R.id.text_password))
-														.getText().toString())) {
+														.getText().toString());
+
+										if (loginResult == Intro.CONNECTION_ERROR) {
+											connectionError = true;
+										} else if (loginResult == Intro.LOGIN_SUCCESS) {
 											InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 											imm.hideSoftInputFromWindow(
 													((EditText) findViewById(R.id.text_password))
-															.getWindowToken(),
-													0);
+															.getWindowToken(), 0);
 
 											loginSuccess.put("success", true);
-
-										} else {
+										} else if (loginResult == Intro.LOGIN_FAILED) {
 											loginSuccess.put("success", false);
 											loginSuccess.put("notfound", true);
+
 										}
-									else {
+
+									} else {
 										loginSuccess.put("success", false);
 										loginSuccess.put("notfound", false);
 									}
@@ -312,12 +342,19 @@ public class Intro extends Activity {
 				.getText().toString().equalsIgnoreCase(""));
 	}
 
-	private boolean login(String username, String password) {
-		
-		//TODO federico login
-		
-		
-		return (ManagerData.getAuthToken(username, password) != null);
+	private int login(String username, String password) {
+
+		// TODO federico login
+
+		int mReturn = -1;
+		Map<String, Object> mResult = ManagerData.getAuthToken(username,
+				password);
+		mReturn = ((Boolean) mResult.get("connectionError")) ? Intro.CONNECTION_ERROR
+				: -1;
+		if (mReturn == -1)
+			mReturn = (((String) mResult.get("params")) == null) ? Intro.LOGIN_FAILED
+					: Intro.LOGIN_SUCCESS;
+		return mReturn;
 	}
 
 	private void controlAfterLogin() {

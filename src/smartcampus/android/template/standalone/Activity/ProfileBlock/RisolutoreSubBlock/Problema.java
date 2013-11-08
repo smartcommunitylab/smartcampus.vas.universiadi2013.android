@@ -2,9 +2,12 @@ package smartcampus.android.template.standalone.Activity.ProfileBlock.Risolutore
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
+import java.util.Map;
 
 import smartcampus.android.template.universiadi.R;
+import smartcampus.android.template.standalone.Activity.EventiBlock.Evento;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -21,6 +24,7 @@ import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -64,6 +68,7 @@ public class Problema extends Activity implements
 
 		new AsyncTask<Void, Void, Void>() {
 			private Dialog dialog;
+			private Map<String, Object> mResult;
 
 			@Override
 			protected void onPreExecute() {
@@ -92,7 +97,9 @@ public class Problema extends Activity implements
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
-				mCategorie = ManagerData.getCategorieVolontari();
+				mResult = ManagerData.getCategorieVolontari();
+				if (!((Boolean) mResult.get("connectionError")))
+					mCategorie = (ArrayList<String>) mResult.get("params");
 				return null;
 			}
 
@@ -105,137 +112,157 @@ public class Problema extends Activity implements
 
 				// START ONPOST
 
-				mTextIndirizzo = (EditText) findViewById(R.id.text_indirizzo_problema);
-				mTextIndirizzo.setTypeface(Typeface.createFromAsset(
-						getApplicationContext().getAssets(),
-						"PatuaOne-Regular.otf"));
+				if ((Boolean) mResult.get("connectionError")) {
+					Dialog noConnection = new Dialog(Problema.this);
+					noConnection.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					noConnection.setContentView(R.layout.dialog_no_connection);
+					noConnection.getWindow().setBackgroundDrawableResource(
+							R.drawable.dialog_rounded_corner_light_black);
+					noConnection.show();
+					noConnection.setCancelable(true);
+					noConnection.setOnCancelListener(new OnCancelListener() {
 
-				((RelativeLayout) findViewById(R.id.btn_here))
-						.setOnTouchListener(new OnTouchListener() {
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							// TODO Auto-generated method stub
+							finish();
+						}
+					});
+				} else {
+					mTextIndirizzo = (EditText) findViewById(R.id.text_indirizzo_problema);
+					mTextIndirizzo.setTypeface(Typeface.createFromAsset(
+							getApplicationContext().getAssets(),
+							"PatuaOne-Regular.otf"));
 
-							@Override
-							public boolean onTouch(View v, MotionEvent event) {
-								// TODO Auto-generated method stub
-								if (event.getAction() == MotionEvent.ACTION_DOWN) {
-									((ImageView) findViewById(R.id.image_helper_location))
-											.setImageResource(R.drawable.btn_helper_location_press);
-									return true;
+					((RelativeLayout) findViewById(R.id.btn_here))
+							.setOnTouchListener(new OnTouchListener() {
+
+								@Override
+								public boolean onTouch(View v, MotionEvent event) {
+									// TODO Auto-generated method stub
+									if (event.getAction() == MotionEvent.ACTION_DOWN) {
+										((ImageView) findViewById(R.id.image_helper_location))
+												.setImageResource(R.drawable.btn_helper_location_press);
+										return true;
+									}
+									if (event.getAction() == MotionEvent.ACTION_UP) {
+										((ImageView) findViewById(R.id.image_helper_location))
+												.setImageResource(R.drawable.btn_helper_location);
+
+										mLocationClient = new LocationClient(
+												getApplicationContext(),
+												Problema.this, Problema.this);
+										mLocationClient.connect();
+										return true;
+									}
+									return false;
 								}
-								if (event.getAction() == MotionEvent.ACTION_UP) {
-									((ImageView) findViewById(R.id.image_helper_location))
-											.setImageResource(R.drawable.btn_helper_location);
+							});
 
-									mLocationClient = new LocationClient(
-											getApplicationContext(),
-											Problema.this, Problema.this);
-									mLocationClient.connect();
-									return true;
+					((EditText) findViewById(R.id.text_descrizione_problema))
+							.setTypeface(Typeface.createFromAsset(
+									getApplicationContext().getAssets(),
+									"PatuaOne-Regular.otf"));
+
+					final Spinner mSpinner = (Spinner) findViewById(R.id.spinner_categoria);
+					mSpinner.setAdapter(new SpinnerAdapter(Problema.this,
+							mCategorie));
+
+					((RelativeLayout) findViewById(R.id.btn_open_spinner))
+							.setOnTouchListener(new OnTouchListener() {
+
+								@Override
+								public boolean onTouch(View v, MotionEvent event) {
+									// TODO Auto-generated method stub
+									if (event.getAction() == MotionEvent.ACTION_DOWN) {
+										((ImageView) findViewById(R.id.image_helper_categoria))
+												.setImageResource(R.drawable.btn_helper_category_press);
+										return true;
+									}
+									if (event.getAction() == MotionEvent.ACTION_UP) {
+										((ImageView) findViewById(R.id.image_helper_categoria))
+												.setImageResource(R.drawable.btn_helper_category);
+
+										mSpinner.performClick();
+
+										return true;
+									}
+									return false;
 								}
-								return false;
-							}
-						});
 
-				((EditText) findViewById(R.id.text_descrizione_problema))
-						.setTypeface(Typeface.createFromAsset(
-								getApplicationContext().getAssets(),
-								"PatuaOne-Regular.otf"));
+							});
 
-				final Spinner mSpinner = (Spinner) findViewById(R.id.spinner_categoria);
-				mSpinner.setAdapter(new SpinnerAdapter(Problema.this,
-						mCategorie));
+					((ImageView) findViewById(R.id.button_pick_photo))
+							.setOnTouchListener(new OnTouchListener() {
 
-				((RelativeLayout) findViewById(R.id.btn_open_spinner))
-						.setOnTouchListener(new OnTouchListener() {
+								@Override
+								public boolean onTouch(View v, MotionEvent event) {
+									// TODO Auto-generated method stub
+									if (event.getAction() == MotionEvent.ACTION_DOWN) {
+										((ImageView) findViewById(R.id.button_pick_photo))
+												.setImageResource(R.drawable.btn_helper_pic_press);
+										return true;
+									}
+									if (event.getAction() == MotionEvent.ACTION_UP) {
+										((ImageView) findViewById(R.id.button_pick_photo))
+												.setImageResource(R.drawable.btn_helper_pic);
 
-							@Override
-							public boolean onTouch(View v, MotionEvent event) {
-								// TODO Auto-generated method stub
-								if (event.getAction() == MotionEvent.ACTION_DOWN) {
-									((ImageView) findViewById(R.id.image_helper_categoria))
-											.setImageResource(R.drawable.btn_helper_category_press);
-									return true;
+										Intent cameraIntent = new Intent(
+												android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+										startActivityForResult(cameraIntent,
+												CAMERA_REQUEST);
+
+										return true;
+									}
+									return false;
 								}
-								if (event.getAction() == MotionEvent.ACTION_UP) {
-									((ImageView) findViewById(R.id.image_helper_categoria))
-											.setImageResource(R.drawable.btn_helper_category);
 
-									mSpinner.performClick();
+							});
 
-									return true;
-								}
-								return false;
-							}
+					((ImageView) findViewById(R.id.go_forward))
+							.setOnTouchListener(new OnTouchListener() {
 
-						});
+								@Override
+								public boolean onTouch(View v, MotionEvent event) {
+									// TODO Auto-generated method stub
+									if (event.getAction() == MotionEvent.ACTION_DOWN) {
+										((ImageView) findViewById(R.id.go_forward))
+												.setImageResource(R.drawable.btn_helper_send_press);
+										return true;
+									}
+									if (event.getAction() == MotionEvent.ACTION_UP) {
+										((ImageView) findViewById(R.id.go_forward))
+												.setImageResource(R.drawable.btn_helper_send);
 
-				((ImageView) findViewById(R.id.button_pick_photo))
-						.setOnTouchListener(new OnTouchListener() {
+										String indirizzo = mTextIndirizzo
+												.getText().toString();
+										String desc = ((EditText) findViewById(R.id.text_descrizione_problema))
+												.getText().toString();
 
-							@Override
-							public boolean onTouch(View v, MotionEvent event) {
-								// TODO Auto-generated method stub
-								if (event.getAction() == MotionEvent.ACTION_DOWN) {
-									((ImageView) findViewById(R.id.button_pick_photo))
-											.setImageResource(R.drawable.btn_helper_pic_press);
-									return true;
-								}
-								if (event.getAction() == MotionEvent.ACTION_UP) {
-									((ImageView) findViewById(R.id.button_pick_photo))
-											.setImageResource(R.drawable.btn_helper_pic);
+										if (!indirizzo.equalsIgnoreCase("")) {
+											ContainerTicket
+													.setmAddress(indirizzo);
 
-									Intent cameraIntent = new Intent(
-											android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-									startActivityForResult(cameraIntent,
-											CAMERA_REQUEST);
-
-									return true;
-								}
-								return false;
-							}
-
-						});
-
-				((ImageView) findViewById(R.id.go_forward))
-						.setOnTouchListener(new OnTouchListener() {
-
-							@Override
-							public boolean onTouch(View v, MotionEvent event) {
-								// TODO Auto-generated method stub
-								if (event.getAction() == MotionEvent.ACTION_DOWN) {
-									((ImageView) findViewById(R.id.go_forward))
-											.setImageResource(R.drawable.btn_helper_send_press);
-									return true;
-								}
-								if (event.getAction() == MotionEvent.ACTION_UP) {
-									((ImageView) findViewById(R.id.go_forward))
-											.setImageResource(R.drawable.btn_helper_send);
-
-									String indirizzo = mTextIndirizzo.getText()
-											.toString();
-									String desc = ((EditText) findViewById(R.id.text_descrizione_problema))
-											.getText().toString();
-
-									if (!indirizzo.equalsIgnoreCase("")) {
-										ContainerTicket.setmAddress(indirizzo);
-
-										if (!desc.equalsIgnoreCase("")) {
-											ContainerTicket.setmDesc(desc);
-											ContainerTicket.setmCategoria(mCategorie.get(mSpinner
-													.getSelectedItemPosition()));
-											// startActivity(new Intent(
-											// getApplicationContext(),
-											// MainActivity.class));
-											new ChooseChannel(Problema.this);
+											if (!desc.equalsIgnoreCase("")) {
+												ContainerTicket.setmDesc(desc);
+												ContainerTicket
+														.setmCategoria(mCategorie.get(mSpinner
+																.getSelectedItemPosition()));
+												// startActivity(new Intent(
+												// getApplicationContext(),
+												// MainActivity.class));
+												new ChooseChannel(Problema.this);
+											} else
+												callError("Inserire una descrizione");
 										} else
-											callError("Inserire una descrizione");
-									} else
-										callError("Inserire un indirizzo");
+											callError("Inserire un indirizzo");
 
-									return true;
+										return true;
+									}
+									return false;
 								}
-								return false;
-							}
-						});
+							});
+				}
 
 				// END ONPOST
 			}
@@ -395,6 +422,9 @@ public class Problema extends Activity implements
 					.setTypeface(Typeface.createFromAsset(
 							getApplicationContext().getAssets(),
 							"PatuaOne-Regular.otf"));
+			if (values.get(position).length() > 13)
+				((TextView) rowView.findViewById(android.R.id.text1))
+						.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 
 			return rowView;
 		}

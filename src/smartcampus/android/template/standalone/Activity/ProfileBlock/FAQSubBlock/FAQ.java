@@ -1,8 +1,12 @@
 package smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.Map;
 
 import smartcampus.android.template.universiadi.R;
+import smartcampus.android.template.standalone.Activity.EventiBlock.Evento;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import android.app.Activity;
 import android.app.Dialog;
@@ -95,6 +99,7 @@ public class FAQ extends Activity {
 	private void inviaDomandaFAQ(final String mDomanda) {
 		new AsyncTask<Void, Void, Void>() {
 			private Dialog dialog;
+			private Map<String, Object> mResult;
 
 			@Override
 			protected void onPreExecute() {
@@ -122,7 +127,10 @@ public class FAQ extends Activity {
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
-				mListaRisposte = ManagerData.getRispostaPerDomanda(mDomanda);
+				mResult = ManagerData.getRispostaPerDomanda(mDomanda);
+				if (!((Boolean) mResult.get("connectionError")))
+					mListaRisposte = (ArrayList<ExtendedAnswer>) mResult
+							.get("params");
 				return null;
 			}
 
@@ -135,53 +143,73 @@ public class FAQ extends Activity {
 
 				// START ONPOST
 
-				if (mListaRisposte.size() != 0) {
-					((TextView) findViewById(R.id.text_nessun_risultato_faq))
-							.setVisibility(View.GONE);
-					((ListView) findViewById(R.id.lista_risposte))
-							.setAdapter(new RowAnswer(getApplicationContext(),
-									mListaRisposte));
-					((ListView) findViewById(R.id.lista_risposte))
-							.setOnItemClickListener(new OnItemClickListener() {
+				if ((Boolean) mResult.get("connectionError")) {
+					Dialog noConnection = new Dialog(FAQ.this);
+					noConnection.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					noConnection.setContentView(R.layout.dialog_no_connection);
+					noConnection.getWindow().setBackgroundDrawableResource(
+							R.drawable.dialog_rounded_corner_light_black);
+					noConnection.show();
+					noConnection.setCancelable(true);
+					noConnection.setOnCancelListener(new OnCancelListener() {
 
-								@Override
-								public void onItemClick(AdapterView<?> arg0,
-										View arg1, int arg2, long arg3) {
-									// TODO Auto-generated method stub
-									Dialog dialog = new Dialog(FAQ.this);
-									dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-									dialog.setContentView(R.layout.dialog_dettaglio);
-									dialog.getWindow()
-											.setBackgroundDrawableResource(
-													R.drawable.dialog_rounded_corner);
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							// TODO Auto-generated method stub
+							finish();
+						}
+					});
+				} else {
+					if (mListaRisposte.size() != 0) {
+						((TextView) findViewById(R.id.text_nessun_risultato_faq))
+								.setVisibility(View.GONE);
+						((ListView) findViewById(R.id.lista_risposte))
+								.setAdapter(new RowAnswer(
+										getApplicationContext(), mListaRisposte));
+						((ListView) findViewById(R.id.lista_risposte))
+								.setOnItemClickListener(new OnItemClickListener() {
 
-									((TextView) dialog
-											.findViewById(R.id.text_dettaglio_question))
-											.setText(mListaRisposte.get(arg2)
-													.getQuestion());
-									((TextView) dialog
-											.findViewById(R.id.text_dettaglio_answer))
-											.setText(mListaRisposte.get(arg2)
-													.getAnswer());
-									((TextView) dialog
-											.findViewById(R.id.text_dettaglio_answer))
-											.setMovementMethod(new ScrollingMovementMethod());
-									((TextView) dialog
-											.findViewById(R.id.text_dettaglio_accuracy)).setText(Float
-											.toString(getAccuracy(
-													mListaRisposte.get(arg2)
-															.getTotalTag(),
-													mListaRisposte.get(arg2)
-															.getUsefulTag()))
-											+ "%");
+									@Override
+									public void onItemClick(
+											AdapterView<?> arg0, View arg1,
+											int arg2, long arg3) {
+										// TODO Auto-generated method stub
+										Dialog dialog = new Dialog(FAQ.this);
+										dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+										dialog.setContentView(R.layout.dialog_dettaglio);
+										dialog.getWindow()
+												.setBackgroundDrawableResource(
+														R.drawable.dialog_rounded_corner);
 
-									dialog.show();
-								}
-							});
-				} else
-					((TextView) findViewById(R.id.text_nessun_risultato_faq))
-							.setVisibility(View.VISIBLE);
+										((TextView) dialog
+												.findViewById(R.id.text_dettaglio_question))
+												.setText(mListaRisposte.get(
+														arg2).getQuestion());
+										((TextView) dialog
+												.findViewById(R.id.text_dettaglio_answer))
+												.setText(mListaRisposte.get(
+														arg2).getAnswer());
+										((TextView) dialog
+												.findViewById(R.id.text_dettaglio_answer))
+												.setMovementMethod(new ScrollingMovementMethod());
+										((TextView) dialog
+												.findViewById(R.id.text_dettaglio_accuracy)).setText(Float
+												.toString(getAccuracy(
+														mListaRisposte
+																.get(arg2)
+																.getTotalTag(),
+														mListaRisposte
+																.get(arg2)
+																.getUsefulTag()))
+												+ "%");
 
+										dialog.show();
+									}
+								});
+					} else
+						((TextView) findViewById(R.id.text_nessun_risultato_faq))
+								.setVisibility(View.VISIBLE);
+				}
 				// END ONPOST
 			}
 
