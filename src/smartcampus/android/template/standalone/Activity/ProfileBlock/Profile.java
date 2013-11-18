@@ -7,6 +7,7 @@ import java.util.Map;
 
 import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
+import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FunzioneObj;
 import smartcampus.android.template.standalone.HomeBlock.Home;
 import smartcampus.android.template.standalone.IntroBlock.UserConstant;
 import android.app.Activity;
@@ -44,7 +45,7 @@ import android.widget.TextView;
 public class Profile extends Activity {
 
 	private Utente user;
-	private ArrayList<String> funzione;
+	private ArrayList<FunzioneObj> funzione;
 	private ArrayList<Utente> mListaSuperiori = new ArrayList<Utente>();
 
 	private ListView listSuperiori;
@@ -53,7 +54,7 @@ public class Profile extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_profile);
+		setContentView(R.layout.activity_profilo);
 
 		listSuperiori = ((ListView) findViewById(R.id.lista_superiori));
 
@@ -92,11 +93,15 @@ public class Profile extends Activity {
 				user = UserConstant.getUser();
 				mMapUserData = ManagerData.getFunzioneForUser(user);
 				if (!((Boolean) mMapUserData.get("connectionError"))) {
-					funzione = (ArrayList<String>) mMapUserData.get("params");
+					funzione = (ArrayList<FunzioneObj>) mMapUserData
+							.get("params");
 				}
-				// mListaSuperiori = (ArrayList<Utente>) (ManagerData
-				// .getSuperioriForUser(user, funzione.get(0))
-				// .get("params"));
+				ArrayList<String> funzioneString = new ArrayList<String>();
+				for (int i = 0; i < funzione.size(); i++)
+					funzioneString.add(funzione.get(i).getFunzione());
+				mListaSuperiori = (ArrayList<Utente>) (ManagerData
+						.getSuperioriForUser(user, funzioneString.get(0))
+						.get("params"));
 				return null;
 			}
 
@@ -126,8 +131,10 @@ public class Profile extends Activity {
 
 				} else {
 
-					((TextView) findViewById(R.id.text_nome_user)).setText(user
-							.getNome() + " " + user.getCognome());
+					((TextView) findViewById(R.id.text_nome_user))
+							.setText(Profile.this
+									.getString(R.string.PROFILO_SALUTO)
+									+ user.getNome() + " " + user.getCognome());
 
 					((Spinner) findViewById(R.id.spinner_multiple_funzioni))
 							.setAdapter(new SpinnerAdapter(Profile.this,
@@ -178,14 +185,44 @@ public class Profile extends Activity {
 												Void... params) {
 											// TODO Auto-generated method
 											// stub
-											mMapListaSuperiori = ManagerData
-													.getSuperioriForUser(user,
-															funzione.get(arg2));
-											if (!((Boolean) mMapListaSuperiori
-													.get("connectionError"))) {
-												mListaSuperiori = (ArrayList<Utente>) mMapListaSuperiori
-														.get("params");
-											}
+											// mMapListaSuperiori = ManagerData
+											// .getSuperioriForUser(user,
+											// funzione.get(arg2));
+											// if (!((Boolean)
+											// mMapListaSuperiori
+											// .get("connectionError"))) {
+											// mListaSuperiori =
+											// (ArrayList<Utente>)
+											// mMapListaSuperiori
+											// .get("params");
+											// }
+											mMapUserData = new HashMap<String, Object>();
+											mMapUserData.put("connectionError",
+													false);
+											funzione = new ArrayList<FunzioneObj>();
+											funzione.add(new FunzioneObj(
+													"Academic Liaison & Special Projects",
+													69326));
+											funzione.add(new FunzioneObj(
+													"Communication", 35152));
+											// mMapUserData =
+											// ManagerData.getFunzioneForUser(user);
+											// if (!((Boolean)
+											// mMapUserData.get("connectionError")))
+											// {
+											// funzione = (ArrayList<String>)
+											// mMapUserData.get("params");
+											// }
+											ArrayList<String> funzioneString = new ArrayList<String>();
+											for (int i = 0; i < funzione.size(); i++)
+												funzioneString.add(funzione
+														.get(i).getFunzione());
+											// mListaSuperiori =
+											// (ArrayList<Utente>) (ManagerData
+											// .getSuperioriForUser(user,
+											// funzioneString
+											// .get(0))
+											// .get("params"));
 											return null;
 										}
 
@@ -436,12 +473,12 @@ public class Profile extends Activity {
 		}
 	}
 
-	private class SpinnerAdapter extends ArrayAdapter<String> {
+	private class SpinnerAdapter extends ArrayAdapter<FunzioneObj> {
 
 		private Context context;
-		private ArrayList<String> values;
+		private ArrayList<FunzioneObj> values;
 
-		public SpinnerAdapter(Context context, ArrayList<String> values) {
+		public SpinnerAdapter(Context context, ArrayList<FunzioneObj> values) {
 			super(context, android.R.layout.simple_list_item_1, values);
 			this.context = context;
 			this.values = values;
@@ -476,7 +513,8 @@ public class Profile extends Activity {
 			View rowView = inflater.inflate(
 					android.R.layout.simple_list_item_1, parent, false);
 
-			String[] funzioneTokenized = values.get(position).split(":");
+			String[] funzioneTokenized = values.get(position).getFunzione()
+					.split(":");
 			((TextView) rowView.findViewById(android.R.id.text1))
 					.setText(funzioneTokenized[funzioneTokenized.length - 1]);
 			((TextView) rowView.findViewById(android.R.id.text1))
@@ -485,7 +523,7 @@ public class Profile extends Activity {
 					.setTypeface(Typeface.createFromAsset(
 							getApplicationContext().getAssets(),
 							"PatuaOne-Regular.otf"));
-			if (values.get(position).length() > 13)
+			if (values.get(position).getFunzione().length() > 13)
 				((TextView) rowView.findViewById(android.R.id.text1))
 						.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 

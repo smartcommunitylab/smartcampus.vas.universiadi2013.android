@@ -10,24 +10,22 @@ import android.graphics.BitmapFactory;
 public class SportImageConstant {
 
 	public static final int ALPINE = 0;
-	public static final int BIATLHON = 1;
-	public static final int CROSS = 2;
-	public static final int CURLING = 3;
-	public static final int FIGURE = 4;
-	public static final int FREESTYLE = 5;
-	public static final int ICE = 6;
-	public static final int NORDIC = 7;
-	public static final int SHORTTRACK = 8;
-	public static final int SKIIJUMPING = 9;
-	public static final int SNOWBOARDING = 10;
-	public static final int SPEEDSKATING = 11;
+	public static final int CROSS = 1;
+	public static final int CURLING = 2;
+	public static final int FIGURE = 3;
+	public static final int FREESTYLE = 4;
+	public static final int ICE = 5;
+	public static final int NORDIC = 6;
+	public static final int SHORTTRACK = 7;
+	public static final int SKIIJUMPING = 8;
+	public static final int SNOWBOARDING = 9;
+	public static final int SPEEDSKATING = 10;
+	public static final int BIATLHON = 11;
 
 	public static byte[] resourcesFromID(int id, Context cnt) {
 		switch (id) {
 		case ALPINE:
 			return fromResourcesToByteArray(R.drawable.alpine, cnt);
-		case BIATLHON:
-			return fromResourcesToByteArray(R.drawable.biathlon, cnt);
 		case CROSS:
 			return fromResourcesToByteArray(R.drawable.cross, cnt);
 		case CURLING:
@@ -48,6 +46,8 @@ public class SportImageConstant {
 			return fromResourcesToByteArray(R.drawable.snowboarding, cnt);
 		case SPEEDSKATING:
 			return fromResourcesToByteArray(R.drawable.speedskating, cnt);
+		case BIATLHON:
+			return fromResourcesToByteArray(R.drawable.biathlon, cnt);
 		default:
 			return new byte[1];
 		}

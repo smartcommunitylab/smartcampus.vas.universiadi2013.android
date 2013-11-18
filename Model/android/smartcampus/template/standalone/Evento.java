@@ -3,6 +3,7 @@ package android.smartcampus.template.standalone;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -14,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.text.Html;
 
 import smartcampus.android.template.universiadi.R;
@@ -23,19 +25,23 @@ import smartcampus.android.template.standalone.Utilities.ElementDescRoute;
 /**
  * Entity mapped to table EVENTO.
  */
-public class Evento {
+public class Evento implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String nome;
 	private Long data;
+	private Long oraInizio;
+	private Long oraFine;
+
 	private String descrizione;
 	private Double latGPS;
 	private Double lngGPS;
 	private String tipoSport;
-	private Bitmap image;
-
-	private ArrayList<ElementDescRoute> routeTestuale = null;
-	private String indirizzo = null;
+	private byte[] image;
 
 	public Evento() {
 	}
@@ -44,11 +50,15 @@ public class Evento {
 		this.id = id;
 	}
 
-	public Evento(Long id, String nome, Long data, String descrizione,
-			Double latGPS, Double lngGPS, String tipoSport, Bitmap image) {
+	public Evento(Long id, String nome, Long data, Long oraInizio,
+			Long oraFine, String descrizione, Double latGPS, Double lngGPS,
+			String tipoSport, byte[] image) {
+		super();
 		this.id = id;
 		this.nome = nome;
 		this.data = data;
+		this.oraInizio = oraInizio;
+		this.oraFine = oraFine;
 		this.descrizione = descrizione;
 		this.latGPS = latGPS;
 		this.lngGPS = lngGPS;
@@ -112,162 +122,27 @@ public class Evento {
 		this.tipoSport = tipoSport;
 	}
 
-	public ArrayList<ElementDescRoute> getRouteTestuale(double[] source) {
-		return (routeTestuale == null) ? parseGoogleDescRoute(source,
-				new double[] { getLatGPS(), getLngGPS() }) : routeTestuale;
+	public Long getOraInizio() {
+		return oraInizio;
 	}
 
-	public String getIndirizzo() {
-		return (indirizzo == null) ? reverseGeoCoding() : indirizzo;
+	public void setOraInizio(Long oraInizio) {
+		this.oraInizio = oraInizio;
 	}
 
-	private String reverseGeoCoding() {
-		try {
-
-			URL url = new URL(
-					"http://maps.googleapis.com/maps/api/geocode/json?latlng="
-							+ getLatGPS() + "," + getLngGPS() + "&sensor=true");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			conn.setRequestProperty("Accept", "application/json");
-
-			if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ conn.getResponseCode());
-			}
-
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					(conn.getInputStream())));
-
-			String line = "";
-			String output = "";
-			while ((line = br.readLine()) != null) {
-				output = output + line;
-			}
-
-			conn.disconnect();
-
-			indirizzo = new JSONObject(output).getJSONArray("results")
-					.getJSONObject(0).getString("formatted_address");
-			return indirizzo;
-
-		} catch (MalformedURLException e) {
-
-			e.printStackTrace();
-
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
+	public Long getOraFine() {
+		return oraFine;
 	}
 
-	private ArrayList<ElementDescRoute> parseGoogleDescRoute(
-			double[] gpsSource, double[] gpsDest) {
-		URL url;
-		try {
-			String srcGPS = gpsSource[0] + "," + gpsSource[1];
-			String destGPS = gpsDest[0] + "," + gpsDest[1];
-			String path = "http://maps.googleapis.com/maps/api/directions/json?origin="
-					+ srcGPS
-					+ "&destination="
-					+ destGPS
-					+ "&sensor=false&language=it";
-			url = new URL(path);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			conn.setRequestProperty("Accept", "application/json");
-
-			if (conn.getResponseCode() != 200) {
-				throw new RuntimeException("Failed : HTTP error code : "
-						+ conn.getResponseCode());
-			}
-
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					(conn.getInputStream())));
-
-			String line = "";
-			String output = "";
-			System.out.println("Output from Server .... \n");
-			while ((line = br.readLine()) != null) {
-				output = output + line;
-			}
-
-			conn.disconnect();
-
-			JSONObject object = new JSONObject(output);
-
-			ArrayList<ElementDescRoute> result = new ArrayList<ElementDescRoute>();
-			// Get routes
-			JSONArray legs = object.getJSONArray("routes").getJSONObject(0)
-					.getJSONArray("legs");
-			JSONObject leg = legs.getJSONObject(0);
-			result.add(new ElementDescRoute(leg.getJSONObject("distance")
-					.getString("text"), leg.getJSONObject("duration")
-					.getString("text"), leg.getString("end_address"), -1));
-
-			JSONArray steps = leg.getJSONArray("steps");
-
-			for (int j = 0; j < steps.length(); j++) {
-				int img = -1;
-				JSONObject step = steps.getJSONObject(j);
-				try {
-					String man = step.getString("maneuver");
-					if (man.equals("turn-right"))
-						img = R.drawable.turn_right;
-					if (man.equals("turn-left"))
-						img = R.drawable.turn_left;
-					if (man.equals("merge"))
-						img = R.drawable.enter;
-					if (man.equals("ramp-right"))
-						img = R.drawable.out_right;
-					if (man.equals("ramp-left"))
-						img = R.drawable.out_left;
-					if (man.equals("fork-right"))
-						img = R.drawable.turn_right_little;
-					if (man.equals("fork-left"))
-						img = R.drawable.turn_left_little;
-				} catch (JSONException e) {
-				}
-
-				String desc = Html
-						.fromHtml(step.getString("html_instructions"))
-						.toString();
-				desc.replace("\n", "");
-				result.add(new ElementDescRoute(step.getJSONObject("distance")
-						.getString("text"), step.getJSONObject("duration")
-						.getString("text"), desc, img));
-			}
-
-			routeTestuale = result;
-			return result;
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MalformedURLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (ProtocolException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		return null;
+	public void setOraFine(Long oraFine) {
+		this.oraFine = oraFine;
 	}
 
-	public Bitmap getUrlImage() {
+	public byte[] getImage() {
 		return image;
 	}
 
-	public void setUrlImage(Bitmap image) {
+	public void setImage(byte[] image) {
 		this.image = image;
 	}
 }

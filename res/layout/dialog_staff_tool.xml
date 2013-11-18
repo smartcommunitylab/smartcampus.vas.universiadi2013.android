@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="\nChoose tool:"
+            android:text="@string/DIALOG_STRUMENTI"
             android:textColor="#3294ad"
             android:textSize="18sp" />
 

@@ -50,6 +50,11 @@ class RestRequest {
 		mToken = mContext.getString(R.string.AUTH_TOKEN);
 	}
 
+	public void invalidateToken() {
+		mToken = null;
+		juniperToken = null;
+	}
+
 	public Map<String, Object> authenticate(String username, String password) {
 		Map<String, Object> mReturn = new HashMap<String, Object>();
 		NetworkInfo ni = ((ConnectivityManager) (mContext

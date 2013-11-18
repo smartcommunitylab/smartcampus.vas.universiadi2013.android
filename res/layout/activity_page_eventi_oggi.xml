@@ -8,51 +8,98 @@
         android:id="@+id/image_sfondo_evento"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY" />
+        android:scaleType="centerCrop" />
 
     <ImageView
         android:id="@+id/image_mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:adjustViewBounds="true"
         android:scaleType="fitXY"
-        android:src="@drawable/scroll_main" />
+        android:src="@drawable/scroll_main"
+        android:visibility="visible" />
 
-    <smartcampus.android.template.standalone.Utilities.FontTextView
-        android:id="@+id/text_ora_evento"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="-7dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="34dp"
-        android:text="10:30 PM"
-        android:textColor="#FFF"
-        android:textSize="20sp" />
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/image_mask"
+        android:orientation="vertical" >
 
-    <smartcampus.android.template.standalone.Utilities.FontTextView
-        android:id="@+id/text_today"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/text_ora_evento"
-        android:layout_alignParentLeft="false"
-        android:layout_alignRight="@+id/text_ora_evento"
-        android:layout_below="@+id/text_ora_evento"
-        android:text="TODAY"
-        android:textColor="#54AF30"
-        android:textSize="30sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.85" >
 
-    <smartcampus.android.template.standalone.Utilities.FontTextView
-        android:id="@+id/text_nome_evento"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/text_today"
-        android:layout_alignParentLeft="false"
-        android:layout_alignParentRight="false"
-        android:layout_alignRight="@+id/text_today"
-        android:layout_below="@+id/text_today"
-        android:layout_marginTop="-5dp"
-        android:text="SKI JUMP"
-        android:textColor="#3293AC"
-        android:textSize="40sp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2" >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.95" >
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"
+                android:orientation="vertical" >
+
+                <smartcampus.android.template.standalone.Utilities.FontTextView
+                    android:id="@+id/text_ora_evento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="10:30 PM"
+                    android:textColor="#FFF"
+                    android:textSize="20sp" />
+
+                <smartcampus.android.template.standalone.Utilities.FontTextView
+                    android:id="@+id/text_today"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/EVENTI_LABEL_OGGI"
+                    android:textColor="#54AF30"
+                    android:textSize="30sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp" >
+
+                    <smartcampus.android.template.standalone.Utilities.FontTextView
+                        android:id="@+id/text_nome_evento"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:lines="1"
+                        android:text="SKI JUMP"
+                        android:textColor="#3293AC"
+                        android:textSize="40sp" />
+
+                    <smartcampus.android.template.standalone.Utilities.FontTextView
+                        android:id="@+id/FontTextView01"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:lines="1"
+                        android:text="SKI JUMP"
+                        android:textColor="#00ffffff"
+                        android:textSize="40sp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.95" >
+            </RelativeLayout>
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

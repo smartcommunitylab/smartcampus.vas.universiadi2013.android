@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     android:orientation="vertical"
     tools:context=".FilterCalendarioActivity" >
 
@@ -49,7 +50,7 @@
                 android:id="@+id/text_indirizzo_poi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Da:"
+                android:text="@string/PLANNER_DA"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#3294ad" />
 
@@ -108,7 +109,7 @@
                 android:id="@+id/FontTextView02"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="A:"
+                android:text="@string/PLANNER_A"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#3294ad" />
 
@@ -180,7 +181,7 @@
                 android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Luogo:"
+                android:text="@string/PLANNER_VISUALIZZA"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#3294ad" />
 
@@ -241,7 +242,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:paddingTop="@dimen/activity_vertical_margin"
-                android:text="Funzione:"
+                android:text="@string/PLANNER_FUNZIONE"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#3294ad" />
 

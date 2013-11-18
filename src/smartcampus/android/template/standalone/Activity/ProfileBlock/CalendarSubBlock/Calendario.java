@@ -43,6 +43,7 @@ public class Calendario extends Activity implements ScrollViewListener {
 
 	private ArrayList<ScrollView> mAllAScrollView;
 	private ArrayList<Turno> listTurni;
+	private ExtendedTurno[] listaOrari;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +93,7 @@ public class Calendario extends Activity implements ScrollViewListener {
 								.getSerializableExtra("funzione")));
 				if (!((Boolean) mResult.get("connectionError")))
 					listTurni = (ArrayList<Turno>) mResult.get("params");
+				listaOrari = parseTurno(listTurni);
 				return null;
 			}
 
@@ -152,7 +154,7 @@ public class Calendario extends Activity implements ScrollViewListener {
 					{
 
 						View base = createBaseColoumn(mListaGiorni.get(i),
-								listTurni);
+								listaOrari);
 						list.add(base);
 
 					}
@@ -188,7 +190,7 @@ public class Calendario extends Activity implements ScrollViewListener {
 		return mReturn;
 	}
 
-	private View createBaseColoumn(String data, ArrayList<Turno> list) {
+	private View createBaseColoumn(String data, ExtendedTurno[] list) {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View coloumn = inflater.inflate(R.layout.base_coloumn, null, false);
 
@@ -202,22 +204,29 @@ public class Calendario extends Activity implements ScrollViewListener {
 		LinearLayout mListaTurni = (LinearLayout) coloumn
 				.findViewById(R.id.list_turni);
 
-		ExtendedTurno[] listaOrari = parseTurno(list);
 		int indexTurno = -1;
+		int indexColor = 0;
 
 		Random random = new Random();
 		int color = Color.rgb(random.nextInt(255), random.nextInt(255),
 				random.nextInt(255));
 
-		for (final ExtendedTurno turno : listaOrari) {
+		for (final ExtendedTurno turno : list) {
 			int indexTurnoTmp = turno.getNumberTurno();
 
 			View row = inflater.inflate(R.layout.row_turno, null, false);
 			if (indexTurnoTmp == -1) {
-				row.setBackgroundColor(Color.WHITE);
 				((TextView) row.findViewById(R.id.text_turno))
-						.setTextColor(Color.WHITE);
+						.setTextColor(Color.parseColor("#00FFFFFF"));
+				if (indexColor % 2 == 0) {
+					row.setBackgroundColor(Color.WHITE);
+				} else {
+					row.setBackgroundColor(Color.parseColor("#1E3294ad"));
+				}
+				indexColor++;
 			} else {
+				((TextView) row.findViewById(R.id.text_turno))
+						.setTextColor(Color.parseColor("#FFFFFF"));
 				if (indexTurnoTmp != indexTurno) {
 					color = Color.rgb(random.nextInt(255), random.nextInt(255),
 							random.nextInt(255));
@@ -356,14 +365,14 @@ public class Calendario extends Activity implements ScrollViewListener {
 	// return mResult;
 	// }
 
-//	private ArrayList<String> getCategorie(ArrayList<Turno> mList) {
-//		ArrayList<String> mResult = new ArrayList<String>();
-//		for (int i = 0; i < mList.size(); i++) {
-//			if (!mResult.contains(mList.get(i).getCategoria()))
-//				mResult.add(mList.get(i).getCategoria());
-//		}
-//		return mResult;
-//	}
+	// private ArrayList<String> getCategorie(ArrayList<Turno> mList) {
+	// ArrayList<String> mResult = new ArrayList<String>();
+	// for (int i = 0; i < mList.size(); i++) {
+	// if (!mResult.contains(mList.get(i).getCategoria()))
+	// mResult.add(mList.get(i).getCategoria());
+	// }
+	// return mResult;
+	// }
 
 	// private ArrayList<Turno> getTurniPerLuogo(String luogo) {
 	// ArrayList<Turno> mResult = new ArrayList<Turno>();

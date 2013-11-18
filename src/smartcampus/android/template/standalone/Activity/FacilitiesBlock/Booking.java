@@ -55,6 +55,7 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -193,7 +194,9 @@ public class Booking extends FragmentActivity implements ILocation {
 													obj.getCategoria() + "/"
 															+ obj.getLatGPS()
 															+ "-"
-															+ obj.getLngGPS()));
+															+ obj.getLngGPS())
+											.icon(BitmapDescriptorFactory
+													.fromResource(R.drawable.marker_search)));
 								}
 								setPOIsMap(mListaPOI);
 							}
@@ -332,40 +335,40 @@ public class Booking extends FragmentActivity implements ILocation {
 				((TextView) dialog.findViewById(R.id.text_categoria_poi))
 						.setText("Categoria: "
 								+ marker.getSnippet().split("/")[0] + "\n");
-				((ImageView) dialog.findViewById(R.id.btn_go_event))
-						.setOnTouchListener(new OnTouchListener() {
-
-							@Override
-							public boolean onTouch(View v, MotionEvent event) {
-								// TODO Auto-generated method stub
-								if (event.getAction() == MotionEvent.ACTION_DOWN) {
-									((ImageView) dialog
-											.findViewById(R.id.btn_go_event))
-											.setImageResource(R.drawable.btn_eventi_poi_press);
-									return true;
-								}
-								if (event.getAction() == MotionEvent.ACTION_UP) {
-									((ImageView) dialog
-											.findViewById(R.id.btn_go_event))
-											.setImageResource(R.drawable.btn_eventi_poi);
-
-									dialog.dismiss();
-									Intent mCaller = new Intent(Booking.this,
-											DettaglioEventoPerPOI.class);
-									mCaller.putExtra("latGPS",
-											Double.parseDouble(marker
-													.getSnippet().split("/")[1]
-													.split("-")[0]));
-									mCaller.putExtra("lngGPS",
-											Double.parseDouble(marker
-													.getSnippet().split("/")[1]
-													.split("-")[1]));
-									startActivity(mCaller);
-									return true;
-								}
-								return false;
-							}
-						});
+				// ((ImageView) dialog.findViewById(R.id.btn_go_event))
+				// .setOnTouchListener(new OnTouchListener() {
+				//
+				// @Override
+				// public boolean onTouch(View v, MotionEvent event) {
+				// // TODO Auto-generated method stub
+				// if (event.getAction() == MotionEvent.ACTION_DOWN) {
+				// ((ImageView) dialog
+				// .findViewById(R.id.btn_go_event))
+				// .setImageResource(R.drawable.btn_eventi_poi_press);
+				// return true;
+				// }
+				// if (event.getAction() == MotionEvent.ACTION_UP) {
+				// ((ImageView) dialog
+				// .findViewById(R.id.btn_go_event))
+				// .setImageResource(R.drawable.btn_eventi_poi);
+				//
+				// dialog.dismiss();
+				// Intent mCaller = new Intent(Booking.this,
+				// DettaglioEventoPerPOI.class);
+				// mCaller.putExtra("latGPS",
+				// Double.parseDouble(marker
+				// .getSnippet().split("/")[1]
+				// .split("-")[0]));
+				// mCaller.putExtra("lngGPS",
+				// Double.parseDouble(marker
+				// .getSnippet().split("/")[1]
+				// .split("-")[1]));
+				// startActivity(mCaller);
+				// return true;
+				// }
+				// return false;
+				// }
+				// });
 
 				dialog.show();
 

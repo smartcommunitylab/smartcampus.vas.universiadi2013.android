@@ -1,15 +1,22 @@
 package smartcampus.android.template.standalone.Activity.EventiBlock;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,6 +55,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
+import android.util.Log;
 import android.view.Window;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -87,6 +95,8 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 
 	private boolean fromSearch;
 
+	private ArrayList<ElementDescRoute> mRouteText;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -94,6 +104,8 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 		setContentView(R.layout.activity_info_eventi);
 
 		fromSearch = getIntent().getBooleanExtra("search", false);
+
+		mMapUtilities = new MapUtilities(InfoEventi.this, InfoEventi.this);
 
 		new AsyncTask<Void, Void, Void>() {
 
@@ -142,6 +154,8 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 									null,
 									obj.getString("title"),
 									obj.getLong("fromTime"),
+									obj.getLong("fromTime"),
+									obj.getLong("toTime"),
 									Html.fromHtml(obj.getString("description"))
 											.toString(),
 									(!obj.isNull("location")) ? obj
@@ -150,26 +164,37 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 									(!obj.isNull("location")) ? obj
 											.getJSONArray("location")
 											.getDouble(1) : 0,
-									"Sport 1",
-									downloadImageFormURL(obj.getJSONObject(
-											"customData").getString("imageUrl")));
+									obj.getJSONObject("customData").getString(
+											"category"),
+									(!obj.getJSONObject("customData")
+											.getString("imageUrl").equals("")) ? downloadImageFormURL(obj
+											.getJSONObject("customData")
+											.getString("imageUrl"))
+											: new byte[1]);
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
 				} else {
-					mResult = ManagerData.getEventiForData(getIntent()
-							.getLongExtra(
-									"data",
-									Calendar.getInstance(Locale.getDefault())
-											.getTimeInMillis()));
-					if (!((Boolean) mResult.get("connectionError"))) {
-						ArrayList<android.smartcampus.template.standalone.Evento> mLista = (ArrayList<android.smartcampus.template.standalone.Evento>) mResult
-								.get("params");
-						mEvento = mLista.get(getIntent()
-								.getIntExtra("index", 0));
-					}
+					mEvento = (android.smartcampus.template.standalone.Evento) (getIntent()
+							.getSerializableExtra("evento"));
+					mResult = new HashMap<String, Object>();
+					mResult.put("connectionError", false);
+					mResult.put("params", null);
+				}
+
+				if (mEvento.getLatGPS() != 0 && mEvento.getLngGPS() != 0) {
+					mMarkerEvento = new LatLng(mEvento.getLatGPS(),
+							mEvento.getLngGPS());
+					mMarkerUser = new LatLng(mMapUtilities
+							.getLastKnownLocation().getLatitude(),
+							mMapUtilities.getLastKnownLocation().getLongitude());
+
+					mRouteText = parseGoogleDescRoute(new double[] {
+							mMarkerUser.latitude, mMarkerUser.longitude },
+							new double[] { mMarkerEvento.latitude,
+									mMarkerEvento.longitude });
 				}
 				return null;
 			}
@@ -218,16 +243,8 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 
 					mMappa.setMyLocationEnabled(true);
 
-					mMapUtilities = new MapUtilities(InfoEventi.this,
-							InfoEventi.this);
-
 					if (mEvento.getLatGPS() != 0 && mEvento.getLngGPS() != 0) {
-						mMarkerEvento = new LatLng(mEvento.getLatGPS(),
-								mEvento.getLngGPS());
-						mMarkerUser = new LatLng(mMapUtilities
-								.getLastKnownLocation().getLatitude(),
-								mMapUtilities.getLastKnownLocation()
-										.getLongitude());
+
 						Geocoder coder = new Geocoder(InfoEventi.this,
 								Locale.getDefault());
 
@@ -286,21 +303,7 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 							mMappa.animateCamera(CameraUpdateFactory
 									.newLatLngBounds(bounds, 50));
 
-							MapTextRoute descRoute = new MapTextRoute();
-							descRoute
-									.execute(new String[] {
-											(Double.toString(mMarkerUser.latitude)
-													+ "-" + Double
-													.toString(mMarkerUser.longitude)),
-											(Double.toString(mMarkerEvento.latitude)
-													+ "-" + Double
-													.toString(mMarkerEvento.longitude)) });
-
 							// mDesc.setText(parseGoogleDescRoute(descRoute.get()));
-							ArrayList<ElementDescRoute> mRouteText = mEvento
-									.getRouteTestuale(new double[] {
-											mMarkerUser.latitude,
-											mMarkerUser.longitude });
 							mAdapter.fragments.add(new PageInfoEventi(1,
 									mRouteText));
 							mAdapter.notifyDataSetChanged();
@@ -321,10 +324,13 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 		}.execute();
 	}
 
-	private Bitmap downloadImageFormURL(String url) {
+	private byte[] downloadImageFormURL(String url) {
 		try {
-			return BitmapFactory.decodeStream((InputStream) new URL(url)
-					.getContent());
+			Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL(
+					url).getContent());
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+			return stream.toByteArray();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -379,6 +385,104 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 		return bmpBackground;
 	}
 
+	private ArrayList<ElementDescRoute> parseGoogleDescRoute(
+			double[] gpsSource, double[] gpsDest) {
+		URL url;
+		try {
+			String srcGPS = gpsSource[0] + "," + gpsSource[1];
+			String destGPS = gpsDest[0] + "," + gpsDest[1];
+
+			String path = "http://maps.googleapis.com/maps/api/directions/json?origin="
+					+ srcGPS
+					+ "&destination="
+					+ destGPS
+					+ "&sensor=false&language="
+					+ (Locale.getDefault().getDisplayLanguage()
+							.equalsIgnoreCase("it_IT") ? "it" : "en");
+			url = new URL(path);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Accept", "application/json");
+
+			if (conn.getResponseCode() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : "
+						+ conn.getResponseCode());
+			}
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					(conn.getInputStream())));
+
+			String line = "";
+			String output = "";
+			System.out.println("Output from Server .... \n");
+			while ((line = br.readLine()) != null) {
+				output = output + line;
+			}
+
+			conn.disconnect();
+
+			JSONObject object = new JSONObject(output);
+
+			ArrayList<ElementDescRoute> result = new ArrayList<ElementDescRoute>();
+			// Get routes
+			JSONArray legs = object.getJSONArray("routes").getJSONObject(0)
+					.getJSONArray("legs");
+			JSONObject leg = legs.getJSONObject(0);
+			result.add(new ElementDescRoute(leg.getJSONObject("distance")
+					.getString("text"), leg.getJSONObject("duration")
+					.getString("text"), leg.getString("end_address"), -1));
+
+			JSONArray steps = leg.getJSONArray("steps");
+
+			for (int j = 0; j < steps.length(); j++) {
+				int img = -1;
+				JSONObject step = steps.getJSONObject(j);
+				try {
+					String man = step.getString("maneuver");
+					if (man.equals("turn-right"))
+						img = R.drawable.turn_right;
+					if (man.equals("turn-left"))
+						img = R.drawable.turn_left;
+					if (man.equals("merge"))
+						img = R.drawable.enter;
+					if (man.equals("ramp-right"))
+						img = R.drawable.out_right;
+					if (man.equals("ramp-left"))
+						img = R.drawable.out_left;
+					if (man.equals("fork-right"))
+						img = R.drawable.turn_right_little;
+					if (man.equals("fork-left"))
+						img = R.drawable.turn_left_little;
+				} catch (JSONException e) {
+				}
+
+				String desc = Html
+						.fromHtml(step.getString("html_instructions"))
+						.toString();
+				desc.replace("\n", "");
+				result.add(new ElementDescRoute(step.getJSONObject("distance")
+						.getString("text"), step.getJSONObject("duration")
+						.getString("text"), desc, img));
+			}
+
+			return result;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ProtocolException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		return null;
+	}
+
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
@@ -426,12 +530,6 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 		public PagerAdapter(FragmentManager fm, List<Fragment> fragments) {
 			super(fm);
 			this.fragments = fragments;
-		}
-
-		@Override
-		public void notifyDataSetChanged() {
-			// TODO Auto-generated method stub
-			super.notifyDataSetChanged();
 		}
 
 		@Override

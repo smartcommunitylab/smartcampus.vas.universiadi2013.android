@@ -1,5 +1,6 @@
 package smartcampus.android.template.standalone.Activity.EventiBlock;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +16,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -306,7 +309,7 @@ public class Evento extends Activity {
 													noConnection
 															.requestWindowFeature(Window.FEATURE_NO_TITLE);
 													noConnection
-															.setContentView(R.layout.dialog_image);
+															.setContentView(R.layout.dialog_no_connection);
 													noConnection
 															.getWindow()
 															.setBackgroundDrawableResource(
@@ -364,9 +367,8 @@ public class Evento extends Activity {
 										// TODO Auto-generated method stub
 										Intent mCaller = new Intent(arg1
 												.getContext(), InfoEventi.class);
-										mCaller.putExtra("data",
-												mLista.get(arg2).getData());
-										mCaller.putExtra("index", arg2);
+										mCaller.putExtra("evento",
+												mLista.get(arg2));
 										startActivity(mCaller);
 									}
 								});
@@ -411,19 +413,34 @@ public class Evento extends Activity {
 				rowView = inflater.inflate(R.layout.row_eventi, parent, false);
 
 				((FontTextView) rowView.findViewById(R.id.text_orario))
-						.setText(new SimpleDateFormat("hh:mm", Locale
+						.setText(new SimpleDateFormat("HH:mm", Locale
 								.getDefault()).format(values.get(position)
-								.getData()));
+								.getOraInizio())
+								+ " - "
+								+ new SimpleDateFormat("HH:mm", Locale
+										.getDefault()).format(values.get(
+										position).getOraFine()));
 
-				if (values.get(position).getNome().length() <= 12)
+				((FontTextView) rowView.findViewById(R.id.text_nome_evento))
+						.setText(values.get(position).getNome().toUpperCase());
+
+				if (values.get(position).getNome().length() > 30)
 					((FontTextView) rowView.findViewById(R.id.text_nome_evento))
-							.setText(values.get(position).getNome()
-									.toUpperCase());
-				else
+							.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+				else if (values.get(position).getNome().length() > 15)
 					((FontTextView) rowView.findViewById(R.id.text_nome_evento))
-							.setText(values.get(position).getNome()
-									.toUpperCase().substring(0, 11)
-									+ "...");
+							.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+
+				((FontTextView) rowView.findViewById(R.id.text_tipo_gara))
+						.setText(values.get(position).getTipoSport());
+
+				((ImageView) rowView.findViewById(R.id.image_logo_row_eventi))
+						.setImageBitmap((values.get(position).getImage() == null) ? BitmapFactory
+								.decodeResource(getResources(),
+										R.drawable.img_event_list)
+								: BitmapFactory.decodeByteArray(
+										values.get(position).getImage(), 0,
+										values.get(position).getImage().length));
 			}
 			return rowView;
 		}

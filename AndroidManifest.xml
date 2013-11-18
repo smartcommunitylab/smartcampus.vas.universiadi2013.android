@@ -255,6 +255,10 @@
             android:name="smartcampus.android.template.standalone.Activity.FacilitiesBlock.DettaglioEventoPerPOI"
             android:label="@string/title_activity_dettaglio_evento_per_poi" >
         </activity>
+        <activity
+            android:name="smartcampus.android.template.standalone.HomeBlock.Credits"
+            android:label="@string/title_activity_credits" >
+        </activity>
     </application>
 
 </manifest>

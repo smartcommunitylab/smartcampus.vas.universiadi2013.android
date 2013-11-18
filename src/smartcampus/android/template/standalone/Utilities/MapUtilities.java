@@ -82,7 +82,9 @@ public class MapUtilities {
 	}
 
 	public Location getLastKnownLocation() {
-		return mLocationManager.getLastKnownLocation("network");
+		return (mLocationManager.getLastKnownLocation("gps") != null) ? mLocationManager
+				.getLastKnownLocation("gps") : mLocationManager
+				.getLastKnownLocation("passive");
 	}
 
 	/**

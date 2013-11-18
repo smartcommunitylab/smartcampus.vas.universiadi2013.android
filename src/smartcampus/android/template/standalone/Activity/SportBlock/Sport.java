@@ -38,6 +38,7 @@ public class Sport extends Activity {
 
 		new AsyncTask<Void, Void, Void>() {
 			private Dialog dialog;
+			private Map<String, Object> mResult;
 
 			@Override
 			protected void onPreExecute() {
@@ -66,7 +67,11 @@ public class Sport extends Activity {
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
-				mSport = SportContainer.getListaSport(Sport.this);
+				mResult = ManagerData.getSport();
+				if (!((Boolean) mResult.get("connectionError")))
+					mSport = (ArrayList<android.smartcampus.template.standalone.Sport>) mResult
+							.get("params");
+				// mSport = SportContainer.getListaSport(Sport.this);
 				return null;
 			}
 
@@ -91,7 +96,7 @@ public class Sport extends Activity {
 						// TODO Auto-generated method stub
 						Intent mCaller = new Intent(arg1.getContext(),
 								DettaglioSport.class);
-						mCaller.putExtra("Index", arg2);
+						mCaller.putExtra("sport", mSport.get(arg2));
 						startActivity(mCaller);
 					}
 				});

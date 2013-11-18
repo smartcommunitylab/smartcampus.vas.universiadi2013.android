@@ -107,36 +107,31 @@ public class DettaglioSport extends FragmentActivity implements ILocation {
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
-				ArrayList<android.smartcampus.template.standalone.Sport> mListaSport = SportContainer
-						.getListaSport(DettaglioSport.this);
-
-				if (getIntent().getBooleanExtra("search", false)) {
-					for (Sport sport : mListaSport) {
-						if (sport.getNome().equalsIgnoreCase(
-								getIntent().getStringExtra("sport"))) {
-							mSport = sport;
-							break;
-						}
-					}
-				} else {
-					mSport = (Sport) mListaSport.get(getIntent().getIntExtra(
-							"Index", -1));
-				}
-				mResult = ManagerData.getEventiPerSport(mSport.getNome());
+				mResult = ManagerData.getSport();
 				if (!((Boolean) mResult.get("connectionError"))) {
+					ArrayList<android.smartcampus.template.standalone.Sport> mListaSport = (ArrayList<Sport>) mResult
+							.get("params");
+
+					if (getIntent().getBooleanExtra("search", false)) {
+						for (Sport sport : mListaSport) {
+							if (sport.getNome().equalsIgnoreCase(
+									getIntent().getStringExtra("sport"))) {
+								mSport = sport;
+								break;
+							}
+						}
+					} else {
+						mSport = (Sport) getIntent().getSerializableExtra(
+								"sport");
+					}
+
+					mResult = ManagerData.getEventiPerSport(mSport.getNome());
 					mListEventi = (ArrayList<Evento>) mResult.get("params");
 
-					ArrayList<Atleta> mListaAtletiTmp = new ArrayList<Atleta>();
-					// for (Evento evento : mListEventi) {
-					// ArrayList<Atleta> mListaAtletiTmp = (ArrayList<Atleta>)
-					// ManagerData
-					// .getAtletiPerEvento(evento).get("params");
-					// for (Atleta atleta : mListaAtletiTmp)
-					// mListaAtleti.add(atleta);
-					// }
-					for (int i = 0; i < 3; i++)
+					for (int i = 0; i < 4; i++)
 						fragment.add(new PageInfoSport(mSport.getDescrizione(),
-								mListEventi, mListaAtleti, i));
+								mListEventi, mSport.getAtleti(), mSport
+										.getSpecialita(), i));
 				}
 				return null;
 			}

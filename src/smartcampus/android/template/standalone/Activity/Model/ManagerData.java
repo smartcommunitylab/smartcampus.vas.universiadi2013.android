@@ -13,6 +13,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -131,9 +133,7 @@ public class ManagerData {
 	}
 
 	public static void invalidateToken() {
-		mRest.restRequest(
-				new String[] { mContext.getString(R.string.URL_INVALIDATE) },
-				RestRequestType.GET);
+		mRest.invalidateToken();
 	}
 
 	public static Map<String, Object> getEventiForData(Long data) {
@@ -153,23 +153,38 @@ public class ManagerData {
 							(String) mMapRequest.get("params"));
 					for (int i = 0; i < arrayEventi.length(); i++) {
 						JSONObject obj = arrayEventi.getJSONObject(i);
-
-						Evento evento = new Evento(null,
+						Evento evento = new Evento(
+								null,
 								obj.getString("title"),
-								obj.getLong("fromTime"), Html.fromHtml(
-										obj.getString("description"))
+								obj.getLong("fromTime"),
+								obj.getLong("fromTime"),
+								obj.getLong("toTime"),
+								Html.fromHtml(obj.getString("description"))
 										.toString(),
 								(!obj.isNull("location")) ? obj.getJSONArray(
 										"location").getDouble(0) : 0,
 								(!obj.isNull("location")) ? obj.getJSONArray(
 										"location").getDouble(1) : 0,
-								"Sport 1", downloadImageFormURL(obj
+								obj.getJSONObject("customData").getString(
+										"category"),
+								(!obj.getJSONObject("customData")
+										.getString("imageUrl").equals("")) ? downloadImageFormURL(obj
 										.getJSONObject("customData").getString(
-												"imageUrl")));
+												"imageUrl")) : new byte[1]);
 						mListaEventi.add(evento);
 					}
 				}
 			}
+			Collections.sort(mListaEventi, new Comparator<Evento>() {
+				@Override
+				public int compare(Evento s1, Evento s2) {
+					if (s1.getData() < s2.getData())
+						return -1;
+					else if (s1.getData() > s2.getData())
+						return 1;
+					return 0;
+				}
+			});
 			mResult.put("params", mListaEventi);
 			return mResult;
 
@@ -181,10 +196,13 @@ public class ManagerData {
 		return null;
 	}
 
-	private static Bitmap downloadImageFormURL(String url) {
+	private static byte[] downloadImageFormURL(String url) {
 		try {
-			return BitmapFactory.decodeStream((InputStream) new URL(url)
-					.getContent());
+			Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL(
+					url).getContent());
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+			return stream.toByteArray();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -210,13 +228,24 @@ public class ManagerData {
 				for (int i = 0; i < arrayEventi.length(); i++) {
 					JSONObject obj;
 					obj = arrayEventi.getJSONObject(i);
-					Evento evento = new Evento(null, obj.getString("title"),
+					Evento evento = new Evento(
+							null,
+							obj.getString("title"),
 							obj.getLong("fromTime"),
-							obj.getString("description"), obj.getJSONObject(
-									"location").getDouble("0"), obj
-									.getJSONObject("location").getDouble("1"),
-							"Sport 1", downloadImageFormURL(obj.getJSONObject(
-									"customData").getString("imageUrl")));
+							obj.getLong("fromTime"),
+							obj.getLong("toTime"),
+							Html.fromHtml(obj.getString("description"))
+									.toString(),
+							(!obj.isNull("location")) ? obj.getJSONArray(
+									"location").getDouble(0) : 0,
+							(!obj.isNull("location")) ? obj.getJSONArray(
+									"location").getDouble(1) : 0,
+							obj.getJSONObject("customData").getString(
+									"category"),
+							(!obj.getJSONObject("customData")
+									.getString("imageUrl").equals("")) ? downloadImageFormURL(obj
+									.getJSONObject("customData").getString(
+											"imageUrl")) : new byte[1]);
 					mListaEventi.add(evento);
 
 				}
@@ -246,17 +275,21 @@ public class ManagerData {
 				if (mMapRequest.get("params") != null) {
 					JSONArray arrayEventi = new JSONArray(
 							(String) mMapRequest.get("params"));
-					for (int i = 0; i < arrayEventi.length(); i++) {
-						JSONObject obj;
-						obj = arrayEventi.getJSONObject(i);
-						Meeting meeting = new Meeting(null,
-								obj.getString("nome"), obj.getLong("data"),
-								obj.getString("descrizione"), obj
-										.getJSONObject("gps").getDouble(
-												"latGPS"), obj.getJSONObject(
-										"gps").getDouble("lngGPS"),
-								obj.getString("ambito"), obj.getString("ruolo"));
-						mListaEventi.add(meeting);
+					if (arrayEventi != null) {
+						for (int i = 0; i < arrayEventi.length(); i++) {
+							JSONObject obj;
+							obj = arrayEventi.getJSONObject(i);
+							Meeting meeting = new Meeting(null,
+									obj.getString("nome"), obj.getLong("data"),
+									obj.getString("descrizione"), obj
+											.getJSONObject("gps").getDouble(
+													"latGPS"), obj
+											.getJSONObject("gps").getDouble(
+													"lngGPS"),
+									obj.getString("ambito"),
+									obj.getString("ruolo"));
+							mListaEventi.add(meeting);
+						}
 					}
 				}
 			}
@@ -383,16 +416,24 @@ public class ManagerData {
 						(String) mMapRequest.get("params"));
 				for (int i = 0; i < arrayEventi.length(); i++) {
 					JSONObject obj = arrayEventi.getJSONObject(i);
-					Evento evento = new Evento(null, obj.getString("title"),
+					Evento evento = new Evento(
+							null,
+							obj.getString("title"),
 							obj.getLong("fromTime"),
-							obj.getString("description"),
+							obj.getLong("fromTime"),
+							obj.getLong("toTime"),
+							Html.fromHtml(obj.getString("description"))
+									.toString(),
 							(!obj.isNull("location")) ? obj.getJSONArray(
 									"location").getDouble(0) : 0,
 							(!obj.isNull("location")) ? obj.getJSONArray(
-									"location").getDouble(1) : 0, "Sport 1",
-							downloadImageFormURL(obj
+									"location").getDouble(1) : 0,
+							obj.getJSONObject("customData").getString(
+									"category"),
+							(!obj.getJSONObject("customData")
+									.getString("imageUrl").equals("")) ? downloadImageFormURL(obj
 									.getJSONObject("customData").getString(
-											"imageUrl")));
+											"imageUrl")) : new byte[1]);
 					mListaEventi.add(evento);
 				}
 			}
@@ -449,11 +490,15 @@ public class ManagerData {
 			mResult.put("connectionError",
 					(Boolean) mMapRequest.get("connectionError"));
 			if (!(Boolean) (mMapRequest.get("connectionError"))) {
-				ArrayList<String> listFunzioni = new ArrayList<String>();
+				ArrayList<FunzioneObj> listFunzioni = new ArrayList<FunzioneObj>();
 				JSONArray arrayUtenti = new JSONArray(
 						(String) mMapRequest.get("params"));
 				for (int i = 0; i < arrayUtenti.length(); i++) {
-					String funzione = arrayUtenti.getString(i);
+					String categoria = arrayUtenti.getJSONObject(i)
+							.getString("path")
+							.replace("Organising Committee:", "");
+					int id = arrayUtenti.getJSONObject(i).getInt("id");
+					FunzioneObj funzione = new FunzioneObj(categoria, id);
 					listFunzioni.add(funzione);
 				}
 				mResult.put("params", listFunzioni);
@@ -743,6 +788,42 @@ public class ManagerData {
 			}
 			mReturn.put("params", mResult);
 			return mReturn;
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public static Map<String, Object> getSport() {
+		ArrayList<Sport> mListaSport = new ArrayList<Sport>();
+
+		try {
+			Map<String, Object> mMapRequest = mRest.restRequest(
+					new String[] { mContext.getString(R.string.URL_SPORT) },
+					RestRequestType.GET);
+			Map<String, Object> mResult = new HashMap<String, Object>();
+			mResult.put("connectionError",
+					(Boolean) (mMapRequest.get("connectionError")));
+			if (!(Boolean) (mMapRequest.get("connectionError"))) {
+				if (mMapRequest.get("params") != null) {
+					JSONArray arrayEventi = new JSONArray(
+							(String) mMapRequest.get("params"));
+					for (int i = 0; i < arrayEventi.length(); i++) {
+						JSONObject obj = arrayEventi.getJSONObject(i);
+						Sport sport = new Sport(obj.getString("nome"),
+								SportImageConstant.resourcesFromID(
+										obj.getInt("foto"), mContext),
+								obj.getString("descrizione"),
+								obj.getString("atleti"),
+								obj.getString("specialita"));
+						mListaSport.add(sport);
+					}
+				}
+			}
+			mResult.put("params", mListaSport);
+			return mResult;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
