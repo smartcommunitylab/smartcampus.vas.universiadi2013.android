@@ -1,10 +1,14 @@
 package smartcampus.android.template.standalone.HomeBlock;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
@@ -13,7 +17,6 @@ import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.Profile;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FilterCalendarioActivity;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock.FAQ;
-import smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock.Problema;
 import smartcampus.android.template.standalone.Activity.SportBlock.Sport;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
@@ -24,6 +27,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -61,6 +65,8 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 	private List<Fragment> fragmentMeeting = new ArrayList<Fragment>();
 	private ArrayList<Evento> mListaEventiDiOggi = new ArrayList<Evento>();
 	private ArrayList<Meeting> mListaMeetingDiOggi = new ArrayList<Meeting>();
+
+	private CirclePageIndicator titleIndicator;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -142,8 +148,9 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 						mAdapter.notifyDataSetChanged();
 						mPager.setAdapter(mAdapter);
 						mPager.invalidate();
+						mPager.setVisibility(View.VISIBLE);
 						// Bind the title indicator to the adapter
-						final CirclePageIndicator titleIndicator = (CirclePageIndicator) findViewById(R.id.page_indicator);
+						titleIndicator = (CirclePageIndicator) findViewById(R.id.page_indicator);
 						titleIndicator.setViewPager(mPager);
 
 						class TapGestureListener extends
@@ -154,8 +161,10 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 							public boolean onSingleTapConfirmed(MotionEvent e) {
 								Intent mCaller = new Intent(getApplication(),
 										InfoEventi.class);
-								mCaller.putExtra("index",
-										mPager.getCurrentItem());
+								android.smartcampus.template.standalone.Evento evento = mListaEventiDiOggi
+										.get(mPager.getCurrentItem());
+								mCaller.putExtra("evento",
+										(Serializable) evento);
 								startActivity(mCaller);
 								return true;
 							}
@@ -267,9 +276,20 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 												.setVisibility(View.GONE);
 										mAdapter.fragments = fragmentEventi;
 										mAdapter.notifyDataSetChanged();
-									} else
+										mPager.setVisibility(View.VISIBLE);
+										titleIndicator
+												.setVisibility(View.VISIBLE);
+										// ((RelativeLayout)
+										// findViewById(R.id.container_pager_eventi_oggi))
+										// .setBackgroundResource(R.drawable.scroll_main);
+									} else {
 										((TextView) findViewById(R.id.text_nessun_evento))
 												.setVisibility(View.VISIBLE);
+										mPager.setVisibility(View.GONE);
+										titleIndicator.setVisibility(View.GONE);
+										((RelativeLayout) findViewById(R.id.container_pager_eventi_oggi))
+												.setBackgroundResource(R.drawable.scroll_main);
+									}
 								}
 							}
 						});
@@ -298,10 +318,35 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 												.setVisibility(View.GONE);
 										mAdapter.fragments = fragmentMeeting;
 										mAdapter.notifyDataSetChanged();
-									} else
+										mPager.setVisibility(View.VISIBLE);
+										titleIndicator
+												.setVisibility(View.VISIBLE);
+										// ((RelativeLayout)
+										// findViewById(R.id.container_pager_eventi_oggi))
+										// .setBackgroundResource(R.drawable.scroll_main);
+									} else {
 										((TextView) findViewById(R.id.text_nessun_evento))
 												.setVisibility(View.VISIBLE);
+										mPager.setVisibility(View.GONE);
+										titleIndicator.setVisibility(View.GONE);
+										((RelativeLayout) findViewById(R.id.container_pager_eventi_oggi))
+												.setBackgroundResource(R.drawable.scroll_main);
+										// ((RelativeLayout)
+										// findViewById(R.id.container_pager_eventi_oggi))
+										// .setBackgroundResource(0);
+									}
 								}
+							}
+						});
+
+				((ImageView) findViewById(R.id.btn_sticker_credit))
+						.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								// TODO Auto-generated method stub
+								startActivity(new Intent(Home.this,
+										Credits.class));
 							}
 						});
 				// END ONPOST
@@ -323,21 +368,21 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 		// TODO Auto-generated method stub
 		if (getIntent().getBooleanExtra("sessionLogin", false)) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Allert");
-			builder.setMessage("Are you sure to quit and logout?");
+			builder.setTitle(getString(R.string.LOGOUT_TITLE));
+			builder.setMessage(getString(R.string.LOGOUT_TEXT));
 			builder.setCancelable(true);
-			builder.setPositiveButton("Logout",
+			builder.setPositiveButton(getString(R.string.LOGOUT_LOGOUT),
 					new DialogInterface.OnClickListener() {
 
 						public void onClick(DialogInterface dialog, int id) {
 
 							// TO-DO Invalidate Token
-							ManagerData.invalidateToken();
+							// ManagerData.invalidateToken();
 							dialog.dismiss();
 							finish();
 						}
 					});
-			builder.setNegativeButton("Cancel",
+			builder.setNegativeButton(getString(R.string.LOGOUT_CANCEL),
 					new DialogInterface.OnClickListener() {
 
 						@Override
@@ -433,7 +478,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 		// ***********NORMALUSER***********
 		else {
 			((RelativeLayout) findViewById(R.id.container_button_meetings))
-					.setVisibility(View.GONE);
+					.setVisibility(View.INVISIBLE);
 
 			((ImageView) findViewById(R.id.image_btn_1))
 					.setImageResource(R.drawable.btn_main_event);
@@ -554,8 +599,13 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 				if (event.getAction() == MotionEvent.ACTION_UP) {
 					mFilterPoi.setImageResource(R.drawable.btn_tool_helper);
 
-					startActivity(new Intent(getApplicationContext(),
-							Problema.class));
+					String url = getString(R.string.URL_ICE_AND_FIRE);
+					if (!url.startsWith("http://"))
+						url = "http://" + url;
+					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+
+					// startActivity(new Intent(getApplicationContext(),
+					// Problema.class));
 					return true;
 				}
 				return false;
@@ -689,15 +739,26 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					return true;
 				}
 				if (event.getAction() == MotionEvent.ACTION_UP) {
-					mFilterEvent.setImageResource(R.drawable.btn_filter_event);
 
-					Intent mCaller = new Intent(getApplicationContext(),
-							ResultSearch.class);
-					mCaller.putExtra("rest", "/search/eventi");
-					mCaller.putExtra("search",
-							((EditText) findViewById(R.id.text_search))
-									.getText().toString());
-					startActivity(mCaller);
+					try {
+						mFilterEvent
+								.setImageResource(R.drawable.btn_filter_event);
+
+						Intent mCaller = new Intent(getApplicationContext(),
+								ResultSearch.class);
+						mCaller.putExtra("rest", "/evento/search");
+						JSONObject obj = new JSONObject();
+						obj.put("tipoFiltro", "SPORT");
+						obj.put("nome", "re");
+						// obj.put("nome",((EditText)
+						// findViewById(R.id.text_search))
+						// .getText().toString()));
+						mCaller.putExtra("search", obj.toString());
+						startActivity(mCaller);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					return true;
 				}
 				return false;
@@ -717,15 +778,25 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					return true;
 				}
 				if (event.getAction() == MotionEvent.ACTION_UP) {
-					mFilterPoi.setImageResource(R.drawable.btn_filter_poi);
 
-					Intent mCaller = new Intent(getApplicationContext(),
-							ResultSearch.class);
-					mCaller.putExtra("rest", "/search/poi");
-					mCaller.putExtra("search",
-							((EditText) findViewById(R.id.text_search))
-									.getText().toString());
-					startActivity(mCaller);
+					try {
+						mFilterPoi.setImageResource(R.drawable.btn_filter_poi);
+
+						Intent mCaller = new Intent(getApplicationContext(),
+								ResultSearch.class);
+						mCaller.putExtra("rest", "/evento/search");
+						JSONObject obj = new JSONObject();
+						obj.put("tipoFiltro", "SPORT");
+						obj.put("nome", "re");
+						// obj.put("nome",(((EditText)
+						// findViewById(R.id.text_search))
+						// .getText().toString());
+						mCaller.putExtra("search", obj.toString());
+						startActivity(mCaller);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					return true;
 				}
 				return false;
@@ -745,15 +816,25 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					return true;
 				}
 				if (event.getAction() == MotionEvent.ACTION_UP) {
-					mFilterSport.setImageResource(R.drawable.btn_filter_sport);
+					try {
+						mFilterSport
+								.setImageResource(R.drawable.btn_filter_sport);
 
-					Intent mCaller = new Intent(getApplicationContext(),
-							ResultSearch.class);
-					mCaller.putExtra("rest", "/search/sport");
-					mCaller.putExtra("search",
-							((EditText) findViewById(R.id.text_search))
-									.getText().toString());
-					startActivity(mCaller);
+						Intent mCaller = new Intent(getApplicationContext(),
+								ResultSearch.class);
+						mCaller.putExtra("rest", "/evento/search");
+						JSONObject obj = new JSONObject();
+						obj.put("tipoFiltro", "SPORT");
+						obj.put("nome", "re");
+						// obj.put("nome",(((EditText)
+						// findViewById(R.id.text_search))
+						// .getText().toString());
+						mCaller.putExtra("search", obj.toString());
+						startActivity(mCaller);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					return true;
 				}
 				return false;

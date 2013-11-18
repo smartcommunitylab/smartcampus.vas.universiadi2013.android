@@ -9,10 +9,12 @@ import smartcampus.android.template.standalone.Utilities.FontTextView;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.smartcampus.template.standalone.Atleta;
 import android.smartcampus.template.standalone.Evento;
 import android.support.v4.app.Fragment;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 //import eu.trentorise.smartcampus.ac.authenticator.AMSCAccessProvider;
 
 @SuppressLint("ValidFragment")
@@ -29,21 +32,23 @@ public class PageInfoSport extends Fragment {
 
 	private String mDescrizione;
 	private ArrayList<Evento> mListaEventiSportivi;
-	private ArrayList<Atleta> mListaAtleti;
+	private String mAtleti;
+	private String mSpecialita;
 	private int mPosition;
 
 	public PageInfoSport(String mDescrizione,
-			ArrayList<Evento> mListaEventiSportivi,
-			ArrayList<Atleta> mListaAtleti, int mPosition) {
+			ArrayList<Evento> mListaEventiSportivi, String mAtleti,
+			String mSpecialita, int mPosition) {
 		super();
 		this.mDescrizione = mDescrizione;
 		this.mListaEventiSportivi = mListaEventiSportivi;
-		this.mListaAtleti = mListaAtleti;
+		this.mAtleti = mAtleti;
+		this.mSpecialita = mSpecialita;
 		this.mPosition = mPosition;
 	}
 
 	public PageInfoSport() {
-		this(null, null, null, -1);
+		this(null, null, null, null, -1);
 	}
 
 	@Override
@@ -59,20 +64,27 @@ public class PageInfoSport extends Fragment {
 				.findViewById(R.id.container_eventi_correlati);
 		RelativeLayout mContainerAtleti = (RelativeLayout) mView
 				.findViewById(R.id.container_atleti);
+		RelativeLayout mContainerSpecialita = (RelativeLayout) mView
+				.findViewById(R.id.container_specialita);
 
 		switch (mPosition) {
 		case 0:
 			mContainerDesc.setVisibility(View.VISIBLE);
 			mContainerEventi.setVisibility(View.GONE);
 			mContainerAtleti.setVisibility(View.GONE);
+			mContainerSpecialita.setVisibility(View.GONE);
 
 			((FontTextView) mView.findViewById(R.id.text_descrizione))
 					.setText(mDescrizione);
+			((FontTextView) mView.findViewById(R.id.text_descrizione))
+					.setMovementMethod(new ScrollingMovementMethod());
+
 			break;
 		case 1:
 			mContainerDesc.setVisibility(View.GONE);
 			mContainerEventi.setVisibility(View.VISIBLE);
 			mContainerAtleti.setVisibility(View.GONE);
+			mContainerSpecialita.setVisibility(View.GONE);
 
 			if (mListaEventiSportivi.size() != 0) {
 				((TextView) mView
@@ -90,9 +102,8 @@ public class PageInfoSport extends Fragment {
 						// TODO Auto-generated method stub
 						Intent mCaller = new Intent(arg1.getContext(),
 								InfoEventi.class);
-						mCaller.putExtra("data", mListaEventiSportivi.get(arg2)
-								.getData());
-						mCaller.putExtra("index", arg2);
+						mCaller.putExtra("evento",
+								mListaEventiSportivi.get(arg2));
 						startActivity(mCaller);
 					}
 				});
@@ -106,19 +117,63 @@ public class PageInfoSport extends Fragment {
 			mContainerDesc.setVisibility(View.GONE);
 			mContainerEventi.setVisibility(View.GONE);
 			mContainerAtleti.setVisibility(View.VISIBLE);
+			mContainerSpecialita.setVisibility(View.GONE);
 
-			if (mListaAtleti.size() != 0) {
-				((TextView) mView
-						.findViewById(R.id.text_nessun_atleta_per_sport))
-						.setVisibility(View.GONE);
-				ListView mGrigliaAtleti = (ListView) mView
-						.findViewById(R.id.list_atleti);
-				mGrigliaAtleti.setAdapter(new ListSportArrayAdapter(mView
-						.getContext(), mListaAtleti));
-			} else
-				((TextView) mView
-						.findViewById(R.id.text_nessun_atleta_per_sport))
+			((TextView) mView.findViewById(R.id.text_atleta_per_sport))
+					.setText(mAtleti);
+			((FontTextView) mView.findViewById(R.id.text_atleta_per_sport))
+					.setMovementMethod(new ScrollingMovementMethod());
+
+			break;
+		case 3:
+			mContainerDesc.setVisibility(View.GONE);
+			mContainerEventi.setVisibility(View.GONE);
+			mContainerAtleti.setVisibility(View.GONE);
+			mContainerSpecialita.setVisibility(View.VISIBLE);
+
+			if (mSpecialita.indexOf("Uomini e donne:") != -1) {
+				// Una sola section
+				String[] specialita = mSpecialita.replace("Uomini e donne: ",
+						"").split(", ");
+				String[] values = new String[specialita.length + 1];
+				values[0] = "Uomini e donne";
+				for (int i = 0; i < specialita.length; i++)
+					values[i + 1] = specialita[i];
+
+				((ListView) mView.findViewById(R.id.lista_specialita))
+						.setAdapter(new SpecialitaArrayAdapter(getActivity(),
+								values));
+			} else if (mSpecialita.indexOf("Uomini:") != -1
+					|| mSpecialita.indexOf("Donne:") != -1) {
+				// Due section
+				String[] specialitaString = mSpecialita.split("\nDonne: ");
+				String[] specialitaDonne = specialitaString[1].split(", ");
+				String[] specialitaUomini = (specialitaString[0].replace(
+						"Uomini: ", "")).split(", ");
+				String[] values = new String[specialitaUomini.length
+						+ specialitaDonne.length + 2];
+				values[0] = "Uomini";
+				for (int i = 0; i < specialitaUomini.length; i++)
+					values[i + 1] = specialitaUomini[i];
+				values[specialitaUomini.length + 1] = "Donne";
+				for (int i = 0; i < specialitaDonne.length; i++)
+					values[i + specialitaUomini.length + 2] = specialitaDonne[i];
+
+				((ListView) mView.findViewById(R.id.lista_specialita))
+						.setAdapter(new SpecialitaArrayAdapter(getActivity(),
+								values));
+			} else {
+				// Nessuna lista, solo testo
+				((FontTextView) mView
+						.findViewById(R.id.text_nessuna_specialita))
+						.setText(mSpecialita);
+				((FontTextView) mView
+						.findViewById(R.id.text_nessuna_specialita))
 						.setVisibility(View.VISIBLE);
+				((FontTextView) mView
+						.findViewById(R.id.text_nessuna_specialita))
+						.setMovementMethod(new ScrollingMovementMethod());
+			}
 			break;
 		}
 
@@ -130,7 +185,7 @@ public class PageInfoSport extends Fragment {
 		private final ArrayList<Evento> values;
 
 		public ListArrayAdapter(Context context, ArrayList<Evento> values) {
-			super(context, R.layout.grid_atleti, values);
+			super(context, R.layout.row_eventi, values);
 			this.context = context;
 			this.values = values;
 		}
@@ -164,12 +219,12 @@ public class PageInfoSport extends Fragment {
 		}
 	}
 
-	private class ListSportArrayAdapter extends ArrayAdapter<Atleta> {
+	private class SpecialitaArrayAdapter extends ArrayAdapter<String> {
 		private final Context context;
-		private final ArrayList<Atleta> values;
+		private final String[] values;
 
-		public ListSportArrayAdapter(Context context, ArrayList<Atleta> values) {
-			super(context, R.layout.grid_atleti, values);
+		public SpecialitaArrayAdapter(Context context, String[] values) {
+			super(context, R.layout.row_specialita, values);
 			this.context = context;
 			this.values = values;
 		}
@@ -179,15 +234,24 @@ public class PageInfoSport extends Fragment {
 
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View rowView = inflater
-					.inflate(R.layout.grid_atleti, parent, false);
+			View rowView = inflater.inflate(R.layout.row_specialita, parent,
+					false);
 
-			((FontTextView) rowView.findViewById(R.id.text_nome_cognome))
-					.setText(values.get(position).getCognome() + " "
-							+ values.get(position).getNome());
+			if (values[position].equalsIgnoreCase("Uomini")
+					|| values[position].equalsIgnoreCase("Donne")
+					|| values[position].equalsIgnoreCase("Uomini e donne")) {
+				((RelativeLayout) rowView
+						.findViewById(R.id.container_row_specialita))
+						.setBackgroundColor(Color.parseColor("#7f000000"));
+				((FontTextView) rowView.findViewById(R.id.text_specialita))
+						.setTextColor(Color.WHITE);
+			} else
+				((RelativeLayout) rowView
+						.findViewById(R.id.container_row_specialita))
+						.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
-			((FontTextView) rowView.findViewById(R.id.text_nazionalita))
-					.setText(values.get(position).getNazionalita());
+			((FontTextView) rowView.findViewById(R.id.text_specialita))
+					.setText(values[position]);
 
 			return rowView;
 		}

@@ -36,148 +36,75 @@ public class Sport extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sport);
 
-		mSport.add(new android.smartcampus.template.standalone.Sport(
-				"Alpine Skiing", SportImageConstant.resourcesFromID(
-						SportImageConstant.ALPINE, Sport.this), ""));
-		mSport.add(new android.smartcampus.template.standalone.Sport(
-				"Biathlon", SportImageConstant.resourcesFromID(
-						SportImageConstant.BIATLHON, Sport.this), ""));
-		mSport.add(new android.smartcampus.template.standalone.Sport(
-				"Cross Country Skiing", SportImageConstant.resourcesFromID(
-						SportImageConstant.CROSS, Sport.this), ""));
-		mSport.add(new android.smartcampus.template.standalone.Sport("Curling",
-				SportImageConstant.resourcesFromID(SportImageConstant.CURLING,
-						Sport.this), ""));
-		mSport.add(new android.smartcampus.template.standalone.Sport(
-				"Figure & Syncronized Skating",
-				SportImageConstant.resourcesFromID(SportImageConstant.FIGURE,
-						Sport.this), ""));
-		mSport.add(new android.smartcampus.template.standalone.Sport(
-				"Freestyle Skiing", SportImageConstant.resourcesFromID(
-						SportImageConstant.FREESTYLE, Sport.this), ""));
-		mSport.add(new android.smartcampus.template.standalone.Sport(
-				"Ice Hockey", SportImageConstant.resourcesFromID(
-						SportImageConstant.ICE, Sport.this), ""));
-		mSport.add(new android.smartcampus.template.standalone.Sport(
-				"Nordic Combined", SportImageConstant.resourcesFromID(
-						SportImageConstant.NORDIC, Sport.this), ""));
-		mSport.add(new android.smartcampus.template.standalone.Sport(
-				"Short Track Speed Skating", SportImageConstant
-						.resourcesFromID(SportImageConstant.SHORTTRACK,
-								Sport.this), ""));
-		mSport.add(new android.smartcampus.template.standalone.Sport(
-				"Ski Jumping", SportImageConstant.resourcesFromID(
-						SportImageConstant.SKIIJUMPING, Sport.this), ""));
-		mSport.add(new android.smartcampus.template.standalone.Sport(
-				"Snowboarding", SportImageConstant.resourcesFromID(
-						SportImageConstant.SNOWBOARDING, Sport.this), ""));
-		mSport.add(new android.smartcampus.template.standalone.Sport(
-				"Speed Skating", SportImageConstant.resourcesFromID(
-						SportImageConstant.SPEEDSKATING, Sport.this), ""));
-
-		GridView mGrigliaSport = (GridView) findViewById(R.id.griglia_sport);
-		mGrigliaSport.setAdapter(new GridArrayAdapter(Sport.this, mSport));
-
-		mGrigliaSport.setOnItemClickListener(new OnItemClickListener() {
+		new AsyncTask<Void, Void, Void>() {
+			private Dialog dialog;
+			private Map<String, Object> mResult;
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
+			protected void onPreExecute() {
 				// TODO Auto-generated method stub
-				Intent mCaller = new Intent(arg1.getContext(),
-						DettaglioSport.class);
-				mCaller.putExtra("Index", arg2);
-				startActivity(mCaller);
-			}
-		});
+				super.onPreExecute();
 
-		// new AsyncTask<Void, Void, Void>() {
-		// private Dialog dialog;
-		// private Map<String, Object> mResult;
-		//
-		// @Override
-		// protected void onPreExecute() {
-		// // TODO Auto-generated method stub
-		// super.onPreExecute();
-		//
-		// dialog = new Dialog(Sport.this);
-		// dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		// dialog.setContentView(R.layout.dialog_wait);
-		// dialog.getWindow().setBackgroundDrawableResource(
-		// R.drawable.dialog_rounded_corner_light_black);
-		// dialog.show();
-		// dialog.setCancelable(true);
-		// dialog.setOnCancelListener(new OnCancelListener() {
-		//
-		// @Override
-		// public void onCancel(DialogInterface dialog) {
-		// // TODO Auto-generated method stub
-		// cancel(true);
-		// finish();
-		// }
-		// });
-		//
-		// }
-		//
-		// @Override
-		// protected Void doInBackground(Void... params) {
-		// // TODO Auto-generated method stub
-		// mResult = ManagerData.getSport(Sport.this);
-		// if (!((Boolean) mResult.get("connectionError")))
-		// mSport = (ArrayList<android.smartcampus.template.standalone.Sport>)
-		// mResult
-		// .get("params");
-		// return null;
-		// }
-		//
-		// @Override
-		// protected void onPostExecute(Void result) {
-		// // TODO Auto-generated method stub
-		// super.onPostExecute(result);
-		//
-		// dialog.dismiss();
-		//
-		// // START ONPOST
-		//
-		// if ((Boolean) mResult.get("connectionError")) {
-		// Dialog noConnection = new Dialog(Sport.this);
-		// noConnection.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		// noConnection.setContentView(R.layout.dialog_no_connection);
-		// noConnection.getWindow().setBackgroundDrawableResource(
-		// R.drawable.dialog_rounded_corner_light_black);
-		// noConnection.show();
-		// noConnection.setCancelable(true);
-		// noConnection.setOnCancelListener(new OnCancelListener() {
-		//
-		// @Override
-		// public void onCancel(DialogInterface dialog) {
-		// // TODO Auto-generated method stub
-		// finish();
-		// }
-		// });
-		// } else {
-		// GridView mGrigliaSport = (GridView) findViewById(R.id.griglia_sport);
-		// mGrigliaSport.setAdapter(new GridArrayAdapter(Sport.this,
-		// mSport));
-		//
-		// mGrigliaSport
-		// .setOnItemClickListener(new OnItemClickListener() {
-		//
-		// @Override
-		// public void onItemClick(AdapterView<?> arg0,
-		// View arg1, int arg2, long arg3) {
-		// // TODO Auto-generated method stub
-		// Intent mCaller = new Intent(arg1
-		// .getContext(), DettaglioSport.class);
-		// mCaller.putExtra("Index", arg2);
-		// startActivity(mCaller);
-		// }
-		// });
-		// }
-		// // END ONPOST
-		// }
-		//
-		// }.execute();
+				dialog = new Dialog(Sport.this);
+				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+				dialog.setContentView(R.layout.dialog_wait);
+				dialog.getWindow().setBackgroundDrawableResource(
+						R.drawable.dialog_rounded_corner_light_black);
+				dialog.show();
+				dialog.setCancelable(true);
+				dialog.setOnCancelListener(new OnCancelListener() {
+
+					@Override
+					public void onCancel(DialogInterface dialog) {
+						// TODO Auto-generated method stub
+						cancel(true);
+						finish();
+					}
+				});
+
+			}
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				// TODO Auto-generated method stub
+				mResult = ManagerData.getSport();
+				if (!((Boolean) mResult.get("connectionError")))
+					mSport = (ArrayList<android.smartcampus.template.standalone.Sport>) mResult
+							.get("params");
+				// mSport = SportContainer.getListaSport(Sport.this);
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				// TODO Auto-generated method stub
+				super.onPostExecute(result);
+
+				dialog.dismiss();
+
+				// START ONPOST
+
+				GridView mGrigliaSport = (GridView) findViewById(R.id.griglia_sport);
+				mGrigliaSport.setAdapter(new GridArrayAdapter(Sport.this,
+						mSport));
+
+				mGrigliaSport.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> arg0, View arg1,
+							int arg2, long arg3) {
+						// TODO Auto-generated method stub
+						Intent mCaller = new Intent(arg1.getContext(),
+								DettaglioSport.class);
+						mCaller.putExtra("sport", mSport.get(arg2));
+						startActivity(mCaller);
+					}
+				});
+
+				// END ONPOST
+			}
+
+		}.execute();
 	}
 
 	private class GridArrayAdapter extends

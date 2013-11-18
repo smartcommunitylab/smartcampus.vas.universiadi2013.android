@@ -1,5 +1,6 @@
 package smartcampus.android.template.standalone.HomeBlock;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -33,6 +34,8 @@ import android.os.Bundle;
 import android.smartcampus.template.standalone.Evento;
 import android.smartcampus.template.standalone.POI;
 import android.smartcampus.template.standalone.Sport;
+import android.text.Html;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,24 +97,36 @@ public class ResultSearch extends Activity {
 					mListaObj = (ArrayList<JSONObject>) mResult.get("params");
 					try {
 						if (getIntent().getStringExtra("rest")
-								.equalsIgnoreCase("/search/eventi")) {
+								.equalsIgnoreCase("/evento/search")) {
 							for (JSONObject obj : mListaObj) {
-								Evento evento = new Evento(null,
+								Evento evento = new Evento(
+										null,
 										obj.getString("title"),
 										obj.getLong("fromTime"),
-										obj.getString("description"), obj
-												.getJSONObject("location")
-												.getDouble("0"), obj
-												.getJSONObject("location")
-												.getDouble("1"), "Sport 1",
-										downloadImageFormURL(obj.getJSONObject(
-												"customData").getString(
-												"imageUrl")));
+										obj.getLong("fromTime"),
+										obj.getLong("toTime"),
+										Html.fromHtml(
+												obj.getString("description"))
+												.toString(),
+										(!obj.isNull("location")) ? obj
+												.getJSONArray("location")
+												.getDouble(0) : 0,
+										(!obj.isNull("location")) ? obj
+												.getJSONArray("location")
+												.getDouble(1) : 0,
+										obj.getJSONObject("customData")
+												.getString("category"),
+										(!obj.getJSONObject("customData")
+												.getString("imageUrl")
+												.equals("")) ? downloadImageFormURL(obj
+												.getJSONObject("customData")
+												.getString("imageUrl"))
+												: new byte[1]);
 
 								mListaEvento.add(evento);
 							}
 						} else if (getIntent().getStringExtra("rest")
-								.equalsIgnoreCase("/search/poi")) {
+								.equalsIgnoreCase("/poi/search")) {
 							for (JSONObject obj : mListaObj) {
 								POI poi = new POI(null, obj.getString("nome"),
 										obj.getString("categoria"), obj
@@ -123,13 +138,16 @@ public class ResultSearch extends Activity {
 								mListaPOI.add(poi);
 							}
 						} else if (getIntent().getStringExtra("rest")
-								.equalsIgnoreCase("/search/sport")) {
+								.equalsIgnoreCase("/sport/search")) {
 							for (JSONObject obj : mListaObj) {
-								Sport sport = new Sport(obj.getString("nome"),
+								Sport sport = new Sport(
+										obj.getString("titolo"),
 										SportImageConstant.resourcesFromID(
-												obj.getInt("foto"),
+												obj.getInt("id"),
 												ResultSearch.this),
-										obj.getString("descrizione"));
+										obj.getString("descrizione"),
+										obj.getString("atleti"),
+										obj.getString("specialita"));
 
 								mListaSport.add(sport);
 							}
@@ -168,7 +186,7 @@ public class ResultSearch extends Activity {
 					});
 				} else {
 					if (getIntent().getStringExtra("rest").equalsIgnoreCase(
-							"/search/eventi")) {
+							"/evento/search")) {
 
 						if (mListaEvento.size() != 0) {
 							((ListView) findViewById(R.id.lista_risultati_search))
@@ -187,15 +205,17 @@ public class ResultSearch extends Activity {
 											Intent mCaller = new Intent(arg1
 													.getContext(),
 													InfoEventi.class);
-											mCaller.putExtra("search", true);
-											mCaller.putExtra(
-													"searchString",
-													getIntent().getStringExtra(
-															"search"));
-											mCaller.putExtra("data",
-													mListaEvento.get(arg2)
-															.getData());
-											mCaller.putExtra("index", arg2);
+											// mCaller.putExtra("search", true);
+											// mCaller.putExtra(
+											// "searchString",
+											// getIntent().getStringExtra(
+											// "search"));
+											// mCaller.putExtra("data",
+											// mListaEvento.get(arg2)
+											// .getData());
+											// mCaller.putExtra("index", arg2);
+											mCaller.putExtra("evento",
+													mListaEvento.get(arg2));
 											startActivity(mCaller);
 										}
 									});
@@ -204,7 +224,7 @@ public class ResultSearch extends Activity {
 									.setVisibility(View.VISIBLE);
 
 					} else if (getIntent().getStringExtra("rest")
-							.equalsIgnoreCase("/search/poi")) {
+							.equalsIgnoreCase("/poi/search")) {
 
 						if (mListaPOI.size() != 0) {
 							((ListView) findViewById(R.id.lista_risultati_search))
@@ -235,7 +255,7 @@ public class ResultSearch extends Activity {
 									.setVisibility(View.VISIBLE);
 
 					} else if (getIntent().getStringExtra("rest")
-							.equalsIgnoreCase("/search/sport")) {
+							.equalsIgnoreCase("/sport/search")) {
 
 						if (mListaSport.size() != 0) {
 							((ListView) findViewById(R.id.lista_risultati_search))
@@ -272,10 +292,13 @@ public class ResultSearch extends Activity {
 		}.execute();
 	}
 
-	private Bitmap downloadImageFormURL(String url) {
+	private byte[] downloadImageFormURL(String url) {
 		try {
-			return BitmapFactory.decodeStream((InputStream) new URL(url)
-					.getContent());
+			Bitmap bitmap = BitmapFactory.decodeStream((InputStream) new URL(
+					url).getContent());
+			ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+			return stream.toByteArray();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -303,29 +326,46 @@ public class ResultSearch extends Activity {
 			View rowView = null;
 
 			if (getIntent().getStringExtra("rest").equalsIgnoreCase(
-					"/search/eventi")) {
+					"/evento/search")) {
 				if (values.size() != 0) {
 					rowView = inflater.inflate(R.layout.row_eventi, parent,
 							false);
 					Evento evento = (Evento) values.get(position);
 
 					((FontTextView) rowView.findViewById(R.id.text_orario))
-							.setText(new SimpleDateFormat("hh:mm", Locale
-									.getDefault()).format(evento.getData()));
+							.setText(new SimpleDateFormat("HH:mm", Locale
+									.getDefault()).format(evento.getOraInizio())
+									+ " - "
+									+ new SimpleDateFormat("HH:mm", Locale
+											.getDefault()).format(evento
+											.getOraFine()));
 
-					if (evento.getNome().length() <= 12)
+					((FontTextView) rowView.findViewById(R.id.text_nome_evento))
+							.setText(evento.getNome().toUpperCase());
+
+					if (evento.getNome().length() > 30)
 						((FontTextView) rowView
 								.findViewById(R.id.text_nome_evento))
-								.setText(evento.getNome().toUpperCase());
-					else
+								.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+					else if (evento.getNome().length() > 15)
 						((FontTextView) rowView
 								.findViewById(R.id.text_nome_evento))
-								.setText(evento.getNome().toUpperCase()
-										.substring(0, 11)
-										+ "...");
+								.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+
+					((FontTextView) rowView.findViewById(R.id.text_tipo_gara))
+							.setText(evento.getTipoSport());
+
+					((ImageView) rowView
+							.findViewById(R.id.image_logo_row_eventi))
+							.setImageBitmap((evento.getImage() == null) ? BitmapFactory
+									.decodeResource(getResources(),
+											R.drawable.img_event_list)
+									: BitmapFactory.decodeByteArray(
+											evento.getImage(), 0,
+											evento.getImage().length));
 				}
 			} else if (getIntent().getStringExtra("rest").equalsIgnoreCase(
-					"/search/poi")) {
+					"/poi/search")) {
 				if (values.size() != 0) {
 					rowView = inflater.inflate(R.layout.row_poi, parent, false);
 					POI poi = (POI) values.get(position);
@@ -338,7 +378,7 @@ public class ResultSearch extends Activity {
 							.setText(poi.getCategoria());
 				}
 			} else if (getIntent().getStringExtra("rest").equalsIgnoreCase(
-					"/search/sport")) {
+					"/sport/search")) {
 				if (values.size() != 0) {
 					rowView = inflater.inflate(R.layout.row_sport, parent,
 							false);

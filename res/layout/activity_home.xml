@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     android:orientation="vertical"
     tools:context=".HomeGuest" >
 
@@ -26,6 +27,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/container_pager_eventi_oggi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.8" >
@@ -53,19 +55,38 @@
                     android:id="@+id/page_indicator"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.9" />
+                    android:layout_weight="0.99" />
             </LinearLayout>
 
-            <smartcampus.android.template.standalone.Utilities.FontTextView
-                android:id="@+id/text_nessun_evento"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:gravity="center"
-                android:text="Nessun evento in programma"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="#3294ad"
-                android:visibility="gone" />
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.52" >
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.8" >
+
+                    <smartcampus.android.template.standalone.Utilities.FontTextView
+                        android:id="@+id/text_nessun_evento"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/NESSUN_EVENTO"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#3294ad"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
 
                  />
         </RelativeLayout>
@@ -111,7 +132,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
                                 android:gravity="center"
-                                android:text="Today events"
+                                android:text="@string/EVENTI_OGGI"
                                 android:textColor="#3294ad"
                                 android:textSize="17dp" />
                         </RelativeLayout>
@@ -135,7 +156,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
                                 android:gravity="center"
-                                android:text="My meetings"
+                                android:text="@string/MEETING_OGGI"
                                 android:textColor="#3294ad"
                                 android:textSize="17dp" />
                         </RelativeLayout>
@@ -317,6 +338,35 @@
                     </LinearLayout>
                 </RelativeLayout>
             </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.75" >
+
+            <ImageView
+                android:id="@+id/btn_sticker_credit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="false"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/sticker" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2" >
         </RelativeLayout>
     </LinearLayout>
 

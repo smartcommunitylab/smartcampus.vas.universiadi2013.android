@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     android:orientation="vertical"
     tools:context=".Evento" >
 
@@ -19,8 +20,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.5" >
+        android:layout_height="wrap_content" >
 
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView1"
@@ -41,13 +41,13 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.22" >
+        android:layout_height="wrap_content" >
 
         <ListView
             android:id="@+id/list_eventi"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:listSelector="@drawable/list_selector" >
         </ListView>
 
         <smartcampus.android.template.standalone.Utilities.FontTextView
@@ -57,11 +57,10 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:text="Nessun evento in programma"
+            android:text="@string/NESSUN_EVENTO"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#3294ad"
             android:visibility="gone" />
-
     </RelativeLayout>
 
 </LinearLayout>

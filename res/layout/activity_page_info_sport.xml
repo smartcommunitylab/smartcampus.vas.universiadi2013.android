@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     tools:context=".PageInfoSport" >
 
     <RelativeLayout
@@ -14,9 +15,10 @@
             android:id="@+id/text_descrizione"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:text="FontTextView" />
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:gravity="center"
+            android:scrollbars="vertical"
+            android:textColor="#3293AC" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -28,7 +30,8 @@
         <ListView
             android:id="@+id/list_eventi_correlati"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:listSelector="@drawable/list_selector" >
         </ListView>
 
         <smartcampus.android.template.standalone.Utilities.FontTextView
@@ -38,7 +41,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:gravity="center"
-            android:text="Nessun risultato trovato"
+            android:text="@string/NESSUN_ELEMENTO"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#3294ad"
             android:visibility="gone" />
@@ -50,23 +53,56 @@
         android:layout_height="match_parent"
         android:visibility="gone" >
 
-        <ListView
-            android:id="@+id/list_atleti"
+        <smartcampus.android.template.standalone.Utilities.FontTextView
+            android:id="@+id/text_atleta_per_sport"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:gravity="center"
+            android:scrollbars="vertical"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#3294ad" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/container_specialita"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:visibility="gone" >
+
+        <ListView
+            android:id="@+id/lista_specialita"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView1"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:listSelector="@android:color/transparent" >
         </ListView>
 
         <smartcampus.android.template.standalone.Utilities.FontTextView
-            android:id="@+id/text_nessun_atleta_per_sport"
+            android:id="@+id/text_nessuna_specialita"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:gravity="center"
-            android:text="Nessun risultato trovato"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#3294ad"
             android:visibility="gone" />
+
+        <smartcampus.android.template.standalone.Utilities.FontTextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/DISCIPLINA"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#3293AC" />
     </RelativeLayout>
 
 </RelativeLayout>

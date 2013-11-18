@@ -16,10 +16,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.smartcampus.template.standalone.Evento;
 import android.smartcampus.template.standalone.POI;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +29,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -117,9 +120,8 @@ public class DettaglioEventoPerPOI extends Activity {
 									// TODO Auto-generated method stub
 									Intent mCaller = new Intent(arg1
 											.getContext(), InfoEventi.class);
-									mCaller.putExtra("data", mListaEventiForPOI
-											.get(arg2).getData());
-									mCaller.putExtra("index", arg2);
+									mCaller.putExtra("evento",
+											mListaEventiForPOI.get(arg2));
 									startActivity(mCaller);
 								}
 							});
@@ -179,19 +181,34 @@ public class DettaglioEventoPerPOI extends Activity {
 				// ora = ora + " PM";
 
 				((FontTextView) rowView.findViewById(R.id.text_orario))
-						.setText(new SimpleDateFormat("hh:mm", Locale
+						.setText(new SimpleDateFormat("HH:mm", Locale
 								.getDefault()).format(values.get(position)
-								.getData()));
+								.getOraInizio())
+								+ " - "
+								+ new SimpleDateFormat("HH:mm", Locale
+										.getDefault()).format(values.get(
+										position).getOraFine()));
 
-				if (values.get(position).getNome().length() <= 12)
+				((FontTextView) rowView.findViewById(R.id.text_nome_evento))
+						.setText(values.get(position).getNome().toUpperCase());
+
+				if (values.get(position).getNome().length() > 30)
 					((FontTextView) rowView.findViewById(R.id.text_nome_evento))
-							.setText(values.get(position).getNome()
-									.toUpperCase());
-				else
+							.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+				else if (values.get(position).getNome().length() > 15)
 					((FontTextView) rowView.findViewById(R.id.text_nome_evento))
-							.setText(values.get(position).getNome()
-									.toUpperCase().substring(0, 11)
-									+ "...");
+							.setTextSize(TypedValue.COMPLEX_UNIT_SP, 15);
+
+				((FontTextView) rowView.findViewById(R.id.text_tipo_gara))
+						.setText(values.get(position).getTipoSport());
+
+				((ImageView) rowView.findViewById(R.id.image_logo_row_eventi))
+						.setImageBitmap((values.get(position).getImage() == null) ? BitmapFactory
+								.decodeResource(getResources(),
+										R.drawable.img_event_list)
+								: BitmapFactory.decodeByteArray(
+										values.get(position).getImage(), 0,
+										values.get(position).getImage().length));
 
 				// ((FontTextView)rowView.findViewById(R.id.text_tipo_gara)).setText
 				// (values.get(position).ge);

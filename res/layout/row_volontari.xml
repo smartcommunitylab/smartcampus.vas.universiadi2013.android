@@ -6,6 +6,7 @@
         android:id="@+id/image_general_info_event"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:src="@drawable/user_pic" />
 
     <LinearLayout

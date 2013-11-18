@@ -12,6 +12,9 @@ import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.EventiBlock.Evento;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
+import smartcampus.android.template.standalone.Utilities.MapUtilities;
+import smartcampus.android.template.standalone.Utilities.MapUtilities.ErrorType;
+import smartcampus.android.template.standalone.Utilities.MapUtilities.ILocation;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,6 +29,7 @@ import android.smartcampus.template.standalone.POI;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -51,21 +55,21 @@ import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class Booking extends FragmentActivity implements LocationListener,
-		GooglePlayServicesClient.ConnectionCallbacks,
-		OnConnectionFailedListener {
+public class Booking extends FragmentActivity implements ILocation {
 
 	private GoogleMap mMappa;
+	private MapUtilities mMapUtilities;
 	private ImageView mButtonPOI;
-	private LocationManager locationManager;
-	private LocationClient mLocationClient;
 	private ArrayList<POI> mListaPOI;
+	private ArrayList<POICategory> mListaFirstLevelCategory;
+	private ArrayList<POICategory> mListaSecondLevelCategory;
 	private ArrayList<MarkerOptions> mListaMarkerOptions = new ArrayList<MarkerOptions>();
 
 	private POI poiForSearch;
@@ -74,16 +78,15 @@ public class Booking extends FragmentActivity implements LocationListener,
 
 	private LatLngBounds bounds;
 
+	private ListView mSelect;
+	private ListArrayAdapter mAdapter;
+
+	private int level;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_booking);
-
-		final ArrayList<POICategory> mValues = new ArrayList<POICategory>();
-		mValues.add(new POICategory("Stadio del Ghiaccio", "stadioghiaccio"));
-		mValues.add(new POICategory("Impianto Scii", "impiantosci"));
-		mValues.add(new POICategory("Snowpark", "snowpark"));
-		mValues.add(new POICategory("Stadio di salto", "stadiosalto"));
 
 		dialogSelectPOI = new Dialog(Booking.this);
 		dialogSelectPOI.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -96,17 +99,31 @@ public class Booking extends FragmentActivity implements LocationListener,
 			@Override
 			public void onCancel(DialogInterface dialog) {
 				// TODO Auto-generated method stub
-				TranslateAnimation anim = new TranslateAnimation(0, 0, -500, 0);
-				anim.setDuration(300);
-				anim.setFillAfter(true);
-				mButtonPOI.startAnimation(anim);
-				mButtonPOI.setVisibility(View.VISIBLE);
+				if (level == 0) {
+					TranslateAnimation anim = new TranslateAnimation(0, 0,
+							-500, 0);
+					anim.setDuration(300);
+					anim.setFillAfter(true);
+					mButtonPOI.startAnimation(anim);
+					mButtonPOI.setVisibility(View.VISIBLE);
+				} else if (level == 1) {
+					dialogSelectPOI.show();
+
+					mAdapter = new ListArrayAdapter(Booking.this,
+							mListaFirstLevelCategory);
+					mSelect.setAdapter(mAdapter);
+					mAdapter.notifyDataSetChanged();
+				}
+				level--;
 			}
 		});
 
-		ListView mSelect = (ListView) dialogSelectPOI
-				.findViewById(R.id.list_select);
-		mSelect.setAdapter(new ListArrayAdapter(Booking.this, mValues));
+		setFirstLevelCategory();
+		level = 0;
+
+		mSelect = (ListView) dialogSelectPOI.findViewById(R.id.list_select);
+		mAdapter = new ListArrayAdapter(Booking.this, mListaFirstLevelCategory);
+		mSelect.setAdapter(mAdapter);
 
 		mSelect.setOnItemClickListener(new OnItemClickListener() {
 
@@ -122,6 +139,9 @@ public class Booking extends FragmentActivity implements LocationListener,
 					protected void onPreExecute() {
 						// TODO Auto-generated method stub
 						super.onPreExecute();
+
+						level++;
+
 						dialogSelectPOI.dismiss();
 
 						dialog = new Dialog(Booking.this);
@@ -138,6 +158,7 @@ public class Booking extends FragmentActivity implements LocationListener,
 								// TODO Auto-generated method stub
 								cancel(true);
 								dialogSelectPOI.show();
+								level = 1;
 							}
 						});
 
@@ -146,22 +167,39 @@ public class Booking extends FragmentActivity implements LocationListener,
 					@Override
 					protected Void doInBackground(Void... params) {
 						// TODO Auto-generated method stub
-						mResult = ManagerData.getPOIForType(mValues.get(arg2)
-								.getPrivateName());
-						if (!((Boolean) mResult.get("connectionError"))) {
-							mListaPOI = (ArrayList<POI>) mResult.get("params");
-							for (POI obj : mListaPOI) {
-								mListaMarkerOptions.add(new MarkerOptions()
-										.position(
-												new LatLng(obj.getLatGPS(), obj
-														.getLngGPS()))
-										.title(obj.getIndirizzo())
-										.snippet(
-												obj.getCategoria() + "/"
-														+ obj.getLatGPS() + "-"
-														+ obj.getLngGPS()));
+						if (level == 1) {
+							setSecondLevelCategory(mListaFirstLevelCategory
+									.get(arg2).getWeight());
+						} else { // level == 2
+							mResult = ManagerData
+									.getPOIForType(mListaSecondLevelCategory
+											.get(arg2).getPrivateName());/*
+																		 * mValues.
+																		 * get
+																		 * (arg2
+																		 * ) .
+																		 * getPrivateName
+																		 * ());
+																		 */
+							if (!((Boolean) mResult.get("connectionError"))) {
+								mListaPOI = (ArrayList<POI>) mResult
+										.get("params");
+								for (POI obj : mListaPOI) {
+									mListaMarkerOptions.add(new MarkerOptions()
+											.position(
+													new LatLng(obj.getLatGPS(),
+															obj.getLngGPS()))
+											.title(obj.getIndirizzo())
+											.snippet(
+													obj.getCategoria() + "/"
+															+ obj.getLatGPS()
+															+ "-"
+															+ obj.getLngGPS())
+											.icon(BitmapDescriptorFactory
+													.fromResource(R.drawable.marker_search)));
+								}
+								setPOIsMap(mListaPOI);
 							}
-							setPOIsMap(mListaPOI);
 						}
 						return null;
 					}
@@ -175,42 +213,52 @@ public class Booking extends FragmentActivity implements LocationListener,
 
 						// START ONPOST
 
-						TranslateAnimation anim = new TranslateAnimation(0, 0,
-								-500, 0);
-						anim.setDuration(300);
-						anim.setFillAfter(true);
-						mButtonPOI.startAnimation(anim);
-						mButtonPOI.setVisibility(View.VISIBLE);
+						if (level == 1) {
+							dialogSelectPOI.show();
 
-						if ((Boolean) mResult.get("connectionError")) {
-							Dialog noConnection = new Dialog(Booking.this);
-							noConnection
-									.requestWindowFeature(Window.FEATURE_NO_TITLE);
-							noConnection
-									.setContentView(R.layout.dialog_no_connection);
-							noConnection
-									.getWindow()
-									.setBackgroundDrawableResource(
-											R.drawable.dialog_rounded_corner_light_black);
-							noConnection.show();
-							noConnection.setCancelable(true);
-							noConnection
-									.setOnCancelListener(new OnCancelListener() {
+							mAdapter = new ListArrayAdapter(Booking.this,
+									mListaSecondLevelCategory);
+							mSelect.setAdapter(mAdapter);
+							mAdapter.notifyDataSetChanged();
+						} else { // level == 2
+							TranslateAnimation anim = new TranslateAnimation(0,
+									0, -500, 0);
+							anim.setDuration(300);
+							anim.setFillAfter(true);
+							mButtonPOI.startAnimation(anim);
+							mButtonPOI.setVisibility(View.VISIBLE);
 
-										@Override
-										public void onCancel(
-												DialogInterface dialog) {
-											// TODO Auto-generated method stub
-											finish();
-										}
-									});
-						} else {
-							mMappa.clear();
-							for (MarkerOptions option : mListaMarkerOptions)
-								mMappa.addMarker(option);
+							if ((Boolean) mResult.get("connectionError")) {
+								Dialog noConnection = new Dialog(Booking.this);
+								noConnection
+										.requestWindowFeature(Window.FEATURE_NO_TITLE);
+								noConnection
+										.setContentView(R.layout.dialog_no_connection);
+								noConnection
+										.getWindow()
+										.setBackgroundDrawableResource(
+												R.drawable.dialog_rounded_corner_light_black);
+								noConnection.show();
+								noConnection.setCancelable(true);
+								noConnection
+										.setOnCancelListener(new OnCancelListener() {
 
-							mMappa.animateCamera(CameraUpdateFactory
-									.newLatLngBounds(bounds, 50));
+											@Override
+											public void onCancel(
+													DialogInterface dialog) {
+												// TODO Auto-generated method
+												// stub
+												finish();
+											}
+										});
+							} else {
+								mMappa.clear();
+								for (MarkerOptions option : mListaMarkerOptions)
+									mMappa.addMarker(option);
+
+								mMappa.animateCamera(CameraUpdateFactory
+										.newLatLngBounds(bounds, 50));
+							}
 						}
 						// END ONPOST
 					}
@@ -222,6 +270,8 @@ public class Booking extends FragmentActivity implements LocationListener,
 		mMappa = ((SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.mappa)).getMap();
 
+		mMapUtilities = new MapUtilities(this, this);
+
 		UiSettings mMapController = mMappa.getUiSettings();
 
 		mMapController.setCompassEnabled(true);
@@ -229,6 +279,46 @@ public class Booking extends FragmentActivity implements LocationListener,
 		mMapController.setZoomControlsEnabled(false);
 
 		mMappa.setMyLocationEnabled(true);
+
+		if (!(getIntent().getBooleanExtra("search", false))) {
+			if (mMapUtilities.getLastKnownLocation() != null) {
+				final LatLng mMyMarker = new LatLng(mMapUtilities
+						.getLastKnownLocation().getLatitude(), mMapUtilities
+						.getLastKnownLocation().getLongitude());
+				if (mMyMarker != null) {
+					mMappa.setOnCameraChangeListener(new OnCameraChangeListener() {
+
+						@Override
+						public void onCameraChange(CameraPosition position) {
+							// TODO Auto-generated method stub
+							mMappa.animateCamera(CameraUpdateFactory
+									.newLatLngZoom(mMyMarker, 1));
+							mMappa.setOnCameraChangeListener(null);
+						}
+					});
+				}
+			}
+		} else {
+			setMapForSearch();
+			// LatLng mMyMarker = null;
+			// if (mMapUtilities.getLastKnownLocation() != null)
+			// mMyMarker = new LatLng(mMapUtilities.getLastKnownLocation()
+			// .getLatitude(), mMapUtilities.getLastKnownLocation()
+			// .getLongitude());
+			//
+			// LatLngBounds.Builder builder = new LatLngBounds.Builder();
+			//
+			// builder.include(new LatLng(poiForSearch.getLatGPS(), poiForSearch
+			// .getLngGPS()));
+			//
+			// if (mMyMarker != null)
+			// builder.include(mMyMarker);
+			// LatLngBounds bounds = builder.build();
+			//
+			// mMappa.animateCamera(CameraUpdateFactory
+			// .newLatLngBounds(bounds, 50));
+		}
+
 		mMappa.setOnMarkerClickListener(new OnMarkerClickListener() {
 
 			@Override
@@ -245,40 +335,40 @@ public class Booking extends FragmentActivity implements LocationListener,
 				((TextView) dialog.findViewById(R.id.text_categoria_poi))
 						.setText("Categoria: "
 								+ marker.getSnippet().split("/")[0] + "\n");
-				((ImageView) dialog.findViewById(R.id.btn_go_event))
-						.setOnTouchListener(new OnTouchListener() {
-
-							@Override
-							public boolean onTouch(View v, MotionEvent event) {
-								// TODO Auto-generated method stub
-								if (event.getAction() == MotionEvent.ACTION_DOWN) {
-									((ImageView) dialog
-											.findViewById(R.id.btn_go_event))
-											.setImageResource(R.drawable.btn_eventi_poi_press);
-									return true;
-								}
-								if (event.getAction() == MotionEvent.ACTION_UP) {
-									((ImageView) dialog
-											.findViewById(R.id.btn_go_event))
-											.setImageResource(R.drawable.btn_eventi_poi);
-
-									dialog.dismiss();
-									Intent mCaller = new Intent(Booking.this,
-											DettaglioEventoPerPOI.class);
-									mCaller.putExtra("latGPS",
-											Double.parseDouble(marker
-													.getSnippet().split("/")[1]
-													.split("-")[0]));
-									mCaller.putExtra("lngGPS",
-											Double.parseDouble(marker
-													.getSnippet().split("/")[1]
-													.split("-")[1]));
-									startActivity(mCaller);
-									return true;
-								}
-								return false;
-							}
-						});
+				// ((ImageView) dialog.findViewById(R.id.btn_go_event))
+				// .setOnTouchListener(new OnTouchListener() {
+				//
+				// @Override
+				// public boolean onTouch(View v, MotionEvent event) {
+				// // TODO Auto-generated method stub
+				// if (event.getAction() == MotionEvent.ACTION_DOWN) {
+				// ((ImageView) dialog
+				// .findViewById(R.id.btn_go_event))
+				// .setImageResource(R.drawable.btn_eventi_poi_press);
+				// return true;
+				// }
+				// if (event.getAction() == MotionEvent.ACTION_UP) {
+				// ((ImageView) dialog
+				// .findViewById(R.id.btn_go_event))
+				// .setImageResource(R.drawable.btn_eventi_poi);
+				//
+				// dialog.dismiss();
+				// Intent mCaller = new Intent(Booking.this,
+				// DettaglioEventoPerPOI.class);
+				// mCaller.putExtra("latGPS",
+				// Double.parseDouble(marker
+				// .getSnippet().split("/")[1]
+				// .split("-")[0]));
+				// mCaller.putExtra("lngGPS",
+				// Double.parseDouble(marker
+				// .getSnippet().split("/")[1]
+				// .split("-")[1]));
+				// startActivity(mCaller);
+				// return true;
+				// }
+				// return false;
+				// }
+				// });
 
 				dialog.show();
 
@@ -317,40 +407,6 @@ public class Booking extends FragmentActivity implements LocationListener,
 				}
 				if (arg1.getAction() == MotionEvent.ACTION_UP) {
 					mButtonPOI.setImageResource(R.drawable.button_poi_up);
-					// if
-					// (getSupportFragmentManager().findFragmentByTag("select")
-					// == null) {
-					// TranslateAnimation anim = new TranslateAnimation(0, 0,
-					// 0, -500);
-					// anim.setDuration(500);
-					// anim.setFillAfter(true);
-					// mButtonPOI.startAnimation(anim);
-					// mButtonPOI.setVisibility(View.GONE);
-					//
-					// FragmentManager fragmentManager =
-					// getSupportFragmentManager();
-					// FragmentTransaction fragmentTransaction = fragmentManager
-					// .beginTransaction();
-					// fragmentTransaction
-					// .setCustomAnimations(R.anim.slide_in_bottom,
-					// R.anim.slide_out_bottom,
-					// R.anim.slide_in_bottom,
-					// R.anim.slide_out_bottom);
-					// fragmentTransaction.addToBackStack(null);
-					// fragmentTransaction.add(R.id.container_select,
-					// new SelectBooking(fragmentManager, mButtonPOI,
-					// mMappa, mLocationClient), "select");
-					// fragmentTransaction.commit();
-					// } else {
-					// getSupportFragmentManager().popBackStack();
-					//
-					// TranslateAnimation anim = new TranslateAnimation(0, 0,
-					// -500, 0);
-					// anim.setDuration(300);
-					// anim.setFillAfter(true);
-					// mButtonPOI.startAnimation(anim);
-					// mButtonPOI.setVisibility(View.VISIBLE);
-					// }
 					if (dialogSelectPOI.isShowing()) {
 						dialogSelectPOI.dismiss();
 						TranslateAnimation anim = new TranslateAnimation(0, 0,
@@ -361,6 +417,10 @@ public class Booking extends FragmentActivity implements LocationListener,
 						mButtonPOI.setVisibility(View.VISIBLE);
 					} else {
 						dialogSelectPOI.show();
+						mAdapter = new ListArrayAdapter(Booking.this,
+								mListaFirstLevelCategory);
+						mSelect.setAdapter(mAdapter);
+						mAdapter.notifyDataSetChanged();
 						TranslateAnimation anim = new TranslateAnimation(0, 0,
 								0, -500);
 						anim.setDuration(500);
@@ -368,61 +428,22 @@ public class Booking extends FragmentActivity implements LocationListener,
 						mButtonPOI.startAnimation(anim);
 						mButtonPOI.setVisibility(View.GONE);
 					}
+					level = 0;
+
 					return true;
 				}
 				return false;
 			}
 
 		});
-
-		// Otteniamo il riferimento al LocationManager
-		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-		if (locationManager != null) {
-			boolean gpsIsEnabled = locationManager
-					.isProviderEnabled(LocationManager.GPS_PROVIDER);
-			boolean networkIsEnabled = locationManager
-					.isProviderEnabled(LocationManager.PASSIVE_PROVIDER);
-
-			if (networkIsEnabled) {
-				locationManager.requestLocationUpdates(
-						LocationManager.GPS_PROVIDER, 0, 100, this);
-			} else if (gpsIsEnabled) {
-				locationManager.requestLocationUpdates(
-						LocationManager.PASSIVE_PROVIDER, 0, 100, this);
-			}
-		}
-
-		if (getIntent().getBooleanExtra("search", false))
-			setMapForSearch(getIntent().getStringExtra("searchString"));
-		else {
-			mLocationClient = new LocationClient(this, this, this);
-			mLocationClient.connect();
-		}
-
-	}
-
-	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		if (getSupportFragmentManager().findFragmentByTag("select") != null) {
-			getSupportFragmentManager().popBackStack();
-
-			TranslateAnimation anim = new TranslateAnimation(0, 0, -500, 0);
-			anim.setDuration(300);
-			anim.setFillAfter(true);
-			mButtonPOI.startAnimation(anim);
-			mButtonPOI.setVisibility(View.VISIBLE);
-		} else
-			super.onBackPressed();
 	}
 
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-
-		locationManager.removeUpdates(this);
+		if (mMapUtilities != null)
+			mMapUtilities.close();
 	}
 
 	@Override
@@ -430,105 +451,280 @@ public class Booking extends FragmentActivity implements LocationListener,
 		// TODO Auto-generated method stub
 		super.onResume();
 
-		if (locationManager != null) {
-			boolean gpsIsEnabled = locationManager
-					.isProviderEnabled(LocationManager.GPS_PROVIDER);
-			boolean networkIsEnabled = locationManager
-					.isProviderEnabled(LocationManager.PASSIVE_PROVIDER);
+		if (mMapUtilities == null)
+			mMapUtilities = new MapUtilities(this, this);
+	}
 
-			if (networkIsEnabled) {
-				locationManager.requestLocationUpdates(
-						LocationManager.GPS_PROVIDER, 0, 100, this);
-			} else if (gpsIsEnabled) {
-				locationManager.requestLocationUpdates(
-						LocationManager.PASSIVE_PROVIDER, 0, 100, this);
-			}
+	private void setFirstLevelCategory() {
+		mListaFirstLevelCategory = new ArrayList<Booking.POICategory>();
+		mListaFirstLevelCategory.add(new POICategory(
+				getString(R.string.CATEGORIA_SPORT), "sport", 100));
+		mListaFirstLevelCategory.add(new POICategory(
+				getString(R.string.CATEGORIA_TEMPOLIBERO), "tempolibero", 200));
+		mListaFirstLevelCategory.add(new POICategory(
+				getString(R.string.CATEGORIA_MANGIARE), "mangiare", 300));
+		mListaFirstLevelCategory.add(new POICategory(
+				getString(R.string.CATEGORIA_DORMIRE), "dormire", 400));
+		mListaFirstLevelCategory.add(new POICategory(
+				getString(R.string.CATEGORIA_MUOVERSI), "muoversi", 500));
+		mListaFirstLevelCategory.add(new POICategory(
+				getString(R.string.CATEGORIA_SERVIZI), "servizi", 600));
+		mListaFirstLevelCategory.add(new POICategory(
+				getString(R.string.CATEGORIA_COMPRARE), "comprare", 700));
+	}
+
+	private void setSecondLevelCategory(int weight) {
+		mListaSecondLevelCategory = new ArrayList<Booking.POICategory>();
+		switch (weight) {
+		case 100:
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_NOLLEGGIO_SCI),
+					"noleggioscii", 102));
+			mListaSecondLevelCategory
+					.add(new POICategory(
+							getString(R.string.CATEGORIA_SCUOLA_SCI),
+							"scuolasci", 104));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_IMPIANTO_SCII), "impiantosci",
+					106));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_STADIO_GHIACCIO),
+					"stadioghiaccio", 108));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_STADIO_SALTO), "stadiosalto",
+					110));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_SNOWPARK), "snowpark", 112));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_CAMPO_SPORTIVO),
+					"camposportivo", 114));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_CAMPO_TENNIS), "campotennis",
+					116));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_MANEGGIO), "maneggio", 118));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_PISCINA), "piscina", 120));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_PALESTRA), "palestra", 122));
+			break;
+		case 200:
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_DISCO), "disco", 202));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_MINIGOLF), "minigolf", 204));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_WELLNESS), "wellness", 206));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_PARCO), "parco", 208));
+			mListaSecondLevelCategory
+					.add(new POICategory(
+							getString(R.string.CATEGORIA_ATTRAZIONE),
+							"attrazione", 210));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_MUSEO), "museo", 212));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_MONUMENTO), "monumento", 214));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_SITO_ARCHEOLOGICO),
+					"sitoarcheologico", 216));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_TEATRO), "teatro", 218));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_LUOGO_CULTO), "luogoculto",
+					220));
+			break;
+		case 300:
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_PIZZERIA), "pizzeria", 302));
+			mListaSecondLevelCategory
+					.add(new POICategory(
+							getString(R.string.CATEGORIA_RISTORANTE),
+							"ristorante", 304));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_AGRITURISMO), "agriturismo",
+					306));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_MALGA), "malga", 308));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_BIRRERIA), "birreria", 310));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_BAR), "bar", 312));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_GELATERIA), "gelateria", 314));
+			break;
+		case 400:
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_HOTEL), "hotel", 402));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_RESIDENCE), "residence", 404));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_APPARTAMENTO_VACANZE),
+					"appartamentovacanze", 406));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_AFFITTO_CAMERE),
+					"affittocamere", 408));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_BED_BREAKFAST),
+					"bedbreakfast", 410));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_GARNI), "garni", 412));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_RIFUGIO), "rifugio", 414));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_CAMPING), "camping", 416));
+			break;
+		case 500:
+			mListaSecondLevelCategory
+					.add(new POICategory(
+							getString(R.string.CATEGORIA_PARCHEGGIO),
+							"parcheggio", 502));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_STAZIONE_SERVIZIO),
+					"stazioneservizio", 504));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_TAXI), "taxi", 506));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_BUS_NAVETTA), "busnavetta",
+					508));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_BUS_FERMATA), "busfermata",
+					510));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_AUTOSTAZIONE), "autostazione",
+					512));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_FUNIVIA), "funivia", 514));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_STAZIONE_TRENI),
+					"stazionetreni", 516));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_SERVIZIO_BICI),
+					"serviziobici", 518));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_NOLEGGIO_PRIVATO),
+					"noleggioprivate", 520));
+			break;
+		case 600:
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_SERVIZI_SANITARI),
+					"servizisanitari", 602));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_DENTISTA), "dentista", 604));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_VETERINARIO), "veterinario",
+					606));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_FARMACIA), "farmacia", 608));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_IGIENICI), "igienici", 610));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_ISOLE_ECOLOGICHE),
+					"isoleecologiche", 612));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_FONTANE), "fontane", 614));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_AUTOMOTO), "automoto", 616));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_SERVIZI_ABBIGLIAMENTO),
+					"serviziabbigliamento", 618));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_PARRUCCHIERA), "parruchiera",
+					620));
+			mListaSecondLevelCategory
+					.add(new POICategory(
+							getString(R.string.CATEGORIA_ISTRUZIONE),
+							"istruzione", 622));
+			mListaSecondLevelCategory
+					.add(new POICategory(
+							getString(R.string.CATEGORIA_BIBLIOTECA),
+							"biblioteca", 624));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_WIFI), "wifi", 626));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_AGENZIA_VIAGGI),
+					"agenziaviaggi", 628));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_INFO), "info", 630));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_FORZE_ORDINE), "forzeordine",
+					632));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_SERVIZI_MUNICIPALI),
+					"servizimunicipali", 634));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_POSTA), "posta", 636));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_BANCA), "banca", 638));
+			break;
+		case 700:
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_PRODOTTI_TIPICI),
+					"prodottitipici", 702));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_SOUVENIR), "souvenir", 704));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_MERCATO), "mercato", 706));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_ANTIQUARIATO), "antiquariato",
+					708));
+			mListaSecondLevelCategory
+					.add(new POICategory(
+							getString(R.string.CATEGORIA_CARTOLERIA),
+							"cartoleria", 710));
+			mListaSecondLevelCategory
+					.add(new POICategory(
+							getString(R.string.CATEGORIA_TABACCHINO),
+							"tabacchino", 712));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_CENTROCOMMERCIALE),
+					"centrocommerciale", 714));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_NEGOZIO_ANIMALI),
+					"negozioanimali", 716));
+			mListaSecondLevelCategory
+					.add(new POICategory(
+							getString(R.string.CATEGORIA_GIOCATTOLI),
+							"giocattoli", 718));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_OTTICO), "ottico", 720));
+			mListaSecondLevelCategory
+					.add(new POICategory(
+							getString(R.string.CATEGORIA_PROFUMERIA),
+							"profumeria", 722));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_GIOIELLERIA), "gioielleria",
+					724));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_ABBIGLIAMENTO),
+					"abbigliamento", 726));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_NEGOZIO_SPORT),
+					"negoziosport", 728));
+			mListaSecondLevelCategory.add(new POICategory(
+					getString(R.string.CATEGORIA_ELETTRONICA), "elettronica",
+					730));
+			mListaSecondLevelCategory
+					.add(new POICategory(
+							getString(R.string.CATEGORIA_FERRAMENTA),
+							"ferramenta", 732));
+			mListaSecondLevelCategory
+					.add(new POICategory(
+							getString(R.string.CATEGORIA_CASALINGHI),
+							"casalinghi", 734));
+			mListaSecondLevelCategory
+					.add(new POICategory(
+							getString(R.string.CATEGORIA_ALIMENTARI),
+							"alimentari", 736));
+			break;
 		}
-	}
-
-	@Override
-	public void onConnectionFailed(ConnectionResult result) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onConnected(Bundle connectionHint) {
-		// TODO Auto-generated method stub
-		if (!(getIntent().getBooleanExtra("search", false))) {
-			if (mLocationClient.getLastLocation() != null) {
-				final LatLng mMyMarker = new LatLng(mLocationClient
-						.getLastLocation().getLatitude(), mLocationClient
-						.getLastLocation().getLongitude());
-				if (mMyMarker != null) {
-					mMappa.setOnCameraChangeListener(new OnCameraChangeListener() {
-
-						@Override
-						public void onCameraChange(CameraPosition position) {
-							// TODO Auto-generated method stub
-							mMappa.animateCamera(CameraUpdateFactory
-									.newLatLngZoom(mMyMarker, 1));
-							mMappa.setOnCameraChangeListener(null);
-						}
-					});
-				}
-			}
-		} else {
-			LatLng mMyMarker = null;
-			if (mLocationClient.getLastLocation() != null)
-				mMyMarker = new LatLng(mLocationClient.getLastLocation()
-						.getLatitude(), mLocationClient.getLastLocation()
-						.getLongitude());
-
-			LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-			builder.include(new LatLng(poiForSearch.getLatGPS(), poiForSearch
-					.getLngGPS()));
-
-			if (mMyMarker != null)
-				builder.include(mMyMarker);
-			LatLngBounds bounds = builder.build();
-
-			mMappa.animateCamera(CameraUpdateFactory
-					.newLatLngBounds(bounds, 50));
-		}
-	}
-
-	@Override
-	public void onDisconnected() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onLocationChanged(Location location) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-
 	}
 
 	private void setPOIsMap(ArrayList<POI> list) {
 		LatLng mMyMarker = null;
-		if (mLocationClient.getLastLocation() != null)
-			mMyMarker = new LatLng(mLocationClient.getLastLocation()
-					.getLatitude(), mLocationClient.getLastLocation()
+		if (mMapUtilities.getLastKnownLocation() != null)
+			mMyMarker = new LatLng(mMapUtilities.getLastKnownLocation()
+					.getLatitude(), mMapUtilities.getLastKnownLocation()
 					.getLongitude());
 
 		LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -540,7 +736,7 @@ public class Booking extends FragmentActivity implements LocationListener,
 		bounds = builder.build();
 	}
 
-	private void setMapForSearch(String string) {
+	private void setMapForSearch() {
 		new AsyncTask<Void, Void, Void>() {
 			private Dialog dialog;
 			private ArrayList<JSONObject> mListaPOI;
@@ -574,7 +770,8 @@ public class Booking extends FragmentActivity implements LocationListener,
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
 				mResult = ManagerData.getSearchForFilter(getIntent()
-						.getStringExtra("searchString"), "/search/poi");
+						.getStringExtra("searchString"),
+						getString(R.string.URL_POI_SEARCH));
 				if (!((Boolean) mResult.get("connectionError"))) {
 					mListaPOI = (ArrayList<JSONObject>) mResult.get("params");
 					JSONObject obj = mListaPOI.get(getIntent().getIntExtra(
@@ -629,9 +826,6 @@ public class Booking extends FragmentActivity implements LocationListener,
 									poiForSearch.getCategoria() + "/"
 											+ poiForSearch.getLatGPS() + "-"
 											+ poiForSearch.getLngGPS()));
-					mLocationClient = new LocationClient(Booking.this,
-							Booking.this, Booking.this);
-					mLocationClient.connect();
 				}
 				// END ONPOST
 			}
@@ -661,26 +855,11 @@ public class Booking extends FragmentActivity implements LocationListener,
 			FontTextView mSelect = (FontTextView) rowView
 					.findViewById(R.id.text_select);
 			mSelect.setText(values.get(position).getPublicName());
+			if (values.get(position).getPublicName().length() > 13)
+				mSelect.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
 			ImageView mLogo = (ImageView) rowView.findViewById(R.id.image_logo);
-
-			switch (position) {
-			case 0:
-				mLogo.setImageResource(R.drawable.tik);
-				break;
-			case 1:
-				mLogo.setImageResource(R.drawable.info);
-				break;
-			case 2:
-				mLogo.setImageResource(R.drawable.game);
-				break;
-			case 3:
-				mLogo.setImageResource(R.drawable.hot);
-				break;
-			case 4:
-				mLogo.setImageResource(R.drawable.poi);
-				break;
-			}
+			mLogo.setImageResource(R.drawable.game);
 
 			return rowView;
 		}
@@ -689,11 +868,21 @@ public class Booking extends FragmentActivity implements LocationListener,
 	private class POICategory {
 		private String publicName;
 		private String privateName;
+		private int weight;
 
-		public POICategory(String publicName, String privateName) {
+		public POICategory(String publicName, String privateName, int weight) {
 			super();
 			this.publicName = publicName;
 			this.privateName = privateName;
+			this.weight = weight;
+		}
+
+		public int getWeight() {
+			return weight;
+		}
+
+		public void setWeight(int weight) {
+			this.weight = weight;
 		}
 
 		public String getPublicName() {
@@ -711,5 +900,23 @@ public class Booking extends FragmentActivity implements LocationListener,
 		public void setPrivateName(String privateName) {
 			this.privateName = privateName;
 		}
+	}
+
+	@Override
+	public void onLocationChaged(Location l) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onErrorOccured(ErrorType ex, String provider) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onStatusChanged(String provider, boolean isActive) {
+		// TODO Auto-generated method stub
+
 	}
 }

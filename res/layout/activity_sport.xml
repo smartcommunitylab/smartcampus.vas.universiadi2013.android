@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     android:orientation="vertical"
     tools:context=".Sport" >
 
@@ -15,7 +16,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/logo_home" />
-
     </RelativeLayout>
 
     <RelativeLayout
@@ -29,11 +29,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
             android:horizontalSpacing="5dp"
-            android:numColumns="2"
-            android:verticalSpacing="-30dp" >
-
+            android:listSelector="@android:color/transparent"
+            android:numColumns="2" >
         </GridView>
-
     </RelativeLayout>
 
 </LinearLayout>

@@ -2,6 +2,7 @@ package smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBloc
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.ListResourceBundle;
 import java.util.Locale;
 import java.util.Map;
 
@@ -164,6 +165,8 @@ public class FAQ extends Activity {
 						((TextView) findViewById(R.id.text_nessun_risultato_faq))
 								.setVisibility(View.GONE);
 						((ListView) findViewById(R.id.lista_risposte))
+								.setVisibility(View.VISIBLE);
+						((ListView) findViewById(R.id.lista_risposte))
 								.setAdapter(new RowAnswer(
 										getApplicationContext(), mListaRisposte));
 						((ListView) findViewById(R.id.lista_risposte))
@@ -206,9 +209,12 @@ public class FAQ extends Activity {
 										dialog.show();
 									}
 								});
-					} else
+					} else {
 						((TextView) findViewById(R.id.text_nessun_risultato_faq))
 								.setVisibility(View.VISIBLE);
+						((ListView) findViewById(R.id.lista_risposte))
+								.setVisibility(View.GONE);
+					}
 				}
 				// END ONPOST
 			}

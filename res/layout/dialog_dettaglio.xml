@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#fff"
     android:orientation="vertical" >
 
     <smartcampus.android.template.standalone.Utilities.FontTextView
@@ -10,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_weight="0.4"
         android:gravity="center"
-        android:text="Domanda:"
+        android:text="@string/FAQ_DOMANDA"
         android:textColor="#3294ad" />
 
     <smartcampus.android.template.standalone.Utilities.FontTextView
@@ -43,7 +44,7 @@
         android:layout_height="match_parent"
         android:layout_weight="0.4"
         android:gravity="center"
-        android:text="Risposta:"
+        android:text="@string/FAQ_RISPOSTA"
         android:textColor="#3294ad" />
 
     <smartcampus.android.template.standalone.Utilities.FontTextView
@@ -78,7 +79,7 @@
         android:layout_height="match_parent"
         android:layout_weight="0.4"
         android:gravity="center"
-        android:text="Accuracy:"
+        android:text="@string/FAQ_ACCURATEZZA"
         android:textColor="#3294ad" />
 
     <smartcampus.android.template.standalone.Utilities.FontTextView

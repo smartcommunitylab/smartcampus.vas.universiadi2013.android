@@ -5,16 +5,34 @@
     android:orientation="vertical"
     tools:context=".Calendario" >
 
-    <smartcampus.android.template.standalone.Utilities.FontTextView
-        android:id="@+id/text_luogo"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.8"
-        android:background="@drawable/stroke_up_right_left"
-        android:gravity="center"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#fff" />
+        android:layout_weight="0.8" >
+
+        <smartcampus.android.template.standalone.Utilities.FontTextView
+            android:id="@+id/FontTextView01"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:background="@drawable/stroke_up_right_left"
+            android:gravity="center"
+            android:text="Large Text"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#0fff" />
+
+        <smartcampus.android.template.standalone.Utilities.FontTextView
+            android:id="@+id/text_luogo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:layout_weight="0.8"
+            android:background="#3294ad"
+            android:gravity="center"
+            android:text="Large Text"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#fff" />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/container_base_coloumn"

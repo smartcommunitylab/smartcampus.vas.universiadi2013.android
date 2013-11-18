@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     android:orientation="vertical"
     tools:context=".FilterCalendarioActivity" >
 
@@ -41,6 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="\n"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="#00ffffff" />
             </RelativeLayout>
 
@@ -48,7 +50,7 @@
                 android:id="@+id/text_indirizzo_poi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Data:"
+                android:text="@string/PLANNER_DA"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#3294ad" />
 
@@ -64,7 +66,7 @@
                     android:layout_weight="0.0" >
 
                     <ImageView
-                        android:id="@+id/img_cal_data"
+                        android:id="@+id/img_cal_data_from"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
@@ -73,7 +75,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_alignBottom="@+id/img_cal_data" >
+                        android:layout_alignBottom="@+id/img_cal_data_from" >
 
                         <RelativeLayout
                             android:layout_width="match_parent"
@@ -87,14 +89,73 @@
                             android:layout_weight="0.38" >
 
                             <Spinner
-                                android:id="@+id/spinner_cal_data"
+                                android:id="@+id/spinner_cal_data_from"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="#00ffffff" />
                         </RelativeLayout>
 
                         <RelativeLayout
-                            android:id="@+id/btn_spinner_data"
+                            android:id="@+id/btn_spinner_data_from"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.75" >
+                        </RelativeLayout>
+                    </LinearLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <smartcampus.android.template.standalone.Utilities.FontTextView
+                android:id="@+id/FontTextView02"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/PLANNER_A"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#3294ad" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_weight="0.0" >
+
+                    <ImageView
+                        android:id="@+id/img_cal_data_to"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/btn_cal_data" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignBottom="@+id/img_cal_data_to" >
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.82" >
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.38" >
+
+                            <Spinner
+                                android:id="@+id/spinner_cal_data_to"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="#00ffffff" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/btn_spinner_data_to"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="0.75" >
@@ -105,13 +166,13 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:layout_weight="0.0" >
 
                 <TextView
                     android:id="@+id/textView2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="\n\n"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:textColor="#00ffffff" />
             </RelativeLayout>
@@ -120,7 +181,7 @@
                 android:id="@+id/textView3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Luogo:"
+                android:text="@string/PLANNER_VISUALIZZA"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#3294ad" />
 
@@ -159,7 +220,7 @@
                             android:layout_weight="0.38" >
 
                             <Spinner
-                                android:id="@+id/spinner_cal_luogo"
+                                android:id="@+id/spinner_cal_personale"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="#00ffffff" />
@@ -181,7 +242,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:paddingTop="@dimen/activity_vertical_margin"
-                android:text="Categoria:"
+                android:text="@string/PLANNER_FUNZIONE"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#3294ad" />
 
@@ -247,7 +308,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="\n"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="#00ffffff" />
             </RelativeLayout>
 

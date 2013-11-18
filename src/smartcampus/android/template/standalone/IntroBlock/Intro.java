@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.smartcampus.template.standalone.Utente;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -182,6 +183,8 @@ public class Intro extends Activity {
 														.getWindowToken(), 0);
 
 										loginSuccess.put("success", true);
+										// NEW SAVE UTENTE
+										saveUtente();
 									} else if (loginResult == Intro.LOGIN_FAILED) {
 										loginSuccess.put("success", false);
 										loginSuccess.put("notfound", true);
@@ -290,9 +293,12 @@ public class Intro extends Activity {
 											InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 											imm.hideSoftInputFromWindow(
 													((EditText) findViewById(R.id.text_password))
-															.getWindowToken(), 0);
+															.getWindowToken(),
+													0);
 
 											loginSuccess.put("success", true);
+											// NEW SAVE UTENTE
+											saveUtente();
 										} else if (loginResult == Intro.LOGIN_FAILED) {
 											loginSuccess.put("success", false);
 											loginSuccess.put("notfound", true);
@@ -325,6 +331,13 @@ public class Intro extends Activity {
 						return false;
 					}
 				});
+	}
+
+	private void saveUtente() {
+		Utente user = (Utente) ManagerData.readUserData().get("params");
+		user.setAmbito("Corporate");
+		UserConstant.setUser(user);
+		Map<String, Object> mMapResult = ManagerData.saveUserInfo(user);
 	}
 
 	@Override
