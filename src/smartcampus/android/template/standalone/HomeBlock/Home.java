@@ -600,8 +600,8 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					mFilterPoi.setImageResource(R.drawable.btn_tool_helper);
 
 					String url = getString(R.string.URL_ICE_AND_FIRE);
-					if (!url.startsWith("http://"))
-						url = "http://" + url;
+//					if (!url.startsWith("http://"))
+//						url = "http://" + url;
 					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
 
 					// startActivity(new Intent(getApplicationContext(),
