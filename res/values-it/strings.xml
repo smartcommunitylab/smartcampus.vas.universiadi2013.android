@@ -79,7 +79,7 @@
     <string name="URL_UTENTI_PER_TURNO">/users_for_turn</string>
     <string name="URL_SAVE_UTENTE">/utente/save</string>
     <string name="URL_SPORT">/sport</string>
-    <string name="URL_ICE_AND_FIRE">https://tickets.gtsu.org</string>
+   <string name="URL_ICE_AND_FIRE">https://tickets.gtsu.org/login/?next=/new/</string>
 
     <!-- Activity String -->
     <string name="ROUTE_FOR">Route per </string>
