@@ -55,6 +55,10 @@ class RestRequest {
 		juniperToken = null;
 	}
 
+	public String getToken() {
+		return mToken;
+	}
+
 	public Map<String, Object> authenticate(String username, String password) {
 		Map<String, Object> mReturn = new HashMap<String, Object>();
 		NetworkInfo ni = ((ConnectivityManager) (mContext

@@ -1,6 +1,12 @@
 package smartcampus.android.template.standalone.HomeBlock;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -17,10 +23,14 @@ import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.Profile;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FilterCalendarioActivity;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock.FAQ;
+import smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock.IceFireWebView;
 import smartcampus.android.template.standalone.Activity.SportBlock.Sport;
+import smartcampus.android.template.standalone.IntroBlock.UserConstant;
+import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FunzioneObj;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -33,12 +43,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.smartcampus.template.standalone.Evento;
 import android.smartcampus.template.standalone.Meeting;
+import android.smartcampus.template.standalone.Turno;
 import android.smartcampus.template.standalone.Utente;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -64,7 +76,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 	private List<Fragment> fragmentEventi = new ArrayList<Fragment>();
 	private List<Fragment> fragmentMeeting = new ArrayList<Fragment>();
 	private ArrayList<Evento> mListaEventiDiOggi = new ArrayList<Evento>();
-	private ArrayList<Meeting> mListaMeetingDiOggi = new ArrayList<Meeting>();
+	private ArrayList<Turno> mListaMeetingDiOggi = new ArrayList<Turno>();
 
 	private CirclePageIndicator titleIndicator;
 
@@ -116,13 +128,23 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 						fragmentEventi.add(new PageEventiOggi(evento,
 								fragmentEventi.size() - 1));
 
-					mListaMeetingDiOggi = (ArrayList<Meeting>) ManagerData
-							.getMeetingPerData(
-									Calendar.getInstance(Locale.getDefault())
-											.getTimeInMillis()).get("params");
-					for (Meeting meeting : mListaMeetingDiOggi)
-						fragmentMeeting.add(new PageEventiOggi(meeting,
-								fragmentMeeting.size() - 1));
+					if (UserConstant.getUser() != null) {
+						mResult = ManagerData.getFunzioneForUser(UserConstant
+								.getUser());
+						ArrayList<FunzioneObj> listaFunzioni = (ArrayList<FunzioneObj>) mResult
+								.get("params");
+						for (FunzioneObj funzione : listaFunzioni)
+							mListaMeetingDiOggi
+									.addAll((ArrayList<Turno>) ManagerData
+											.getMeetingPerData(
+													Calendar.getInstance(
+															Locale.getDefault())
+															.getTimeInMillis(),
+													funzione).get("params"));
+						for (Turno meeting : mListaMeetingDiOggi)
+							fragmentMeeting.add(new PageEventiOggi(meeting,
+									fragmentMeeting.size() - 1));
+					}
 				}
 				return null;
 			}
@@ -600,12 +622,17 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					mFilterPoi.setImageResource(R.drawable.btn_tool_helper);
 
 					String url = getString(R.string.URL_ICE_AND_FIRE);
-//					if (!url.startsWith("http://"))
-//						url = "http://" + url;
-					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
 
-					// startActivity(new Intent(getApplicationContext(),
-					// Problema.class));
+					// Intent mCaller = new Intent(Intent.ACTION_VIEW, Uri
+					// .parse(url));
+					// Log.i("", "User: " + UserConstant.getUsername()
+					// + "\nPass: " + UserConstant.getPassword());
+					// mCaller.putExtra("username", UserConstant.getUsername());
+					// mCaller.putExtra("password", UserConstant.getPassword());
+					// startActivity(mCaller);
+
+					startActivity(new Intent(getApplicationContext(),
+							IceFireWebView.class));
 					return true;
 				}
 				return false;
@@ -843,6 +870,45 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 		dialog.show();
 	}
+
+	// private void callBrowserWithParams(String url)
+	// throws UnsupportedEncodingException {
+	// Intent i = new Intent();
+	// // MUST instantiate android browser, otherwise it won't work (it won't
+	// // find an activity to satisfy intent)
+	// i.setComponent(new ComponentName("com.android.browser",
+	// "com.android.browser.BrowserActivity"));
+	// i.setAction(Intent.ACTION_VIEW);
+	// String html = readTrimRawTextFile(this, R.xml.ice_fire_html_form);
+	//
+	// html = html.replace("value_user", UserConstant.getUsername())
+	// .replace("value_pass", UserConstant.getPassword())
+	// .replace("url", getString(R.string.URL_ICE_AND_FIRE));
+	//
+	// // May work without url encoding, but I think is advisable
+	// // URLEncoder.encode replace space with "+", must replace again with %20
+	// String dataUri = "data:text/html,"
+	// + URLEncoder.encode(html, "UTF-8");
+	// i.setData(Uri.parse(dataUri));
+	// startActivity(i);
+	// }
+	//
+	// private String readTrimRawTextFile(Context ctx, int resId) {
+	// InputStream inputStream = ctx.getResources().openRawResource(resId);
+	//
+	// InputStreamReader inputreader = new InputStreamReader(inputStream);
+	// BufferedReader buffreader = new BufferedReader(inputreader);
+	// String line;
+	// StringBuilder text = new StringBuilder();
+	// try {
+	// while ((line = buffreader.readLine()) != null) {
+	// text.append(line.trim());
+	// }
+	// } catch (IOException e) {
+	// return null;
+	// }
+	// return text.toString();
+	// }
 
 	private class PagerAdapter extends FragmentStatePagerAdapter {
 

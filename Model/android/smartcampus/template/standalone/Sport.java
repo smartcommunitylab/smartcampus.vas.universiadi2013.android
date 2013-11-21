@@ -1,6 +1,7 @@
 package android.smartcampus.template.standalone;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Sport implements Serializable {
 
@@ -13,15 +14,17 @@ public class Sport implements Serializable {
 	private String descrizione;
 	private String atleti;
 	private String specialita;
+	private ArrayList<POI> sportPOI;
 
 	public Sport(String nome, byte[] foto, String descrizione, String atleti,
-			String specialita) {
+			String specialita, ArrayList<POI> sportPOI) {
 		super();
 		this.nome = nome;
 		this.foto = foto;
 		this.descrizione = descrizione;
 		this.atleti = atleti;
 		this.specialita = specialita;
+		this.sportPOI = sportPOI;
 	}
 
 	public String getNome() {
@@ -62,5 +65,17 @@ public class Sport implements Serializable {
 
 	public void setSpecialita(String specialita) {
 		this.specialita = specialita;
+	}
+
+	public ArrayList<POI> getSportPOI() {
+		return sportPOI;
+	}
+
+	public void setSportPOI(ArrayList<POI> sportPOI) {
+		this.sportPOI = sportPOI;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 }

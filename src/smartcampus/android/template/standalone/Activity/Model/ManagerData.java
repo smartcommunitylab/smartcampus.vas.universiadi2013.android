@@ -47,7 +47,7 @@ import android.util.Log;
 public class ManagerData {
 
 	private static ManagerData instance = null;
-	private static RestRequest mRest;
+	public static RestRequest mRest;
 
 	private static Context mContext;
 
@@ -59,6 +59,10 @@ public class ManagerData {
 	private ManagerData(Context context) {
 		mContext = context;
 		mRest = new RestRequest(context);
+	}
+
+	public static String getToken() {
+		return mRest.getToken();
 	}
 
 	public static Map<String, Object> getAuthToken(String user, String password) {
@@ -153,14 +157,49 @@ public class ManagerData {
 							(String) mMapRequest.get("params"));
 					for (int i = 0; i < arrayEventi.length(); i++) {
 						JSONObject obj = arrayEventi.getJSONObject(i);
+						String title = null;
+						String description = null;
+						if (Locale.getDefault().toString()
+								.equalsIgnoreCase("it_IT")) {
+							description = (obj.getJSONObject("customData")
+									.getJSONObject("description").has("IT")) ? obj
+									.getJSONObject("customData")
+									.getJSONObject("description")
+									.getString("IT")
+									: obj.getJSONObject("customData")
+											.getJSONObject("description")
+											.getString("EN");
+							title = (obj.getJSONObject("customData")
+									.getJSONObject("title").has("IT")) ? obj
+									.getJSONObject("customData")
+									.getJSONObject("title").getString("IT")
+									: obj.getJSONObject("customData")
+											.getJSONObject("title")
+											.getString("EN");
+						} else {
+							description = (obj.getJSONObject("customData")
+									.getJSONObject("description").has("EN")) ? obj
+									.getJSONObject("customData")
+									.getJSONObject("description")
+									.getString("EN")
+									: obj.getJSONObject("customData")
+											.getJSONObject("description")
+											.getString("IT");
+							title = (obj.getJSONObject("customData")
+									.getJSONObject("title").has("EN")) ? obj
+									.getJSONObject("customData")
+									.getJSONObject("title").getString("EN")
+									: obj.getJSONObject("customData")
+											.getJSONObject("title")
+											.getString("IT");
+						}
 						Evento evento = new Evento(
 								null,
-								obj.getString("title"),
+								title,
 								obj.getLong("fromTime"),
 								obj.getLong("fromTime"),
 								obj.getLong("toTime"),
-								Html.fromHtml(obj.getString("description"))
-										.toString(),
+								Html.fromHtml(description).toString(),
 								(!obj.isNull("location")) ? obj.getJSONArray(
 										"location").getDouble(0) : 0,
 								(!obj.isNull("location")) ? obj.getJSONArray(
@@ -226,16 +265,46 @@ public class ManagerData {
 				JSONArray arrayEventi = new JSONArray(
 						(String) mMapRequest.get("params"));
 				for (int i = 0; i < arrayEventi.length(); i++) {
-					JSONObject obj;
-					obj = arrayEventi.getJSONObject(i);
+					JSONObject obj = arrayEventi.getJSONObject(i);
+					String title = null;
+					String description = null;
+					if (Locale.getDefault().getDisplayLanguage()
+							.equalsIgnoreCase("it_IT")) {
+						description = (obj.getJSONObject("customData")
+								.getJSONObject("description").has("IT")) ? obj
+								.getJSONObject("customData")
+								.getJSONObject("description").getString("IT")
+								: obj.getJSONObject("customData")
+										.getJSONObject("description")
+										.getString("EN");
+						title = (obj.getJSONObject("customData").getJSONObject(
+								"title").has("IT")) ? obj
+								.getJSONObject("customData")
+								.getJSONObject("title").getString("IT") : obj
+								.getJSONObject("customData")
+								.getJSONObject("title").getString("EN");
+					} else {
+						description = (obj.getJSONObject("customData")
+								.getJSONObject("description").has("EN")) ? obj
+								.getJSONObject("customData")
+								.getJSONObject("description").getString("EN")
+								: obj.getJSONObject("customData")
+										.getJSONObject("description")
+										.getString("IT");
+						title = (obj.getJSONObject("customData").getJSONObject(
+								"title").has("EN")) ? obj
+								.getJSONObject("customData")
+								.getJSONObject("title").getString("EN") : obj
+								.getJSONObject("customData")
+								.getJSONObject("title").getString("IT");
+					}
 					Evento evento = new Evento(
 							null,
-							obj.getString("title"),
+							title,
 							obj.getLong("fromTime"),
 							obj.getLong("fromTime"),
 							obj.getLong("toTime"),
-							Html.fromHtml(obj.getString("description"))
-									.toString(),
+							Html.fromHtml(description).toString(),
 							(!obj.isNull("location")) ? obj.getJSONArray(
 									"location").getDouble(0) : 0,
 							(!obj.isNull("location")) ? obj.getJSONArray(
@@ -260,13 +329,15 @@ public class ManagerData {
 		return null;
 	}
 
-	public static Map<String, Object> getMeetingPerData(Long data) {
-		ArrayList<Meeting> mListaEventi = new ArrayList<Meeting>();
+	public static Map<String, Object> getMeetingPerData(Long data,
+			FunzioneObj funzione) {
+		ArrayList<Turno> mListaEventi = new ArrayList<Turno>();
 
 		try {
 			Map<String, Object> mMapRequest = mRest.restRequest(
 					new String[] { mContext.getString(R.string.URL_MY_AGENDA)
-							+ data }, RestRequestType.GET);
+							+ data + "/" + funzione.getId() },
+					RestRequestType.GET);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
 					(Boolean) mMapRequest.get("connectionError"));
@@ -276,19 +347,15 @@ public class ManagerData {
 					JSONArray arrayEventi = new JSONArray(
 							(String) mMapRequest.get("params"));
 					if (arrayEventi != null) {
+						SimpleDateFormat dateFormatter = new SimpleDateFormat(
+								"HH:mm", Locale.getDefault());
 						for (int i = 0; i < arrayEventi.length(); i++) {
-							JSONObject obj;
-							obj = arrayEventi.getJSONObject(i);
-							Meeting meeting = new Meeting(null,
-									obj.getString("nome"), obj.getLong("data"),
-									obj.getString("descrizione"), obj
-											.getJSONObject("gps").getDouble(
-													"latGPS"), obj
-											.getJSONObject("gps").getDouble(
-													"lngGPS"),
-									obj.getString("ambito"),
-									obj.getString("ruolo"));
-							mListaEventi.add(meeting);
+							JSONObject obj = arrayEventi.getJSONObject(i);
+							Turno agenda = new Turno(obj.getLong("start"),
+									null, funzione.getFunzione(),
+									dateFormatter.format(obj.getLong("start")),
+									dateFormatter.format(obj.getLong("end")));
+							mListaEventi.add(agenda);
 						}
 					}
 				}
@@ -381,8 +448,33 @@ public class ManagerData {
 				if (arrayPOI != null) {
 					for (int i = 0; i < arrayPOI.length(); i++) {
 						JSONObject obj = arrayPOI.getJSONObject(i);
+						String description = null;
+
+						if (obj.getJSONObject("customData")
+								.getJSONObject("description").length() != 0) {
+							if (Locale.getDefault().toString()
+									.equalsIgnoreCase("it_IT")) {
+								description = (obj.getJSONObject("customData")
+										.getJSONObject("description").has("IT")) ? obj
+										.getJSONObject("customData")
+										.getJSONObject("description")
+										.getString("IT")
+										: obj.getJSONObject("customData")
+												.getJSONObject("description")
+												.getString("EN");
+							} else {
+								description = (obj.getJSONObject("customData")
+										.getJSONObject("description").has("EN")) ? obj
+										.getJSONObject("customData")
+										.getJSONObject("description")
+										.getString("EN")
+										: obj.getJSONObject("customData")
+												.getJSONObject("description")
+												.getString("IT");
+							}
+						}
 						mListaPOI.add(new POI(null, obj.getString("title"), obj
-								.getString("type").split(" - ")[1], obj
+								.getString("type"), description, obj
 								.getJSONArray("location").getDouble(0), obj
 								.getJSONArray("location").getDouble(1)));
 					}
@@ -812,12 +904,21 @@ public class ManagerData {
 							(String) mMapRequest.get("params"));
 					for (int i = 0; i < arrayEventi.length(); i++) {
 						JSONObject obj = arrayEventi.getJSONObject(i);
+						JSONArray poi = obj.getJSONArray("geolocations");
+						ArrayList<POI> mPOICorrelati = new ArrayList<POI>();
+						for (int j = 0; j < poi.length(); j++) {
+							JSONObject poiObj = poi.getJSONObject(j);
+							mPOICorrelati.add(new POI(null, poiObj
+									.getString("title"), null, null, poiObj
+									.getJSONArray("GPS").getDouble(0), poiObj
+									.getJSONArray("GPS").getDouble(1)));
+						}
 						Sport sport = new Sport(obj.getString("nome"),
 								SportImageConstant.resourcesFromID(
 										obj.getInt("foto"), mContext),
 								obj.getString("descrizione"),
 								obj.getString("atleti"),
-								obj.getString("specialita"));
+								obj.getString("specialita"), mPOICorrelati);
 						mListaSport.add(sport);
 					}
 				}

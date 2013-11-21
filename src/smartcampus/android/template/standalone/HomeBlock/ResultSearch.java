@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -99,15 +100,53 @@ public class ResultSearch extends Activity {
 						if (getIntent().getStringExtra("rest")
 								.equalsIgnoreCase("/evento/search")) {
 							for (JSONObject obj : mListaObj) {
+								String title = null;
+								String description = null;
+								if (Locale.getDefault().getDisplayLanguage()
+										.equalsIgnoreCase("it_IT")) {
+									description = (obj.getJSONObject(
+											"customData").getJSONObject(
+											"description").has("IT")) ? obj
+											.getJSONObject("customData")
+											.getJSONObject("description")
+											.getString("IT") : obj
+											.getJSONObject("customData")
+											.getJSONObject("description")
+											.getString("EN");
+									title = (obj.getJSONObject("customData")
+											.getJSONObject("title").has("IT")) ? obj
+											.getJSONObject("customData")
+											.getJSONObject("title")
+											.getString("IT")
+											: obj.getJSONObject("customData")
+													.getJSONObject("title")
+													.getString("EN");
+								} else {
+									description = (obj.getJSONObject(
+											"customData").getJSONObject(
+											"description").has("EN")) ? obj
+											.getJSONObject("customData")
+											.getJSONObject("description")
+											.getString("EN") : obj
+											.getJSONObject("customData")
+											.getJSONObject("description")
+											.getString("IT");
+									title = (obj.getJSONObject("customData")
+											.getJSONObject("title").has("EN")) ? obj
+											.getJSONObject("customData")
+											.getJSONObject("title")
+											.getString("EN")
+											: obj.getJSONObject("customData")
+													.getJSONObject("title")
+													.getString("IT");
+								}
 								Evento evento = new Evento(
 										null,
-										obj.getString("title"),
+										title,
 										obj.getLong("fromTime"),
 										obj.getLong("fromTime"),
 										obj.getLong("toTime"),
-										Html.fromHtml(
-												obj.getString("description"))
-												.toString(),
+										Html.fromHtml(description).toString(),
 										(!obj.isNull("location")) ? obj
 												.getJSONArray("location")
 												.getDouble(0) : 0,
@@ -128,26 +167,62 @@ public class ResultSearch extends Activity {
 						} else if (getIntent().getStringExtra("rest")
 								.equalsIgnoreCase("/poi/search")) {
 							for (JSONObject obj : mListaObj) {
-								POI poi = new POI(null, obj.getString("nome"),
-										obj.getString("categoria"), obj
-												.getJSONObject("GPS")
-												.getDouble("latGPS"), obj
-												.getJSONObject("GPS")
-												.getDouble("lngGPS"));
+								String description = null;
+
+								if (Locale.getDefault().getDisplayLanguage()
+										.equalsIgnoreCase("it_IT")) {
+									description = (obj.getJSONObject(
+											"customData").getJSONObject(
+											"description").has("IT")) ? obj
+											.getJSONObject("customData")
+											.getJSONObject("description")
+											.getString("IT") : obj
+											.getJSONObject("customData")
+											.getJSONObject("description")
+											.getString("EN");
+								} else {
+									description = (obj.getJSONObject(
+											"customData").getJSONObject(
+											"description").has("EN")) ? obj
+											.getJSONObject("customData")
+											.getJSONObject("description")
+											.getString("EN") : obj
+											.getJSONObject("customData")
+											.getJSONObject("description")
+											.getString("IT");
+								}
+								POI poi = new POI(null, obj.getString("title"),
+										obj.getString("type").split(" - ")[1],
+										description, obj.getJSONArray(
+												"location").getDouble(0), obj
+												.getJSONArray("location")
+												.getDouble(1));
 								poi.getIndirizzo();
 								mListaPOI.add(poi);
 							}
 						} else if (getIntent().getStringExtra("rest")
 								.equalsIgnoreCase("/sport/search")) {
 							for (JSONObject obj : mListaObj) {
-								Sport sport = new Sport(
-										obj.getString("titolo"),
+								JSONArray poi = obj
+										.getJSONArray("geolocations");
+								ArrayList<POI> mPOICorrelati = new ArrayList<POI>();
+								for (int j = 0; j < poi.length(); j++) {
+									JSONObject poiObj = poi.getJSONObject(j);
+									mPOICorrelati.add(new POI(null, poiObj
+											.getString("title"), null, null,
+											poiObj.getJSONArray("GPS")
+													.getDouble(0), poiObj
+													.getJSONArray("GPS")
+													.getDouble(1)));
+								}
+								Sport sport = new Sport(obj.getString("nome"),
 										SportImageConstant.resourcesFromID(
-												obj.getInt("id"),
+												obj.getInt("foto"),
 												ResultSearch.this),
 										obj.getString("descrizione"),
 										obj.getString("atleti"),
-										obj.getString("specialita"));
+										obj.getString("specialita"),
+										mPOICorrelati);
 
 								mListaSport.add(sport);
 							}

@@ -34,6 +34,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.smartcampus.template.standalone.Atleta;
 import android.smartcampus.template.standalone.Evento;
+import android.smartcampus.template.standalone.POI;
 import android.smartcampus.template.standalone.Sport;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -67,7 +68,7 @@ public class DettaglioSport extends FragmentActivity implements ILocation {
 	private MapUtilities mMapUtilities;
 
 	private ArrayList<Evento> mListEventi;
-	private ArrayList<Atleta> mListaAtleti = new ArrayList<Atleta>();
+	private ArrayList<POI> mListPOI;
 	ArrayList<Fragment> fragment = new ArrayList<Fragment>();
 	LatLngBounds.Builder builder;
 
@@ -127,6 +128,7 @@ public class DettaglioSport extends FragmentActivity implements ILocation {
 
 					mResult = ManagerData.getEventiPerSport(mSport.getNome());
 					mListEventi = (ArrayList<Evento>) mResult.get("params");
+					mListPOI = mSport.getSportPOI();
 
 					for (int i = 0; i < 4; i++)
 						fragment.add(new PageInfoSport(mSport.getDescrizione(),
@@ -184,9 +186,9 @@ public class DettaglioSport extends FragmentActivity implements ILocation {
 							.getLastKnownLocation().getLatitude(),
 							mMapUtilities.getLastKnownLocation().getLongitude()));
 
-					for (Evento mEvento : mListEventi) {
-						LatLng mMarker = new LatLng(mEvento.getLatGPS(),
-								mEvento.getLngGPS());
+					for (POI mPOI : mListPOI) {
+						LatLng mMarker = new LatLng(mPOI.getLatGPS(),
+								mPOI.getLngGPS());
 						builder.include(mMarker);
 						Geocoder coder = new Geocoder(DettaglioSport.this,
 								Locale.getDefault());
@@ -199,7 +201,7 @@ public class DettaglioSport extends FragmentActivity implements ILocation {
 									.position(mMarker)
 									.icon(BitmapDescriptorFactory
 											.fromBitmap(drawMarkerWithTitleAndAddress(
-													mEvento.getNome(),
+													mPOI.getNome(),
 													adrs.getAddressLine(0)
 															+ " - "
 															+ adrs.getAddressLine(1))))

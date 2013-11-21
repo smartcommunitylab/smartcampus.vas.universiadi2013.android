@@ -1,7 +1,11 @@
 package smartcampus.android.template.standalone.IntroBlock;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.EventiBlock.Evento;
@@ -174,6 +178,14 @@ public class Intro extends Activity {
 											((EditText) findViewById(R.id.text_password))
 													.getText().toString());
 
+									UserConstant
+											.setUsername(((EditText) findViewById(R.id.text_username))
+													.getText().toString()
+													.replace(" ", ""));
+									UserConstant
+											.setPassword(((EditText) findViewById(R.id.text_password))
+													.getText().toString());
+
 									if (loginResult == Intro.CONNECTION_ERROR) {
 										connectionError = true;
 									} else if (loginResult == Intro.LOGIN_SUCCESS) {
@@ -183,7 +195,7 @@ public class Intro extends Activity {
 														.getWindowToken(), 0);
 
 										loginSuccess.put("success", true);
-										// NEW SAVE UTENTE
+										// SAVE NEW UTENTE
 										saveUtente();
 									} else if (loginResult == Intro.LOGIN_FAILED) {
 										loginSuccess.put("success", false);
@@ -297,7 +309,7 @@ public class Intro extends Activity {
 													0);
 
 											loginSuccess.put("success", true);
-											// NEW SAVE UTENTE
+											// SAVE NEW UTENTE
 											saveUtente();
 										} else if (loginResult == Intro.LOGIN_FAILED) {
 											loginSuccess.put("success", false);
@@ -335,7 +347,6 @@ public class Intro extends Activity {
 
 	private void saveUtente() {
 		Utente user = (Utente) ManagerData.readUserData().get("params");
-		user.setAmbito("Corporate");
 		UserConstant.setUser(user);
 		Map<String, Object> mMapResult = ManagerData.saveUserInfo(user);
 	}

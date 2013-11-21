@@ -150,14 +150,49 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 						JSONObject obj = arrayJSON.get(getIntent().getIntExtra(
 								"index", 0));
 						try {
-							mEvento = new Evento(
+							String title = null;
+							String description = null;
+							if (Locale.getDefault().getDisplayLanguage()
+									.equalsIgnoreCase("it_IT")) {
+								description = (obj.getJSONObject("customData")
+										.getJSONObject("description").has("IT")) ? obj
+										.getJSONObject("customData")
+										.getJSONObject("description")
+										.getString("IT")
+										: obj.getJSONObject("customData")
+												.getJSONObject("description")
+												.getString("EN");
+								title = (obj.getJSONObject("customData")
+										.getJSONObject("title").has("IT")) ? obj
+										.getJSONObject("customData")
+										.getJSONObject("title").getString("IT")
+										: obj.getJSONObject("customData")
+												.getJSONObject("title")
+												.getString("EN");
+							} else {
+								description = (obj.getJSONObject("customData")
+										.getJSONObject("description").has("EN")) ? obj
+										.getJSONObject("customData")
+										.getJSONObject("description")
+										.getString("EN")
+										: obj.getJSONObject("customData")
+												.getJSONObject("description")
+												.getString("IT");
+								title = (obj.getJSONObject("customData")
+										.getJSONObject("title").has("EN")) ? obj
+										.getJSONObject("customData")
+										.getJSONObject("title").getString("EN")
+										: obj.getJSONObject("customData")
+												.getJSONObject("title")
+												.getString("IT");
+							}
+							Evento evento = new Evento(
 									null,
-									obj.getString("title"),
+									title,
 									obj.getLong("fromTime"),
 									obj.getLong("fromTime"),
 									obj.getLong("toTime"),
-									Html.fromHtml(obj.getString("description"))
-											.toString(),
+									Html.fromHtml(description).toString(),
 									(!obj.isNull("location")) ? obj
 											.getJSONArray("location")
 											.getDouble(0) : 0,

@@ -81,7 +81,7 @@
                         android:textSize="40sp" />
 
                     <smartcampus.android.template.standalone.Utilities.FontTextView
-                        android:id="@+id/FontTextView01"
+                        android:id="@+id/text_descrizione_poi"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"

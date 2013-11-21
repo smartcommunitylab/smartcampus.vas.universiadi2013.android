@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fff"
     android:orientation="vertical" >
 
     <smartcampus.android.template.standalone.Utilities.FontTextView
@@ -55,7 +54,6 @@
         android:gravity="center"
         android:lines="4"
         android:scrollbars="vertical"
-        android:text="@string/lorem_ipsum"
         android:textColor="#3294ad"
         android:textSize="20dp" />
 

@@ -73,7 +73,7 @@ public class DettaglioEventoPerPOI extends Activity {
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
 				Map<String, Object> mResult = ManagerData
-						.getEventiForPOI(new POI(null, null, null, getIntent()
+						.getEventiForPOI(new POI(null, null, null, null, getIntent()
 								.getDoubleExtra("latGPS", 0), getIntent()
 								.getDoubleExtra("lngGPS", 0)));
 				if ((Boolean) mResult.get("connectionError")) {
