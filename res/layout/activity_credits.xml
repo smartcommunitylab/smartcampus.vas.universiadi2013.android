@@ -38,16 +38,16 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.7" >
+                    android:layout_weight="0.55" >
 
                     <smartcampus.android.template.standalone.Utilities.FontTextView
                         android:id="@+id/textView3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
+                        android:layout_marginTop="@dimen/activity_horizontal_margin"
                         android:gravity="center"
-                        android:text="&amp;"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                        android:text="smartcampuslab.it\n\ninfo@smartcampuslab.it" />
 
                     <ImageView
                         android:id="@+id/img_credits_logo_smartcampus"
@@ -58,16 +58,6 @@
                         android:layout_centerInParent="true"
                         android:adjustViewBounds="true"
                         android:src="@drawable/logo_smartcampus" />
-
-                    <ImageView
-                        android:id="@+id/img_credits_logo_codefish"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="false"
-                        android:layout_below="@id/textView3"
-                        android:layout_centerHorizontal="true"
-                        android:adjustViewBounds="true"
-                        android:src="@drawable/logo_codefish" />
 
                     <smartcampus.android.template.standalone.Utilities.FontTextView
                         android:id="@+id/textView1"
@@ -81,6 +71,16 @@
                         android:text="Developed by:"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/textView3"
+                        android:layout_marginTop="@dimen/activity_horizontal_margin"
+                        android:adjustViewBounds="true"
+                        android:src="@drawable/lista_loghi_credits" />
+
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -89,42 +89,25 @@
                     android:layout_weight="0.7" >
 
                     <smartcampus.android.template.standalone.Utilities.FontTextView
-                        android:id="@+id/textView6"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textView5"
-                        android:layout_centerVertical="false"
-                        android:gravity="center"
-                        android:text="Server developer" />
-
-                    <smartcampus.android.template.standalone.Utilities.FontTextView
                         android:id="@+id/textView7"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
-                        android:layout_below="@+id/textView6"
+                        android:layout_below="@id/textView2"
+                        android:layout_centerVertical="false"
+                        android:layout_marginTop="10dp"
                         android:gravity="center"
-                        android:text="Jacopo Penzo\nDamiano Donati"
+                        android:text="Mattia Scagno\nJacopo Penzo\nDamiano Donati"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
                     <smartcampus.android.template.standalone.Utilities.FontTextView
-                        android:id="@+id/textView5"
+                        android:id="@+id/textView2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_below="@+id/textView4"
-                        android:layout_marginBottom="@dimen/activity_horizontal_margin"
                         android:gravity="center"
-                        android:text="Mattia Scagno\nFederico Lucca"
+                        android:text="Credits"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                    <smartcampus.android.template.standalone.Utilities.FontTextView
-                        android:id="@+id/textView4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:gravity="center"
-                        android:text="Android developer" />
                 </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>

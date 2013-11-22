@@ -57,7 +57,7 @@
     <string name="PLANNER_VISUALIZZA">Show: </string>
     <string name="PLANNER_FUNZIONE">Role: </string>
     <string name="FAQ_DOMANDA">Question: </string>
-    <string name="FAQ_RISPOSTA">Answers: </string>
+    <string name="FAQ_RISPOSTA">Results: </string>
     <string name="FAQ_ACCURATEZZA">Accuracy: </string>
     <string name="PROFILO_SALUTO">Hi,\n </string>
     <string name="PROFILO_FUNZIONE">Superior for role: </string>
@@ -75,7 +75,7 @@
     <!-- <string name="CATEGORIA_MANEGGIO">Maneggio</string> -->
     <!-- <string name="CATEGORIA_PISCINA">Piscina</string> -->
     <!-- <string name="CATEGORIA_PALESTRA">Palestra</string> -->
-    <string name="CATEGORIA_TEMPOLIBERO">TempoLibero</string>
+    <string name="CATEGORIA_TEMPOLIBERO">Tempo Libero</string>
     <string name="CATEGORIA_DISCO">Disco</string>
     <!-- <string name="CATEGORIA_MINIGOLF">Minigolf</string> -->
     <string name="CATEGORIA_WELLNESS">Wellness</string>

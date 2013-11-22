@@ -2,19 +2,16 @@ package smartcampus.android.template.standalone.Activity.SportBlock;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import smartcampus.android.template.universiadi.R;
-import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Utilities.MapUtilities;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ErrorType;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ILocation;
+import smartcampus.android.template.universiadi.R;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
@@ -27,12 +24,9 @@ import android.graphics.Paint.Align;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.smartcampus.template.standalone.Atleta;
 import android.smartcampus.template.standalone.Evento;
 import android.smartcampus.template.standalone.POI;
 import android.smartcampus.template.standalone.Sport;
@@ -43,19 +37,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Window;
 
-import com.dropbox.client2.android.AndroidAuthSession;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -182,9 +169,11 @@ public class DettaglioSport extends FragmentActivity implements ILocation {
 					mMappa.setMyLocationEnabled(true);
 
 					builder = new LatLngBounds.Builder();
-					builder.include(new LatLng(mMapUtilities
-							.getLastKnownLocation().getLatitude(),
-							mMapUtilities.getLastKnownLocation().getLongitude()));
+					if (mMapUtilities.getLastKnownLocation() != null)
+						builder.include(new LatLng(mMapUtilities
+								.getLastKnownLocation().getLatitude(),
+								mMapUtilities.getLastKnownLocation()
+										.getLongitude()));
 
 					for (POI mPOI : mListPOI) {
 						LatLng mMarker = new LatLng(mPOI.getLatGPS(),

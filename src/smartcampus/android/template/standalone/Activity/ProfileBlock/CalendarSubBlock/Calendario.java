@@ -8,9 +8,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
-import smartcampus.android.template.universiadi.R;
-import smartcampus.android.template.standalone.Activity.EventiBlock.Evento;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
+import smartcampus.android.template.universiadi.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -24,7 +23,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.smartcampus.template.standalone.Turno;
 import android.smartcampus.template.standalone.Utente;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;

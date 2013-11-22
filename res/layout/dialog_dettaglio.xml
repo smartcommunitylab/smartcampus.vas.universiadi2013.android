@@ -20,8 +20,7 @@
         android:layout_weight="0.4"
         android:gravity="center"
         android:text="Dove sono i ristoranti di Trento?"
-        android:textColor="#3294ad"
-        android:textSize="17dp" />
+        android:textColor="#3294ad" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -44,7 +43,7 @@
         android:layout_weight="0.4"
         android:gravity="center"
         android:text="@string/FAQ_RISPOSTA"
-        android:textColor="#3294ad" />
+        android:textColor="#79ba28" />
 
     <smartcampus.android.template.standalone.Utilities.FontTextView
         android:id="@+id/text_dettaglio_answer"
@@ -54,7 +53,7 @@
         android:gravity="center"
         android:lines="4"
         android:scrollbars="vertical"
-        android:textColor="#3294ad"
+        android:textColor="#79ba28"
         android:textSize="20dp" />
 
     <RelativeLayout

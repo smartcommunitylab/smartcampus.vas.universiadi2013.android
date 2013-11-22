@@ -1,12 +1,6 @@
 package smartcampus.android.template.standalone.HomeBlock;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -16,41 +10,40 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
 import smartcampus.android.template.standalone.Activity.FacilitiesBlock.Booking;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.Profile;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FilterCalendarioActivity;
+import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FunzioneObj;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock.FAQ;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock.IceFireWebView;
 import smartcampus.android.template.standalone.Activity.SportBlock.Sport;
 import smartcampus.android.template.standalone.IntroBlock.UserConstant;
-import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FunzioneObj;
+import smartcampus.android.template.universiadi.R;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.smartcampus.template.standalone.Evento;
-import android.smartcampus.template.standalone.Meeting;
 import android.smartcampus.template.standalone.Turno;
-import android.smartcampus.template.standalone.Utente;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -110,6 +103,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					public void onCancel(DialogInterface dialog) {
 						// TODO Auto-generated method stub
 						cancel(true);
+						resetUserAndPass();
 						finish();
 					}
 				});
@@ -286,8 +280,13 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 								ImageView btn = (ImageView) findViewById(R.id.image_today_meeting);
 								if (((String) (btn.getTag()))
 										.equalsIgnoreCase("normal")) {
-									btn.setImageResource(R.drawable.btn_scroll_press);
+									btn.setImageResource(R.drawable.btn_scroll_press_2);
 									btn.setTag("pressed");
+									((TextView) findViewById(R.id.text_meeting_scroll))
+											.setTextColor(Color
+													.parseColor("#3294ad"));
+									((TextView) findViewById(R.id.text_eventi_scrool))
+											.setTextColor(Color.WHITE);
 									((ImageView) findViewById(R.id.image_my_meeting))
 											.setImageResource(R.drawable.btn_scroll);
 									((ImageView) findViewById(R.id.image_my_meeting))
@@ -327,8 +326,13 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 								ImageView btn = (ImageView) findViewById(R.id.image_my_meeting);
 								if (((String) (btn.getTag()))
 										.equalsIgnoreCase("normal")) {
-									btn.setImageResource(R.drawable.btn_scroll_press);
+									btn.setImageResource(R.drawable.btn_scroll_press_2);
 									btn.setTag("pressed");
+									((TextView) findViewById(R.id.text_eventi_scrool))
+											.setTextColor(Color
+													.parseColor("#3294ad"));
+									((TextView) findViewById(R.id.text_meeting_scroll))
+											.setTextColor(Color.WHITE);
 									((ImageView) findViewById(R.id.image_today_meeting))
 											.setImageResource(R.drawable.btn_scroll);
 									((ImageView) findViewById(R.id.image_today_meeting))
@@ -397,9 +401,8 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					new DialogInterface.OnClickListener() {
 
 						public void onClick(DialogInterface dialog, int id) {
-
-							// TO-DO Invalidate Token
-							// ManagerData.invalidateToken();
+							// RESET COOKIE USER&PASS
+							resetUserAndPass();
 							dialog.dismiss();
 							finish();
 						}
@@ -420,6 +423,15 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 		} else {
 			finish();
 		}
+	}
+
+	private void resetUserAndPass() {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(Home.this);
+		Editor editor = preferences.edit();
+		editor.remove("username");
+		editor.remove("password");
+		editor.commit();
 	}
 
 	private void setupButton(boolean superUser) {

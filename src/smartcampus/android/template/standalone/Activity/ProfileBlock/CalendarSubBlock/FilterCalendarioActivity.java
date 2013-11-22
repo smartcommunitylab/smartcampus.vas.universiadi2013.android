@@ -52,19 +52,19 @@ public class FilterCalendarioActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_calendario_filter);
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Avviso");
-		builder.setMessage("Calendario in fase Beta\nPotrebbe risultare lento");
-		builder.setCancelable(false);
-		builder.setPositiveButton(getString(R.string.CHIUDI),
-				new android.content.DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.dismiss();
-
-						startCalendar();
-					}
-				});
-		builder.create().show();
+//		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//		builder.setTitle("Avviso");
+//		builder.setMessage("Calendario in fase Beta\nPotrebbe risultare lento");
+//		builder.setCancelable(false);
+//		builder.setPositiveButton(getString(R.string.CHIUDI),
+//				new android.content.DialogInterface.OnClickListener() {
+//					public void onClick(DialogInterface dialog, int id) {
+//						dialog.dismiss();
+//
+//						startCalendar();
+//					}
+//				});
+//		builder.create().show();
 	}
 
 	private void startCalendar() {

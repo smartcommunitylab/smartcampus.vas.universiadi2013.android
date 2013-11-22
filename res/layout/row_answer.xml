@@ -17,7 +17,8 @@
             android:layout_weight="0.4"
             android:gravity="center|bottom"
             android:text="TextView"
-            android:textColor="#3294ad" />
+            android:textColor="#3294ad" 
+            android:textSize="20sp"/>
 
         <smartcampus.android.template.standalone.Utilities.FontTextView
             android:id="@+id/text_answer"
@@ -27,15 +28,14 @@
             android:gravity="center|top"
             android:maxLines="2"
             android:text="TextView"
-            android:textColor="#3294ad"
-            android:textSize="20dp" />
+            android:textColor="#79ba28"
+             />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.7" >
         </RelativeLayout>
-
     </LinearLayout>
 
     <LinearLayout
@@ -48,10 +48,12 @@
             android:id="@+id/text1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
             android:layout_weight="0.55"
             android:gravity="center|bottom"
             android:text="@string/FAQ_ACCURATEZZA"
-            android:textColor="#3294ad" />
+            android:textColor="#3294ad"
+            android:textSize="10dp" />
 
         <smartcampus.android.template.standalone.Utilities.FontTextView
             android:id="@+id/text_accuracy"
@@ -60,8 +62,7 @@
             android:layout_weight="0.5"
             android:gravity="center|top"
             android:text="TextView"
-            android:textColor="#3294ad"
-            android:textSize="20dp" />
+            android:textColor="#3294ad" />
     </LinearLayout>
 
 </LinearLayout>

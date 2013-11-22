@@ -7,7 +7,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.Map;
 
@@ -15,13 +14,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
 import smartcampus.android.template.standalone.Activity.FacilitiesBlock.Booking;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Activity.SportBlock.DettaglioSport;
 import smartcampus.android.template.standalone.Activity.SportBlock.SportImageConstant;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
+import smartcampus.android.template.universiadi.R;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;

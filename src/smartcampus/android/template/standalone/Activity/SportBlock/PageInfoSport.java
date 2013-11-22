@@ -3,15 +3,14 @@ package smartcampus.android.template.standalone.Activity.SportBlock;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
+import smartcampus.android.template.universiadi.R;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.smartcampus.template.standalone.Atleta;
 import android.smartcampus.template.standalone.Evento;
 import android.support.v4.app.Fragment;
 import android.text.method.ScrollingMovementMethod;

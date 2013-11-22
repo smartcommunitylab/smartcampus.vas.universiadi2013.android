@@ -1,16 +1,11 @@
 package smartcampus.android.template.standalone.Activity.Model;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +14,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,7 +28,6 @@ import android.graphics.BitmapFactory;
 import android.smartcampus.template.standalone.Atleta;
 import android.smartcampus.template.standalone.Evento;
 import android.smartcampus.template.standalone.ExtendedAnswer;
-import android.smartcampus.template.standalone.Meeting;
 import android.smartcampus.template.standalone.POI;
 import android.smartcampus.template.standalone.Sport;
 import android.smartcampus.template.standalone.Ticket;
@@ -722,14 +715,16 @@ public class ManagerData {
 			if (!((Boolean) mMapRequest.get("connectionError"))) {
 				JSONArray arrayRisposte = new JSONArray(
 						(String) mMapRequest.get("params"));
-				for (int i = 0; i < arrayRisposte.length(); i++) {
-					JSONObject obj;
-					obj = arrayRisposte.getJSONObject(i);
-					ExtendedAnswer extAnswer = new ExtendedAnswer(
-							obj.getString("risposta"),
-							obj.getString("domanda"), obj.getInt("totalTag"),
-							obj.getInt("usefulTag"));
-					mListaRisposte.add(extAnswer);
+				if (arrayRisposte != null) {
+					for (int i = 0; i < arrayRisposte.length(); i++) {
+						JSONObject obj;
+						obj = arrayRisposte.getJSONObject(i);
+						ExtendedAnswer extAnswer = new ExtendedAnswer(
+								obj.getString("risposta"),
+								obj.getString("domanda"),
+								obj.getInt("totalTag"), obj.getInt("usefulTag"));
+						mListaRisposte.add(extAnswer);
+					}
 				}
 			}
 			mResult.put("params", mListaRisposte);

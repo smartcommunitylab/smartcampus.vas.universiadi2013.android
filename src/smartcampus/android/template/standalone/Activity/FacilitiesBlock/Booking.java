@@ -1,35 +1,29 @@
 package smartcampus.android.template.standalone.Activity.FacilitiesBlock;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Locale;
 import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import smartcampus.android.template.universiadi.R;
-import smartcampus.android.template.standalone.Activity.EventiBlock.Evento;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
 import smartcampus.android.template.standalone.Utilities.MapUtilities;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ErrorType;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ILocation;
+import smartcampus.android.template.universiadi.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.smartcampus.template.standalone.POI;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,10 +38,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
@@ -891,8 +881,8 @@ public class Booking extends FragmentActivity implements ILocation {
 			FontTextView mSelect = (FontTextView) rowView
 					.findViewById(R.id.text_select);
 			mSelect.setText(values.get(position).getPublicName());
-			if (values.get(position).getPublicName().length() > 13)
-				mSelect.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+//			if (values.get(position).getPublicName().length() > 13)
+//				mSelect.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
 			ImageView mLogo = (ImageView) rowView.findViewById(R.id.image_logo);
 			mLogo.setImageResource(R.drawable.game);

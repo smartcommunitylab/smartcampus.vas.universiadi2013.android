@@ -28,14 +28,14 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.85" >
+            android:layout_weight="0.75" >
 
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.2" >
+            android:layout_weight="0.06" >
 
             <RelativeLayout
                 android:layout_width="match_parent"
