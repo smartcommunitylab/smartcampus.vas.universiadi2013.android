@@ -602,9 +602,9 @@ public class Booking extends FragmentActivity implements ILocation {
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_SERVIZIO_BICI),
 					"serviziobici", 518));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_NOLEGGIO_PRIVATO),
-					"noleggioprivate", 520));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_NOLEGGIO_PRIVATO),
+//					"noleggioprivate", 520));
 			break;
 		case 600:
 			mListaSecondLevelCategory.add(new POICategory(
@@ -617,8 +617,8 @@ public class Booking extends FragmentActivity implements ILocation {
 			// 606));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_FARMACIA), "farmacia", 608));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_IGIENICI), "igienici", 610));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_IGIENICI), "igienici", 610));
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_ISOLE_ECOLOGICHE),
 			// "isoleecologiche", 612));
@@ -642,26 +642,26 @@ public class Booking extends FragmentActivity implements ILocation {
 			// "biblioteca", 624));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_WIFI), "wifi", 626));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_AGENZIA_VIAGGI),
-					"agenziaviaggi", 628));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_AGENZIA_VIAGGI),
+//					"agenziaviaggi", 628));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_INFO), "info", 630));
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_FORZE_ORDINE), "forzeordine",
 			// 632));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_SERVIZI_MUNICIPALI),
-					"servizimunicipali", 634));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_SERVIZI_MUNICIPALI),
+//					"servizimunicipali", 634));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_POSTA), "posta", 636));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_BANCA), "banca", 638));
 			break;
 		case 700:
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_PRODOTTI_TIPICI),
-					"prodottitipici", 702));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_PRODOTTI_TIPICI),
+//					"prodottitipici", 702));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_SOUVENIR), "souvenir", 704));
 			mListaSecondLevelCategory.add(new POICategory(
@@ -677,9 +677,9 @@ public class Booking extends FragmentActivity implements ILocation {
 					.add(new POICategory(
 							getString(R.string.CATEGORIA_TABACCHINO),
 							"tabacchino", 712));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_CENTROCOMMERCIALE),
-					"centrocommerciale", 714));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_CENTROCOMMERCIALE),
+//					"centrocommerciale", 714));
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_NEGOZIO_ANIMALI),
 			// "negozioanimali", 716));
