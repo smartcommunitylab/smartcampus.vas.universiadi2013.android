@@ -2,14 +2,19 @@ package smartcampus.android.template.standalone.Activity.ProfileBlock.Risolutore
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 
 import smartcampus.android.template.standalone.IntroBlock.UserConstant;
 import smartcampus.android.template.universiadi.R;
@@ -74,9 +79,11 @@ public class IceFireWebView extends Activity {
 					System.out.print("url:"+getString(R.string.URL_ICE_AND_FIRE)+" parametri:"+new StringEntity("username="
 							+ UserConstant.getUsername() + "&password="
 							+ UserConstant.getPassword()));
-					httppost.setEntity(new StringEntity("username="
-							+ UserConstant.getUsername() + "&password="
-							+ UserConstant.getPassword()));
+					 List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			            nameValuePairs.add(new BasicNameValuePair("username", UserConstant.getUsername()));
+			            nameValuePairs.add(new BasicNameValuePair("password", UserConstant.getPassword()));
+
+			            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 					HttpResponse response = httpclient.execute(httppost);
 					String data = new BasicResponseHandler()
