@@ -172,7 +172,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 						class TapGestureListener extends
 								GestureDetector.SimpleOnGestureListener {
 
-							@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+							@TargetApi(Build.VERSION_CODES.FROYO)
 							@Override
 							public boolean onSingleTapConfirmed(MotionEvent e) {
 								Intent mCaller = new Intent(getApplication(),

@@ -143,8 +143,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="eu.trentorise.smartcampus.ac.authenticator.AuthenticatorActivity"
-            android:configChanges="orientation|screenSize" />
+            android:name="eu.trentorise.smartcampus.ac.authenticator.AuthenticatorActivity"/>
+<!--             android:configChanges="orientation|screenSize"  -->
         <activity
             android:name="smartcampus.android.template.standalone.HomeBlock.HomeGuest"
             android:label="@string/title_activity_home_guest"
