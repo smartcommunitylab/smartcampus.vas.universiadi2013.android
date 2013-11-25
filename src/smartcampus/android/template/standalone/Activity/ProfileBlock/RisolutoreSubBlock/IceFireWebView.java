@@ -71,6 +71,9 @@ public class IceFireWebView extends Activity {
 				HttpPost httppost = new HttpPost(
 						getString(R.string.URL_ICE_AND_FIRE));
 				try {
+					System.out.print("url:"+getString(R.string.URL_ICE_AND_FIRE)+" parametri:"+new StringEntity("username="
+							+ UserConstant.getUsername() + "&password="
+							+ UserConstant.getPassword()));
 					httppost.setEntity(new StringEntity("username="
 							+ UserConstant.getUsername() + "&password="
 							+ UserConstant.getPassword()));

@@ -485,15 +485,15 @@ public class Booking extends FragmentActivity implements ILocation {
 					.add(new POICategory(
 							getString(R.string.CATEGORIA_SCUOLA_SCI),
 							"scuolasci", 104));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_IMPIANTO_SCII), "impiantosci",
-					106));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_IMPIANTO_SCII), "impiantosci",
+//					106));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_STADIO_GHIACCIO),
 					"stadioghiaccio", 108));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_STADIO_SALTO), "stadiosalto",
-					110));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_STADIO_SALTO), "stadiosalto",
+//					110));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_SNOWPARK), "snowpark", 112));
 			mListaSecondLevelCategory.add(new POICategory(
@@ -518,22 +518,22 @@ public class Booking extends FragmentActivity implements ILocation {
 					getString(R.string.CATEGORIA_WELLNESS), "wellness", 206));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_PARCO), "parco", 208));
-			mListaSecondLevelCategory
-					.add(new POICategory(
-							getString(R.string.CATEGORIA_ATTRAZIONE),
-							"attrazione", 210));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_MUSEO), "museo", 212));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_MONUMENTO), "monumento", 214));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_SITO_ARCHEOLOGICO),
-					"sitoarcheologico", 216));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_TEATRO), "teatro", 218));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_LUOGO_CULTO), "luogoculto",
-					220));
+//			mListaSecondLevelCategory
+//					.add(new POICategory(
+//							getString(R.string.CATEGORIA_ATTRAZIONE),
+//							"attrazione", 210));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_MUSEO), "museo", 212));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_MONUMENTO), "monumento", 214));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_SITO_ARCHEOLOGICO),
+//					"sitoarcheologico", 216));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_TEATRO), "teatro", 218));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_LUOGO_CULTO), "luogoculto",
+//					220));
 			break;
 		case 300:
 			mListaSecondLevelCategory.add(new POICategory(

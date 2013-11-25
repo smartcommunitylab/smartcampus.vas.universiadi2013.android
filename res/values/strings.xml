@@ -62,14 +62,17 @@
     <string name="PROFILO_SALUTO">Hi,\n </string>
     <string name="PROFILO_FUNZIONE">Superior for role: </string>
 
+    
+
+   
     <!-- POI String -->
     <string name="CATEGORIA_SPORT">Sport</string>
     <string name="CATEGORIA_NOLLEGGIO_SCI">Noleggio Scii</string>
     <string name="CATEGORIA_SCUOLA_SCI">Scuola Scii</string>
-    <string name="CATEGORIA_IMPIANTO_SCII">Impianto Scii</string>
+    <!-- <string name="CATEGORIA_IMPIANTO_SCII">Impianto Scii</string>-->
     <string name="CATEGORIA_STADIO_GHIACCIO">Stadio del Ghiaccio</string>
     <string name="CATEGORIA_SNOWPARK">Snowpark</string>
-    <string name="CATEGORIA_STADIO_SALTO">Stadio di salto</string>
+    <!-- <string name="CATEGORIA_STADIO_SALTO">Stadio di salto</string>-->
     <string name="CATEGORIA_CAMPO_SPORTIVO">Campo Sportivo</string>
     <!-- <string name="CATEGORIA_CAMPO_TENNIS">Campo di Tennis</string> -->
     <!-- <string name="CATEGORIA_MANEGGIO">Maneggio</string> -->
@@ -80,12 +83,12 @@
     <!-- <string name="CATEGORIA_MINIGOLF">Minigolf</string> -->
     <string name="CATEGORIA_WELLNESS">Wellness</string>
     <string name="CATEGORIA_PARCO">Parco</string>
-    <string name="CATEGORIA_ATTRAZIONE">Attrazione</string>
+   <!--  <string name="CATEGORIA_ATTRAZIONE">Attrazione</string>-->
     <string name="CATEGORIA_MUSEO">Museo</string>
-    <string name="CATEGORIA_MONUMENTO">Monumento</string>
-    <string name="CATEGORIA_SITO_ARCHEOLOGICO">Sito Archeologico</string>
+    <!-- <string name="CATEGORIA_MONUMENTO">Monumento</string> -->
+    <!-- <string name="CATEGORIA_SITO_ARCHEOLOGICO">Sito Archeologico</string>-->
     <string name="CATEGORIA_TEATRO">Teatro</string>
-    <string name="CATEGORIA_LUOGO_CULTO">Luogo di Culto</string>
+    <!-- <string name="CATEGORIA_LUOGO_CULTO">Luogo di Culto</string>-->
     <string name="CATEGORIA_MANGIARE">Mangiare</string>
     <string name="CATEGORIA_PIZZERIA">Pizzeria</string>
     <string name="CATEGORIA_RISTORANTE">Ristorante</string>
