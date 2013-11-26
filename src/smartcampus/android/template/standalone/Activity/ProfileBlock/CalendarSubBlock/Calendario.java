@@ -415,7 +415,7 @@ public class Calendario extends Activity implements ScrollViewListener {
 
 		ArrayList<Utente> mUtentiFake = new ArrayList<Utente>();
 		mUtentiFake.add(new Utente("Gabriele", "Zacco", "", "", new byte[1],
-				"000", "", "", ""));
+				"000", "", ""));
 
 		for (Turno turno : list) {
 

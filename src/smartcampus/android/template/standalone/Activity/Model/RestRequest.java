@@ -110,17 +110,20 @@ class RestRequest {
 			while ((line = reader.readLine()) != null) {
 				response = response + line;
 			}
-			mReturn.put("connectionError", false);
 			mReturn.put("params", response);
+			mReturn.put("connectionError", false);
+		
 			return mReturn;
+			
+			
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return mReturn;
 	}
 
 	public Map<String, Object> getFunzioni(Utente user) {

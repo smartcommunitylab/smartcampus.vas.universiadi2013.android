@@ -14,11 +14,10 @@ public class Utente {
     private String numeroTelefonico;
     private String mail;
     private String id;
-    private String uuid;
+ 
     
 	public Utente(String nome, String cognome, String ruolo, String ambito,
-			byte[] foto, String numeroTelefonico, String mail, String id,
-			String uuid) {
+			byte[] foto, String numeroTelefonico, String mail, String id) {
 		super();
 		this.nome = nome;
 		this.cognome = cognome;
@@ -28,7 +27,6 @@ public class Utente {
 		this.numeroTelefonico = numeroTelefonico;
 		this.mail = mail;
 		this.id = id;
-		this.uuid = uuid;
 	}
 
 	public String getNome() {
@@ -95,11 +93,5 @@ public class Utente {
 		this.id = id;
 	}
 
-	public String getUuid() {
-		return uuid;
-	}
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
 }

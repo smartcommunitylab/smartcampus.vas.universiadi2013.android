@@ -1,16 +1,11 @@
 package smartcampus.android.template.standalone.Activity.Model;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +14,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,9 +60,10 @@ public class ManagerData {
 	}
 
 	public static Map<String, Object> readUserData() {
+		Map<String, Object> mResult = new HashMap<String, Object>();
 		try {
 			Map<String, Object> mMapRequest = mRest.retrieveUserData();
-			Map<String, Object> mResult = new HashMap<String, Object>();
+			
 			mResult.put("connectionError",
 					(Boolean) mMapRequest.get("connectionError"));
 			if (!((Boolean) mMapRequest.get("connectionError"))) {
@@ -79,13 +74,13 @@ public class ManagerData {
 						new Utente(userData.getString("firstname"), userData
 								.getString("lastname"), userData
 								.getString("afunction"), userData
-								.getString("arole"), userData
+								.getString("acategory"), userData
 								.getString("photo").getBytes("UTF-8"), userData
-								.getString("mobile"), userData
-								.getString("email"), Integer.toString(userData
-								.getInt("id")), userData.getString("uuid")));
+								.getString("phone"), userData
+								.getString("email"), userData
+								.getString("id")));
 			}
-			return mResult;
+				return mResult;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -94,14 +89,13 @@ public class ManagerData {
 			e.printStackTrace();
 		}
 
-		return null;
+		return mResult;
 	}
 
 	public static Map<String, Object> saveUserInfo(Utente user) {
 		try {
 			JSONObject obj = new JSONObject();
 			obj.put("id", user.getId());
-			obj.put("uuid", user.getUuid());
 			obj.put("lastname", user.getCognome());
 			obj.put("firstname", user.getNome());
 			obj.put("email", user.getMail());
@@ -535,7 +529,7 @@ public class ManagerData {
 								" ")[0], obj.getString("function"),
 								obj.getString("arole"), new byte[1],
 								obj.getString("phone"), obj.getString("email"),
-								obj.getString("id"), "");
+								obj.getString("id"));
 						mListaSuperiori.add(superiore);
 					}
 				}
@@ -747,7 +741,7 @@ public class ManagerData {
 									"label").split(" ")[1], objUser.getString(
 									"label").split(" ")[0], null, null,
 									new byte[1], null, null, objUser
-											.getString("id"), null));
+											.getString("id")));
 						}
 						Turno turno = new Turno(obj.getLong("start"),
 								mListaVolontari, funzione.getFunzione(),
