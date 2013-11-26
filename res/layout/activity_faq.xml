@@ -88,7 +88,7 @@
             android:id="@+id/text_indirizzo_poi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/FAQ_RISPOSTA"
+            android:text="@string/FAQ_RISULTATI"
             android:textColor="#3294ad"
             android:textSize="20dp" />
 

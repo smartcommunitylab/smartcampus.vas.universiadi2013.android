@@ -1,14 +1,10 @@
 package smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.ListResourceBundle;
-import java.util.Locale;
 import java.util.Map;
 
-import smartcampus.android.template.universiadi.R;
-import smartcampus.android.template.standalone.Activity.EventiBlock.Evento;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
+import smartcampus.android.template.universiadi.R;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;

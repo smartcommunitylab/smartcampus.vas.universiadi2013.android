@@ -3,6 +3,7 @@ package android.smartcampus.template.standalone;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,11 +15,16 @@ import org.json.JSONObject;
 /**
  * Entity mapped to table POI.
  */
-public class POI {
+public class POI implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String nome;
 	private String categoria;
+	private String descrizione;
 	private Double latGPS;
 	private Double lngGPS;
 
@@ -31,13 +37,14 @@ public class POI {
 		this.id = id;
 	}
 
-	public POI(Long id, String nome, String categoria, Double latGPS,
-			Double lngGPS) {
+	public POI(Long id, String nome, String categoria, String descrizione,
+			Double latGPS, Double lngGPS) {
 		this.id = id;
 		this.nome = nome;
 		this.categoria = categoria;
 		this.latGPS = latGPS;
 		this.lngGPS = lngGPS;
+		this.descrizione = descrizione;
 	}
 
 	public Long getId() {
@@ -78,6 +85,14 @@ public class POI {
 
 	public void setLngGPS(Double lngGPS) {
 		this.lngGPS = lngGPS;
+	}
+
+	public String getDescrizione() {
+		return descrizione;
+	}
+
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
 	}
 
 	public String getIndirizzo() {

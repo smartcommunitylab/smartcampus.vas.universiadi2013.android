@@ -225,7 +225,7 @@
             android:label="@string/title_activity_home_guest" >
         </activity>
         <activity
-            android:name="smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock.Problema"
+            android:name="smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock.IceFireWebView"
             android:label="@string/title_activity_home_guest"
             android:screenOrientation="portrait" >
         </activity>

@@ -3,18 +3,15 @@ package smartcampus.android.template.standalone.HomeBlock;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
+import smartcampus.android.template.universiadi.R;
 import android.annotation.SuppressLint;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.smartcampus.template.standalone.Evento;
-import android.smartcampus.template.standalone.Meeting;
+import android.smartcampus.template.standalone.Turno;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,34 +68,32 @@ public class PageEventiOggi extends Fragment {
 					evento.getImage(), 0, evento.getImage().length));
 
 			ImageView mMask = (ImageView) mView.findViewById(R.id.image_mask);
-//			if (mPos % 2 == 0) {
-//				Bitmap sprite = BitmapFactory.decodeResource(
-//						this.getResources(), R.drawable.scroll_main);
-//				Matrix rotateRight = new Matrix();
-//				rotateRight.preScale(-1.0f, 1.0f);
-//				Bitmap rSprite = Bitmap.createBitmap(sprite, 0, 0,
-//						sprite.getWidth(), sprite.getHeight(), rotateRight,
-//						true);
-//
-//				mMask.setImageBitmap(rSprite);
-//
-//				mNome.setGravity(Gravity.RIGHT);
-//				mOra.setGravity(Gravity.RIGHT);
-//				((FontTextView) mView.findViewById(R.id.text_today))
-//						.setGravity(Gravity.RIGHT);
-//			}
+			// if (mPos % 2 == 0) {
+			// Bitmap sprite = BitmapFactory.decodeResource(
+			// this.getResources(), R.drawable.scroll_main);
+			// Matrix rotateRight = new Matrix();
+			// rotateRight.preScale(-1.0f, 1.0f);
+			// Bitmap rSprite = Bitmap.createBitmap(sprite, 0, 0,
+			// sprite.getWidth(), sprite.getHeight(), rotateRight,
+			// true);
+			//
+			// mMask.setImageBitmap(rSprite);
+			//
+			// mNome.setGravity(Gravity.RIGHT);
+			// mOra.setGravity(Gravity.RIGHT);
+			// ((FontTextView) mView.findViewById(R.id.text_today))
+			// .setGravity(Gravity.RIGHT);
+			// }
 		} else {
-			Meeting meeting = (Meeting) mEvento;
+			Turno meeting = (Turno) mEvento;
 
 			FontTextView mNome = (FontTextView) mView
 					.findViewById(R.id.text_nome_evento);
-			mNome.setText(meeting.getNome().toUpperCase());
+			mNome.setText(meeting.getCategoria().toUpperCase());
 
 			FontTextView mOra = (FontTextView) mView
 					.findViewById(R.id.text_ora_evento);
-
-			mOra.setText(new SimpleDateFormat("HH:mm", Locale.getDefault())
-					.format(meeting.getData()));
+			mOra.setText(meeting.getOraInizio() + " - " + meeting.getOraFine());
 
 			ImageView mImgSfondo = (ImageView) mView
 					.findViewById(R.id.image_sfondo_evento);
@@ -106,22 +101,22 @@ public class PageEventiOggi extends Fragment {
 					"drawable", "smartcampus.android.template.standalone"));
 
 			ImageView mMask = (ImageView) mView.findViewById(R.id.image_mask);
-//			if (mPos % 2 == 0) {
-//				Bitmap sprite = BitmapFactory.decodeResource(
-//						this.getResources(), R.drawable.scroll_main);
-//				Matrix rotateRight = new Matrix();
-//				rotateRight.preScale(-1.0f, 1.0f);
-//				Bitmap rSprite = Bitmap.createBitmap(sprite, 0, 0,
-//						sprite.getWidth(), sprite.getHeight(), rotateRight,
-//						true);
-//
-//				mMask.setImageBitmap(rSprite);
-//
-//				mNome.setGravity(Gravity.RIGHT);
-//				mOra.setGravity(Gravity.RIGHT);
-//				((FontTextView) mView.findViewById(R.id.text_today))
-//						.setGravity(Gravity.RIGHT);
-//			}
+			// if (mPos % 2 == 0) {
+			// Bitmap sprite = BitmapFactory.decodeResource(
+			// this.getResources(), R.drawable.scroll_main);
+			// Matrix rotateRight = new Matrix();
+			// rotateRight.preScale(-1.0f, 1.0f);
+			// Bitmap rSprite = Bitmap.createBitmap(sprite, 0, 0,
+			// sprite.getWidth(), sprite.getHeight(), rotateRight,
+			// true);
+			//
+			// mMask.setImageBitmap(rSprite);
+			//
+			// mNome.setGravity(Gravity.RIGHT);
+			// mOra.setGravity(Gravity.RIGHT);
+			// ((FontTextView) mView.findViewById(R.id.text_today))
+			// .setGravity(Gravity.RIGHT);
+			// }
 		}
 
 		return mView;

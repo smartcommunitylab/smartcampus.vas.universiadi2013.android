@@ -1,7 +1,6 @@
 package smartcampus.android.template.standalone.Activity.Model;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -34,7 +33,6 @@ import eu.trentorise.smartcampus.protocolcarrier.custom.MessageResponse;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.ConnectionException;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.ProtocolException;
 import eu.trentorise.smartcampus.protocolcarrier.exceptions.SecurityException;
-import eu.trentorise.smartcampus.storage.Utils;
 
 class RestRequest {
 
@@ -53,6 +51,10 @@ class RestRequest {
 	public void invalidateToken() {
 		mToken = null;
 		juniperToken = null;
+	}
+
+	public String getToken() {
+		return mToken;
 	}
 
 	public Map<String, Object> authenticate(String username, String password) {
@@ -110,20 +112,17 @@ class RestRequest {
 			while ((line = reader.readLine()) != null) {
 				response = response + line;
 			}
-			mReturn.put("params", response);
 			mReturn.put("connectionError", false);
-		
+			mReturn.put("params", response);
 			return mReturn;
-			
-			
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return mReturn;
+		return null;
 	}
 
 	public Map<String, Object> getFunzioni(Utente user) {

@@ -29,7 +29,7 @@
         <RelativeLayout
             android:id="@+id/container_pager_eventi_oggi"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="0.8" >
 
             <android.support.v4.view.ViewPager
@@ -38,6 +38,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.8"
                 android:clickable="true" >
+
             </android.support.v4.view.ViewPager>
 
             <LinearLayout
@@ -66,7 +67,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.52" >
+                    android:layout_weight="0.55" >
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -83,11 +84,8 @@
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="#3294ad"
                         android:visibility="gone" />
-
                 </RelativeLayout>
-
             </LinearLayout>
-
                  />
         </RelativeLayout>
 
@@ -124,16 +122,17 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.5"
                                 android:adjustViewBounds="true"
-                                android:src="@drawable/btn_scroll_press" />
+                                android:scaleType="fitXY"
+                                android:src="@drawable/btn_scroll_press_2" />
 
                             <smartcampus.android.template.standalone.Utilities.FontTextView
-                                android:id="@+id/text_indirizzo_poi"
+                                android:id="@+id/text_eventi_scrool"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
                                 android:gravity="center"
                                 android:text="@string/EVENTI_OGGI"
-                                android:textColor="#3294ad"
+                                android:textColor="#fff"
                                 android:textSize="17dp" />
                         </RelativeLayout>
 
@@ -148,10 +147,11 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="0.5"
                                 android:adjustViewBounds="true"
+                                android:scaleType="fitXY"
                                 android:src="@drawable/btn_scroll" />
 
                             <smartcampus.android.template.standalone.Utilities.FontTextView
-                                android:id="@+id/textView2"
+                                android:id="@+id/text_meeting_scroll"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
@@ -360,7 +360,6 @@
                 android:layout_centerVertical="false"
                 android:layout_marginRight="5dp"
                 android:src="@drawable/sticker" />
-
         </RelativeLayout>
 
         <RelativeLayout

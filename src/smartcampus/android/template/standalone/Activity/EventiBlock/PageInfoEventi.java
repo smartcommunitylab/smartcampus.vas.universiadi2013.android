@@ -2,15 +2,14 @@ package smartcampus.android.template.standalone.Activity.EventiBlock;
 
 import java.util.ArrayList;
 
-import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Utilities.ElementDescRoute;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
+import smartcampus.android.template.universiadi.R;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;

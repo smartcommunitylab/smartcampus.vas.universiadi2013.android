@@ -1,8 +1,5 @@
 package smartcampus.android.template.standalone.Activity.SportBlock;
 
-import java.util.ArrayList;
-
-import android.content.Context;
 
 public class SportContainer {
 

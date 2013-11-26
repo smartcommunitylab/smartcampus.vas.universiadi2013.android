@@ -10,14 +10,17 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
 import smartcampus.android.template.standalone.Activity.FacilitiesBlock.Booking;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.Profile;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FilterCalendarioActivity;
+import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FunzioneObj;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock.FAQ;
+import smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock.IceFireWebView;
 import smartcampus.android.template.standalone.Activity.SportBlock.Sport;
+import smartcampus.android.template.standalone.IntroBlock.UserConstant;
+import smartcampus.android.template.universiadi.R;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -25,15 +28,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.smartcampus.template.standalone.Evento;
-import android.smartcampus.template.standalone.Meeting;
-import android.smartcampus.template.standalone.Utente;
+import android.smartcampus.template.standalone.Turno;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -64,7 +69,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 	private List<Fragment> fragmentEventi = new ArrayList<Fragment>();
 	private List<Fragment> fragmentMeeting = new ArrayList<Fragment>();
 	private ArrayList<Evento> mListaEventiDiOggi = new ArrayList<Evento>();
-	private ArrayList<Meeting> mListaMeetingDiOggi = new ArrayList<Meeting>();
+	private ArrayList<Turno> mListaMeetingDiOggi = new ArrayList<Turno>();
 
 	private CirclePageIndicator titleIndicator;
 
@@ -98,6 +103,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					public void onCancel(DialogInterface dialog) {
 						// TODO Auto-generated method stub
 						cancel(true);
+						resetUserAndPass();
 						finish();
 					}
 				});
@@ -116,13 +122,23 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 						fragmentEventi.add(new PageEventiOggi(evento,
 								fragmentEventi.size() - 1));
 
-					mListaMeetingDiOggi = (ArrayList<Meeting>) ManagerData
-							.getMeetingPerData(
-									Calendar.getInstance(Locale.getDefault())
-											.getTimeInMillis()).get("params");
-					for (Meeting meeting : mListaMeetingDiOggi)
-						fragmentMeeting.add(new PageEventiOggi(meeting,
-								fragmentMeeting.size() - 1));
+					if (UserConstant.getUser() != null) {
+						mResult = ManagerData.getFunzioneForUser(UserConstant
+								.getUser());
+						ArrayList<FunzioneObj> listaFunzioni = (ArrayList<FunzioneObj>) mResult
+								.get("params");
+						for (FunzioneObj funzione : listaFunzioni)
+							mListaMeetingDiOggi
+									.addAll((ArrayList<Turno>) ManagerData
+											.getMeetingPerData(
+													Calendar.getInstance(
+															Locale.getDefault())
+															.getTimeInMillis(),
+													funzione).get("params"));
+						for (Turno meeting : mListaMeetingDiOggi)
+							fragmentMeeting.add(new PageEventiOggi(meeting,
+									fragmentMeeting.size() - 1));
+					}
 				}
 				return null;
 			}
@@ -264,8 +280,13 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 								ImageView btn = (ImageView) findViewById(R.id.image_today_meeting);
 								if (((String) (btn.getTag()))
 										.equalsIgnoreCase("normal")) {
-									btn.setImageResource(R.drawable.btn_scroll_press);
+									btn.setImageResource(R.drawable.btn_scroll_press_2);
 									btn.setTag("pressed");
+									((TextView) findViewById(R.id.text_meeting_scroll))
+											.setTextColor(Color
+													.parseColor("#3294ad"));
+									((TextView) findViewById(R.id.text_eventi_scrool))
+											.setTextColor(Color.WHITE);
 									((ImageView) findViewById(R.id.image_my_meeting))
 											.setImageResource(R.drawable.btn_scroll);
 									((ImageView) findViewById(R.id.image_my_meeting))
@@ -305,8 +326,13 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 								ImageView btn = (ImageView) findViewById(R.id.image_my_meeting);
 								if (((String) (btn.getTag()))
 										.equalsIgnoreCase("normal")) {
-									btn.setImageResource(R.drawable.btn_scroll_press);
+									btn.setImageResource(R.drawable.btn_scroll_press_2);
 									btn.setTag("pressed");
+									((TextView) findViewById(R.id.text_eventi_scrool))
+											.setTextColor(Color
+													.parseColor("#3294ad"));
+									((TextView) findViewById(R.id.text_meeting_scroll))
+											.setTextColor(Color.WHITE);
 									((ImageView) findViewById(R.id.image_today_meeting))
 											.setImageResource(R.drawable.btn_scroll);
 									((ImageView) findViewById(R.id.image_today_meeting))
@@ -375,9 +401,8 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					new DialogInterface.OnClickListener() {
 
 						public void onClick(DialogInterface dialog, int id) {
-
-							// TO-DO Invalidate Token
-							// ManagerData.invalidateToken();
+							// RESET COOKIE USER&PASS
+							resetUserAndPass();
 							dialog.dismiss();
 							finish();
 						}
@@ -398,6 +423,15 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 		} else {
 			finish();
 		}
+	}
+
+	private void resetUserAndPass() {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(Home.this);
+		Editor editor = preferences.edit();
+		editor.remove("username");
+		editor.remove("password");
+		editor.commit();
 	}
 
 	private void setupButton(boolean superUser) {
@@ -600,12 +634,17 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					mFilterPoi.setImageResource(R.drawable.btn_tool_helper);
 
 					String url = getString(R.string.URL_ICE_AND_FIRE);
-					if (!url.startsWith("http://"))
-						url = "http://" + url;
-					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
 
-					// startActivity(new Intent(getApplicationContext(),
-					// Problema.class));
+					// Intent mCaller = new Intent(Intent.ACTION_VIEW, Uri
+					// .parse(url));
+					// Log.i("", "User: " + UserConstant.getUsername()
+					// + "\nPass: " + UserConstant.getPassword());
+					// mCaller.putExtra("username", UserConstant.getUsername());
+					// mCaller.putExtra("password", UserConstant.getPassword());
+					// startActivity(mCaller);
+
+					startActivity(new Intent(getApplicationContext(),
+							IceFireWebView.class));
 					return true;
 				}
 				return false;
@@ -748,11 +787,10 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 								ResultSearch.class);
 						mCaller.putExtra("rest", "/evento/search");
 						JSONObject obj = new JSONObject();
-						obj.put("tipoFiltro", "SPORT");
-						obj.put("nome", "re");
-						// obj.put("nome",((EditText)
-						// findViewById(R.id.text_search))
-						// .getText().toString()));
+						obj.put("tipoFiltro", "EVENTO");
+						obj.put("nome",
+								((EditText) findViewById(R.id.text_search))
+										.getText().toString());
 						mCaller.putExtra("search", obj.toString());
 						startActivity(mCaller);
 					} catch (JSONException e) {
@@ -784,13 +822,12 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 						Intent mCaller = new Intent(getApplicationContext(),
 								ResultSearch.class);
-						mCaller.putExtra("rest", "/evento/search");
+						mCaller.putExtra("rest", "/poi/search");
 						JSONObject obj = new JSONObject();
-						obj.put("tipoFiltro", "SPORT");
-						obj.put("nome", "re");
-						// obj.put("nome",(((EditText)
-						// findViewById(R.id.text_search))
-						// .getText().toString());
+						obj.put("tipoFiltro", "POI");
+						obj.put("nome",
+								(((EditText) findViewById(R.id.text_search))
+										.getText().toString()));
 						mCaller.putExtra("search", obj.toString());
 						startActivity(mCaller);
 					} catch (JSONException e) {
@@ -822,13 +859,12 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 						Intent mCaller = new Intent(getApplicationContext(),
 								ResultSearch.class);
-						mCaller.putExtra("rest", "/evento/search");
+						mCaller.putExtra("rest", "/sport/search");
 						JSONObject obj = new JSONObject();
 						obj.put("tipoFiltro", "SPORT");
-						obj.put("nome", "re");
-						// obj.put("nome",(((EditText)
-						// findViewById(R.id.text_search))
-						// .getText().toString());
+						obj.put("nome",
+								(((EditText) findViewById(R.id.text_search))
+										.getText().toString()));
 						mCaller.putExtra("search", obj.toString());
 						startActivity(mCaller);
 					} catch (JSONException e) {
@@ -843,6 +879,45 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 		dialog.show();
 	}
+
+	// private void callBrowserWithParams(String url)
+	// throws UnsupportedEncodingException {
+	// Intent i = new Intent();
+	// // MUST instantiate android browser, otherwise it won't work (it won't
+	// // find an activity to satisfy intent)
+	// i.setComponent(new ComponentName("com.android.browser",
+	// "com.android.browser.BrowserActivity"));
+	// i.setAction(Intent.ACTION_VIEW);
+	// String html = readTrimRawTextFile(this, R.xml.ice_fire_html_form);
+	//
+	// html = html.replace("value_user", UserConstant.getUsername())
+	// .replace("value_pass", UserConstant.getPassword())
+	// .replace("url", getString(R.string.URL_ICE_AND_FIRE));
+	//
+	// // May work without url encoding, but I think is advisable
+	// // URLEncoder.encode replace space with "+", must replace again with %20
+	// String dataUri = "data:text/html,"
+	// + URLEncoder.encode(html, "UTF-8");
+	// i.setData(Uri.parse(dataUri));
+	// startActivity(i);
+	// }
+	//
+	// private String readTrimRawTextFile(Context ctx, int resId) {
+	// InputStream inputStream = ctx.getResources().openRawResource(resId);
+	//
+	// InputStreamReader inputreader = new InputStreamReader(inputStream);
+	// BufferedReader buffreader = new BufferedReader(inputreader);
+	// String line;
+	// StringBuilder text = new StringBuilder();
+	// try {
+	// while ((line = buffreader.readLine()) != null) {
+	// text.append(line.trim());
+	// }
+	// } catch (IOException e) {
+	// return null;
+	// }
+	// return text.toString();
+	// }
 
 	private class PagerAdapter extends FragmentStatePagerAdapter {
 

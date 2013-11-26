@@ -1,0 +1,20 @@
+<html>
+
+    <body onLoad="document.getElementById(&apos;form&apos;).submit()" >
+        <form
+            id="form"
+            action="url "
+            method="POST"
+            target="_self" >
+            <input
+                name="username"
+                type="hidden"
+                value="value_user" />
+            <input
+                name="password"
+                type="hidden"
+                value="value_pass" />
+        </form>
+    </body>
+
+</html>

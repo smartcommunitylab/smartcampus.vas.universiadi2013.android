@@ -1,15 +1,13 @@
 package smartcampus.android.template.standalone.Activity.ProfileBlock;
 
-import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import smartcampus.android.template.universiadi.R;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FunzioneObj;
-import smartcampus.android.template.standalone.HomeBlock.Home;
 import smartcampus.android.template.standalone.IntroBlock.UserConstant;
+import smartcampus.android.template.universiadi.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -28,10 +26,9 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.View.OnTouchListener;
-import android.webkit.WebSettings.TextSize;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -202,9 +199,9 @@ public class Profile extends Activity {
 											funzione = new ArrayList<FunzioneObj>();
 											funzione.add(new FunzioneObj(
 													"Academic Liaison & Special Projects",
-													69326));
+													"69326"));
 											funzione.add(new FunzioneObj(
-													"Communication", 35152));
+													"Communication", "35152"));
 											// mMapUserData =
 											// ManagerData.getFunzioneForUser(user);
 											// if (!((Boolean)

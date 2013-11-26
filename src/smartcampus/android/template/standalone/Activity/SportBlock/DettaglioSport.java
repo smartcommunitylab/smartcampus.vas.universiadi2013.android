@@ -2,19 +2,16 @@ package smartcampus.android.template.standalone.Activity.SportBlock;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import smartcampus.android.template.universiadi.R;
-import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Utilities.MapUtilities;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ErrorType;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ILocation;
+import smartcampus.android.template.universiadi.R;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
@@ -27,34 +24,30 @@ import android.graphics.Paint.Align;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.smartcampus.template.standalone.Atleta;
 import android.smartcampus.template.standalone.Evento;
+import android.smartcampus.template.standalone.POI;
 import android.smartcampus.template.standalone.Sport;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.Window;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.dropbox.client2.android.AndroidAuthSession;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
-import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -67,7 +60,7 @@ public class DettaglioSport extends FragmentActivity implements ILocation {
 	private MapUtilities mMapUtilities;
 
 	private ArrayList<Evento> mListEventi;
-	private ArrayList<Atleta> mListaAtleti = new ArrayList<Atleta>();
+	private ArrayList<POI> mListPOI;
 	ArrayList<Fragment> fragment = new ArrayList<Fragment>();
 	LatLngBounds.Builder builder;
 
@@ -127,6 +120,7 @@ public class DettaglioSport extends FragmentActivity implements ILocation {
 
 					mResult = ManagerData.getEventiPerSport(mSport.getNome());
 					mListEventi = (ArrayList<Evento>) mResult.get("params");
+					mListPOI = mSport.getSportPOI();
 
 					for (int i = 0; i < 4; i++)
 						fragment.add(new PageInfoSport(mSport.getDescrizione(),
@@ -180,13 +174,15 @@ public class DettaglioSport extends FragmentActivity implements ILocation {
 					mMappa.setMyLocationEnabled(true);
 
 					builder = new LatLngBounds.Builder();
-					builder.include(new LatLng(mMapUtilities
-							.getLastKnownLocation().getLatitude(),
-							mMapUtilities.getLastKnownLocation().getLongitude()));
+					if (mMapUtilities.getLastKnownLocation() != null)
+						builder.include(new LatLng(mMapUtilities
+								.getLastKnownLocation().getLatitude(),
+								mMapUtilities.getLastKnownLocation()
+										.getLongitude()));
 
-					for (Evento mEvento : mListEventi) {
-						LatLng mMarker = new LatLng(mEvento.getLatGPS(),
-								mEvento.getLngGPS());
+					for (POI mPOI : mListPOI) {
+						LatLng mMarker = new LatLng(mPOI.getLatGPS(),
+								mPOI.getLngGPS());
 						builder.include(mMarker);
 						Geocoder coder = new Geocoder(DettaglioSport.this,
 								Locale.getDefault());
@@ -197,37 +193,85 @@ public class DettaglioSport extends FragmentActivity implements ILocation {
 									mMarker.longitude, 1).get(0);
 							mMappa.addMarker(new MarkerOptions()
 									.position(mMarker)
+									.title(mPOI.getNome() + "\n\n"
+											+ adrs.getAddressLine(0) + " - "
+											+ adrs.getAddressLine(1))
 									.icon(BitmapDescriptorFactory
-											.fromBitmap(drawMarkerWithTitleAndAddress(
-													mEvento.getNome(),
-													adrs.getAddressLine(0)
-															+ " - "
-															+ adrs.getAddressLine(1))))
+											.fromResource(R.drawable.marker_search))
+									/*
+									 * .icon(BitmapDescriptorFactory
+									 * .fromBitmap(
+									 * drawMarkerWithTitleAndAddress(
+									 * mPOI.getNome(), adrs.getAddressLine(0) +
+									 * " - " + adrs.getAddressLine(1))))
+									 */
 									.anchor(0.5f, 1));
 							mMappa.setOnMarkerClickListener(new OnMarkerClickListener() {
 
 								@Override
-								public boolean onMarkerClick(Marker marker) {
+								public boolean onMarkerClick(final Marker marker) {
 									// TODO Auto-generated method stub
-									if (mMapUtilities.getLastKnownLocation() != null) {
-										Intent intent = new Intent(
-												android.content.Intent.ACTION_VIEW,
-												Uri.parse("http://maps.google.com/maps?saddr="
-														+ mMapUtilities
-																.getLastKnownLocation()
-																.getLatitude()
-														+ ","
-														+ mMapUtilities
-																.getLastKnownLocation()
-																.getLongitude()
-														+ "&daddr="
-														+ marker.getPosition().latitude
-														+ ","
-														+ marker.getPosition().longitude));
-										startActivity(intent);
-										return true;
-									}
-									return false;
+									final Dialog dialog = new Dialog(
+											DettaglioSport.this);
+									dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+									dialog.setContentView(R.layout.dialog_detail_event_sport_poi);
+									dialog.getWindow()
+											.setBackgroundDrawableResource(
+													R.drawable.dialog_rounded_corner);
+
+									((TextView) dialog
+											.findViewById(R.id.text_indirizzo_detail_event_poi))
+											.setText(marker.getTitle() + "\n");
+
+									((ImageView) dialog
+											.findViewById(R.id.btn_go_event))
+											.setOnTouchListener(new OnTouchListener() {
+
+												@Override
+												public boolean onTouch(View v,
+														MotionEvent event) {
+													// TODO Auto-generated
+													// method stub
+													if (event.getAction() == MotionEvent.ACTION_DOWN) {
+														((ImageView) dialog
+																.findViewById(R.id.btn_go_event))
+																.setImageResource(R.drawable.btn_eventi_poi_press);
+														return true;
+													}
+													if (event.getAction() == MotionEvent.ACTION_UP) {
+														((ImageView) dialog
+																.findViewById(R.id.btn_go_event))
+																.setImageResource(R.drawable.btn_eventi_poi);
+
+														if (mMapUtilities
+																.getLastKnownLocation() != null) {
+															Intent intent = new Intent(
+																	android.content.Intent.ACTION_VIEW,
+																	Uri.parse("http://maps.google.com/maps?saddr="
+																			+ mMapUtilities
+																					.getLastKnownLocation()
+																					.getLatitude()
+																			+ ","
+																			+ mMapUtilities
+																					.getLastKnownLocation()
+																					.getLongitude()
+																			+ "&daddr="
+																			+ marker.getPosition().latitude
+																			+ ","
+																			+ marker.getPosition().longitude));
+															startActivity(intent);
+															return true;
+														}
+
+														return true;
+													}
+
+													return false;
+												}
+											});
+
+									dialog.show();
+									return true;
 								}
 
 							});
@@ -254,51 +298,51 @@ public class DettaglioSport extends FragmentActivity implements ILocation {
 			mMapUtilities.close();
 	}
 
-	private Bitmap drawMarkerWithTitleAndAddress(String title, String add) {
-
-		Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-		// Create text
-		Paint color = new Paint();
-		color.setAntiAlias(true);
-		color.setTextAlign(Align.CENTER);
-		color.setTextSize(20);
-		color.setColor(Color.WHITE);
-		int measureText = (int) ((color.measureText(add) >= color
-				.measureText(title)) ? color.measureText(add) + 20 : color
-				.measureText(title)) + 20;
-		if (measureText > 230 && measureText <= 460) {
-			color.setTextSize(15);
-			measureText = (int) ((color.measureText(add) >= color
-					.measureText(title)) ? color.measureText(add) + 20 : color
-					.measureText(title)) + 20;
-		} else if (measureText > 460) {
-			color.setTextSize(15);
-			int lastChar = color.breakText(add, true, 460, null);
-			add = add.substring(0, lastChar);
-			measureText = (int) ((color.measureText(add) >= color
-					.measureText(title)) ? color.measureText(add) + 20 : color
-					.measureText(title)) + 20;
-		}
-
-		Bitmap bmpLabel = Bitmap.createBitmap(measureText + 20, 60, conf);
-		Canvas canvasLabel = new Canvas(bmpLabel);
-		bmpLabel.eraseColor(Color.argb(255, 50, 148, 173));
-		canvasLabel.drawText(title, measureText / 2, 25, color);
-		canvasLabel.drawText(add, measureText / 2, 50, color);
-		// Create arrow
-		Bitmap arrow = BitmapFactory.decodeResource(getResources(),
-				R.drawable.marker);
-		// Create all label
-		Bitmap bmpBackground = Bitmap.createBitmap(measureText,
-				40 + arrow.getWidth(), conf);
-		Canvas canvasBackGround = new Canvas(bmpBackground);
-		// Merge Canvas and Bitmap
-		canvasBackGround.drawBitmap(bmpLabel, 0, 0, null);
-		canvasBackGround.drawBitmap(arrow, measureText / 2 - arrow.getWidth()
-				/ 2, 60, null);
-
-		return bmpBackground;
-	}
+	// private Bitmap drawMarkerWithTitleAndAddress(String title, String add) {
+	//
+	// Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+	// // Create text
+	// Paint color = new Paint();
+	// color.setAntiAlias(true);
+	// color.setTextAlign(Align.CENTER);
+	// color.setTextSize(20);
+	// color.setColor(Color.WHITE);
+	// int measureText = (int) ((color.measureText(add) >= color
+	// .measureText(title)) ? color.measureText(add) + 20 : color
+	// .measureText(title)) + 20;
+	// if (measureText > 230 && measureText <= 460) {
+	// color.setTextSize(15);
+	// measureText = (int) ((color.measureText(add) >= color
+	// .measureText(title)) ? color.measureText(add) + 20 : color
+	// .measureText(title)) + 20;
+	// } else if (measureText > 460) {
+	// color.setTextSize(15);
+	// int lastChar = color.breakText(add, true, 460, null);
+	// add = add.substring(0, lastChar);
+	// measureText = (int) ((color.measureText(add) >= color
+	// .measureText(title)) ? color.measureText(add) + 20 : color
+	// .measureText(title)) + 20;
+	// }
+	//
+	// Bitmap bmpLabel = Bitmap.createBitmap(measureText + 20, 60, conf);
+	// Canvas canvasLabel = new Canvas(bmpLabel);
+	// bmpLabel.eraseColor(Color.argb(255, 50, 148, 173));
+	// canvasLabel.drawText(title, measureText / 2, 25, color);
+	// canvasLabel.drawText(add, measureText / 2, 50, color);
+	// // Create arrow
+	// Bitmap arrow = BitmapFactory.decodeResource(getResources(),
+	// R.drawable.marker);
+	// // Create all label
+	// Bitmap bmpBackground = Bitmap.createBitmap(measureText,
+	// 40 + arrow.getWidth(), conf);
+	// Canvas canvasBackGround = new Canvas(bmpBackground);
+	// // Merge Canvas and Bitmap
+	// canvasBackGround.drawBitmap(bmpLabel, 0, 0, null);
+	// canvasBackGround.drawBitmap(arrow, measureText / 2 - arrow.getWidth()
+	// / 2, 60, null);
+	//
+	// return bmpBackground;
+	// }
 
 	private class PagerAdapter extends FragmentPagerAdapter {
 

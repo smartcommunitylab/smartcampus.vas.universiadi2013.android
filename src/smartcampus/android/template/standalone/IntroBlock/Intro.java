@@ -3,10 +3,9 @@ package smartcampus.android.template.standalone.IntroBlock;
 import java.util.HashMap;
 import java.util.Map;
 
-import smartcampus.android.template.universiadi.R;
-import smartcampus.android.template.standalone.Activity.EventiBlock.Evento;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.HomeBlock.Home;
+import smartcampus.android.template.universiadi.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -14,9 +13,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.smartcampus.template.standalone.Utente;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -45,17 +47,17 @@ public class Intro extends Activity {
 
 		ManagerData.getInstance(getApplicationContext());
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Credenziali");
-		builder.setMessage("Credenziali per l'accesso\nUsername: 'gzacco'\nPassword: 'gabriele'");
-		builder.setCancelable(false);
-		builder.setPositiveButton("Chiudi",
-				new android.content.DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.dismiss();
-					}
-				});
-		builder.create().show();
+		// AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		// builder.setTitle("Credenziali");
+		// builder.setMessage("Credenziali per l'accesso\nUsername: 'gzacco'\nPassword: 'gabriele'");
+		// builder.setCancelable(false);
+		// builder.setPositiveButton("Chiudi",
+		// new android.content.DialogInterface.OnClickListener() {
+		// public void onClick(DialogInterface dialog, int id) {
+		// dialog.dismiss();
+		// }
+		// });
+		// builder.create().show();
 
 		// ///REGISTRATION NOTIFICATION//////
 		// PushServiceConnector mRegistrator = new PushServiceConnector();
@@ -174,6 +176,14 @@ public class Intro extends Activity {
 											((EditText) findViewById(R.id.text_password))
 													.getText().toString());
 
+									UserConstant
+											.setUsername(((EditText) findViewById(R.id.text_username))
+													.getText().toString()
+													.replace(" ", ""));
+									UserConstant
+											.setPassword(((EditText) findViewById(R.id.text_password))
+													.getText().toString());
+
 									if (loginResult == Intro.CONNECTION_ERROR) {
 										connectionError = true;
 									} else if (loginResult == Intro.LOGIN_SUCCESS) {
@@ -183,8 +193,10 @@ public class Intro extends Activity {
 														.getWindowToken(), 0);
 
 										loginSuccess.put("success", true);
-										// NEW SAVE UTENTE
+										// SAVE NEW UTENTE
 										saveUtente();
+										// SAVE USER&PASS
+										saveUserAndPass();
 									} else if (loginResult == Intro.LOGIN_FAILED) {
 										loginSuccess.put("success", false);
 										loginSuccess.put("notfound", true);
@@ -287,6 +299,14 @@ public class Intro extends Activity {
 												((EditText) findViewById(R.id.text_password))
 														.getText().toString());
 
+										UserConstant
+												.setUsername(((EditText) findViewById(R.id.text_username))
+														.getText().toString()
+														.replace(" ", ""));
+										UserConstant
+												.setPassword(((EditText) findViewById(R.id.text_password))
+														.getText().toString());
+
 										if (loginResult == Intro.CONNECTION_ERROR) {
 											connectionError = true;
 										} else if (loginResult == Intro.LOGIN_SUCCESS) {
@@ -297,8 +317,10 @@ public class Intro extends Activity {
 													0);
 
 											loginSuccess.put("success", true);
-											// NEW SAVE UTENTE
+											// SAVE NEW UTENTE
 											saveUtente();
+											// SAVE USER&PASS
+											saveUserAndPass();
 										} else if (loginResult == Intro.LOGIN_FAILED) {
 											loginSuccess.put("success", false);
 											loginSuccess.put("notfound", true);
@@ -331,13 +353,102 @@ public class Intro extends Activity {
 						return false;
 					}
 				});
+
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(Intro.this);
+		final String username = preferences.getString("username", null);
+		final String password = preferences.getString("password", null);
+
+		if (username != null && password != null) {
+			new AsyncTask<Void, Void, Void>() {
+				private Dialog dialog;
+				private boolean connectionError;
+
+				@Override
+				protected void onPreExecute() {
+					// TODO Auto-generated method stub
+					super.onPreExecute();
+
+					dialog = new Dialog(Intro.this);
+					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					dialog.setContentView(R.layout.dialog_wait);
+					dialog.getWindow().setBackgroundDrawableResource(
+							R.drawable.dialog_rounded_corner_light_black);
+					dialog.show();
+					dialog.setCancelable(true);
+					dialog.setOnCancelListener(new OnCancelListener() {
+
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							// TODO Auto-generated method stub
+							Log.i("", "Cancel");
+							cancel(true);
+						}
+					});
+
+				}
+
+				@Override
+				protected Void doInBackground(Void... params) {
+					// TODO Auto-generated method stub
+					int loginResult = login(username, password);
+
+					if (loginResult == Intro.CONNECTION_ERROR) {
+						connectionError = true;
+					} else if (loginResult == Intro.LOGIN_SUCCESS) {
+						InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+						imm.hideSoftInputFromWindow(
+								((EditText) findViewById(R.id.text_password))
+										.getWindowToken(), 0);
+
+						loginSuccess.put("success", true);
+						// SAVE NEW UTENTE
+						saveUtente();
+						UserConstant.setUsername(username);
+						UserConstant.setPassword(password);
+					} else if (loginResult == Intro.LOGIN_FAILED) {
+						loginSuccess.put("success", false);
+						loginSuccess.put("notfound", true);
+
+					}
+					return null;
+				}
+
+				@Override
+				protected void onPostExecute(Void result) {
+					// TODO Auto-generated method stub
+					super.onPostExecute(result);
+
+					dialog.dismiss();
+
+					// START ONPOST
+
+					controlAfterLogin();
+
+					// END ONPOST
+				}
+
+			}.execute();
+		}
 	}
 
 	private void saveUtente() {
 		Utente user = (Utente) ManagerData.readUserData().get("params");
-		user.setAmbito("Corporate");
 		UserConstant.setUser(user);
 		Map<String, Object> mMapResult = ManagerData.saveUserInfo(user);
+	}
+
+	private void saveUserAndPass() {
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(Intro.this);
+		Editor editor = preferences.edit();
+		editor.putString("username",
+				((EditText) findViewById(R.id.text_username)).getText()
+						.toString().replace(" ", ""));
+		editor.putString("password",
+				((EditText) findViewById(R.id.text_password)).getText()
+						.toString());
+		editor.commit();
 	}
 
 	@Override
