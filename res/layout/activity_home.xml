@@ -67,23 +67,41 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.55" >
+                    android:layout_weight="0.5" >
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/container_nessun_evento"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:visibility="gone" >
+
+                    <ImageView
+                        android:id="@+id/imageView1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:alpha="0.4"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/mask" />
+
+                    <smartcampus.android.template.standalone.Utilities.FontTextView
+                        android:id="@+id/text_nessun_evento"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:text="@string/NESSUN_EVENTO"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#3294ad"
+                        android:visibility="visible" />
+
                 </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.8" >
-
-                    <smartcampus.android.template.standalone.Utilities.FontTextView
-                        android:id="@+id/text_nessun_evento"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/NESSUN_EVENTO"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textColor="#3294ad"
-                        android:visibility="gone" />
+                    android:layout_weight="0.5" >
                 </RelativeLayout>
             </LinearLayout>
                  />

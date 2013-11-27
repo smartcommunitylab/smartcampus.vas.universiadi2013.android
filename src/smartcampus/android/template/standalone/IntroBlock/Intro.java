@@ -343,7 +343,21 @@ public class Intro extends Activity {
 
 									// START ONPOST
 
-									controlAfterLogin();
+									if (connectionError) {
+										Dialog noConnection = new Dialog(
+												Intro.this);
+										noConnection
+												.requestWindowFeature(Window.FEATURE_NO_TITLE);
+										noConnection
+												.setContentView(R.layout.dialog_no_connection);
+										noConnection
+												.getWindow()
+												.setBackgroundDrawableResource(
+														R.drawable.dialog_rounded_corner_light_black);
+										noConnection.show();
+										noConnection.setCancelable(true);
+									} else
+										controlAfterLogin();
 
 									// END ONPOST
 								}
@@ -375,17 +389,7 @@ public class Intro extends Activity {
 					dialog.getWindow().setBackgroundDrawableResource(
 							R.drawable.dialog_rounded_corner_light_black);
 					dialog.show();
-					dialog.setCancelable(true);
-					dialog.setOnCancelListener(new OnCancelListener() {
-
-						@Override
-						public void onCancel(DialogInterface dialog) {
-							// TODO Auto-generated method stub
-							Log.i("", "Cancel");
-							cancel(true);
-						}
-					});
-
+					dialog.setCancelable(false);
 				}
 
 				@Override
@@ -423,7 +427,18 @@ public class Intro extends Activity {
 
 					// START ONPOST
 
-					controlAfterLogin();
+					if (connectionError) {
+						Dialog noConnection = new Dialog(Intro.this);
+						noConnection
+								.requestWindowFeature(Window.FEATURE_NO_TITLE);
+						noConnection
+								.setContentView(R.layout.dialog_no_connection);
+						noConnection.getWindow().setBackgroundDrawableResource(
+								R.drawable.dialog_rounded_corner_light_black);
+						noConnection.show();
+						noConnection.setCancelable(true);
+					} else
+						controlAfterLogin();
 
 					// END ONPOST
 				}

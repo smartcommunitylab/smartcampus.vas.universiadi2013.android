@@ -196,10 +196,10 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 							}
 						});
 					} else
-						((TextView) findViewById(R.id.text_nessun_evento))
+						((RelativeLayout) findViewById(R.id.container_nessun_evento))
 								.setVisibility(View.VISIBLE);
 				} else {
-					((TextView) findViewById(R.id.text_nessun_evento))
+					((RelativeLayout) findViewById(R.id.container_nessun_evento))
 							.setVisibility(View.VISIBLE);
 					Dialog noConnection = new Dialog(Home.this);
 					noConnection.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -293,7 +293,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 											.setTag("normal");
 
 									if (mListaEventiDiOggi.size() != 0) {
-										((TextView) findViewById(R.id.text_nessun_evento))
+										((RelativeLayout) findViewById(R.id.container_nessun_evento))
 												.setVisibility(View.GONE);
 										mAdapter.fragments = fragmentEventi;
 										mAdapter.notifyDataSetChanged();
@@ -304,7 +304,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 										// findViewById(R.id.container_pager_eventi_oggi))
 										// .setBackgroundResource(R.drawable.scroll_main);
 									} else {
-										((TextView) findViewById(R.id.text_nessun_evento))
+										((RelativeLayout) findViewById(R.id.container_nessun_evento))
 												.setVisibility(View.VISIBLE);
 										mPager.setVisibility(View.GONE);
 										titleIndicator.setVisibility(View.GONE);
@@ -340,7 +340,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 									// Change datasource in my meeting
 									if (mListaMeetingDiOggi.size() != 0) {
-										((TextView) findViewById(R.id.text_nessun_evento))
+										((RelativeLayout) findViewById(R.id.container_nessun_evento))
 												.setVisibility(View.GONE);
 										mAdapter.fragments = fragmentMeeting;
 										mAdapter.notifyDataSetChanged();
@@ -351,7 +351,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 										// findViewById(R.id.container_pager_eventi_oggi))
 										// .setBackgroundResource(R.drawable.scroll_main);
 									} else {
-										((TextView) findViewById(R.id.text_nessun_evento))
+										((RelativeLayout) findViewById(R.id.container_nessun_evento))
 												.setVisibility(View.VISIBLE);
 										mPager.setVisibility(View.GONE);
 										titleIndicator.setVisibility(View.GONE);
