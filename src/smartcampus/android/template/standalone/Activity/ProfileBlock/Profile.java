@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.smartcampus.template.standalone.Utente;
+import android.smartcampus.template.standalone.UtenteSuperiore;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -43,7 +44,7 @@ public class Profile extends Activity {
 
 	private Utente user;
 	private ArrayList<FunzioneObj> funzione;
-	private ArrayList<Utente> mListaSuperiori = new ArrayList<Utente>();
+	private ArrayList<UtenteSuperiore> mListaSuperiori = new ArrayList<UtenteSuperiore>();
 
 	private ListView listSuperiori;
 	private RowVolontario mAdapter;
@@ -96,7 +97,7 @@ public class Profile extends Activity {
 				ArrayList<String> funzioneString = new ArrayList<String>();
 				for (int i = 0; i < funzione.size(); i++)
 					funzioneString.add(funzione.get(i).getFunzione());
-				mListaSuperiori = (ArrayList<Utente>) (ManagerData
+				mListaSuperiori = (ArrayList<UtenteSuperiore>) (ManagerData
 						.getSuperioriForUser(user, funzioneString.get(0))
 						.get("params"));
 				return null;
@@ -280,7 +281,7 @@ public class Profile extends Activity {
 																	// Auto-generated
 																	// method
 																	// stub
-																	final Utente mUtente = mListaSuperiori
+																	final UtenteSuperiore mUtente = mListaSuperiori
 																			.get(arg2);
 
 																	if (mUtente
@@ -440,11 +441,11 @@ public class Profile extends Activity {
 		 */
 	}
 
-	private class RowVolontario extends ArrayAdapter<Utente> {
+	private class RowVolontario extends ArrayAdapter<UtenteSuperiore> {
 		private final Context context;
-		private final ArrayList<Utente> values;
+		private final ArrayList<UtenteSuperiore> values;
 
-		public RowVolontario(Context context, ArrayList<Utente> values) {
+		public RowVolontario(Context context, ArrayList<UtenteSuperiore> values) {
 			super(context, R.layout.row_volontari, values);
 			this.context = context;
 			this.values = values;

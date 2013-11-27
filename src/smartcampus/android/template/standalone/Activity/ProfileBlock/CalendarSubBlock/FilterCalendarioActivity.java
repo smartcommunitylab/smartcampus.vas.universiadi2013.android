@@ -61,10 +61,11 @@ public class FilterCalendarioActivity extends Activity {
 //					public void onClick(DialogInterface dialog, int id) {
 //						dialog.dismiss();
 //
-//						startCalendar();
+//						
 //					}
 //				});
 //		builder.create().show();
+		startCalendar();
 	}
 
 	private void startCalendar() {

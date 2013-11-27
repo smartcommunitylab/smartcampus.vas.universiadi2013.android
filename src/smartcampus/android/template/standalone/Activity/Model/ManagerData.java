@@ -33,6 +33,7 @@ import android.smartcampus.template.standalone.Sport;
 import android.smartcampus.template.standalone.Ticket;
 import android.smartcampus.template.standalone.Turno;
 import android.smartcampus.template.standalone.Utente;
+import android.smartcampus.template.standalone.UtenteSuperiore;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.util.Log;
@@ -598,7 +599,7 @@ public class ManagerData {
 
 	public static Map<String, Object> getSuperioriForUser(Utente user,
 			String pathFunzione) {
-		ArrayList<Utente> mListaSuperiori = new ArrayList<Utente>();
+		ArrayList<UtenteSuperiore> mListaSuperiori = new ArrayList<UtenteSuperiore>();
 		try {
 			Map<String, Object> mMapRequest = mRest.restRequest(
 					new String[] { "/utente/" + user.getId() + "/superiori" },
@@ -614,16 +615,24 @@ public class ManagerData {
 					String[] pathTokenized = pathFunzione.split(":");
 					if (arrayContains(pathTokenized,
 							(String) obj.get("function"))) {
-						Utente superiore = new Utente(obj.getString("label")
+						UtenteSuperiore superiore = new UtenteSuperiore(obj.getString("label")
 								.split(" ")[1], obj.getString("label").split(
 								" ")[0], obj.getString("function"),
 								obj.getString("arole"), new byte[1],
 								obj.getString("phone"), obj.getString("email"),
-								obj.getString("uuid"), obj.getString("id"));
+								obj.getString("path"), obj.getString("id"));
 						mListaSuperiori.add(superiore);
 					}
 				}
 			}
+			
+			
+
+
+
+
+
+				 
 			mResult.put("params", mListaSuperiori);
 			return mResult;
 		} catch (JSONException e) {
