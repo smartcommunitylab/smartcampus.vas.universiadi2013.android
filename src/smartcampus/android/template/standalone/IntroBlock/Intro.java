@@ -39,6 +39,8 @@ public class Intro extends Activity {
 	private static final int LOGIN_SUCCESS = 1;
 	private static final int LOGIN_FAILED = 2;
 
+	// 100345 /UmmTaVOi
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -503,10 +505,10 @@ public class Intro extends Activity {
 			startActivity(mCaller);
 		} else if (loginSuccess.get("notfound")) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(Intro.this);
-			builder.setTitle("Attenzione");
-			builder.setMessage("Username o password non corretti");
+			builder.setTitle(getString(R.string.AVVISO));
+			builder.setMessage(getString(R.string.LOGIN_INSUCCESSO));
 			builder.setCancelable(false);
-			builder.setPositiveButton("Chiudi",
+			builder.setPositiveButton(getString(R.string.CHIUDI),
 					new android.content.DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
 							dialog.dismiss();
@@ -515,10 +517,10 @@ public class Intro extends Activity {
 			builder.create().show();
 		} else {
 			AlertDialog.Builder builder = new AlertDialog.Builder(Intro.this);
-			builder.setTitle("Attenzione");
-			builder.setMessage("Completa i campi Username e Password");
+			builder.setTitle(getString(R.string.AVVISO));
+			builder.setMessage(getString(R.string.LOGIN_NON_COMPLETO));
 			builder.setCancelable(false);
-			builder.setPositiveButton("Chiudi",
+			builder.setPositiveButton(getString(R.string.CHIUDI),
 					new android.content.DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
 							dialog.dismiss();

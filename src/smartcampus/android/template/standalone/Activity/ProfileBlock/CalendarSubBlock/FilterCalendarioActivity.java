@@ -52,19 +52,19 @@ public class FilterCalendarioActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_calendario_filter);
 
-//		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//		builder.setTitle("Avviso");
-//		builder.setMessage("Calendario in fase Beta\nPotrebbe risultare lento");
-//		builder.setCancelable(false);
-//		builder.setPositiveButton(getString(R.string.CHIUDI),
-//				new android.content.DialogInterface.OnClickListener() {
-//					public void onClick(DialogInterface dialog, int id) {
-//						dialog.dismiss();
-//
-//						
-//					}
-//				});
-//		builder.create().show();
+		// AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		// builder.setTitle("Avviso");
+		// builder.setMessage("Calendario in fase Beta\nPotrebbe risultare lento");
+		// builder.setCancelable(false);
+		// builder.setPositiveButton(getString(R.string.CHIUDI),
+		// new android.content.DialogInterface.OnClickListener() {
+		// public void onClick(DialogInterface dialog, int id) {
+		// dialog.dismiss();
+		//
+		//
+		// }
+		// });
+		// builder.create().show();
 		startCalendar();
 	}
 
@@ -179,8 +179,7 @@ public class FilterCalendarioActivity extends Activity {
 						});
 
 				mSpinnerCategoria = (Spinner) findViewById(R.id.spinner_cal_categoria);
-				mSpinnerCategoria.setSelection(0, true);
-				filterFunzione = listCategoria.get(0);
+				filterFunzione = listPersonalCategoria.get(0);
 
 				ArrayList<String> simplePersonalListCategoria = new ArrayList<String>();
 				for (int i = 0; i < listPersonalCategoria.size(); i++)
@@ -197,7 +196,12 @@ public class FilterCalendarioActivity extends Activity {
 							public void onItemSelected(AdapterView<?> arg0,
 									View arg1, int arg2, long arg3) {
 								// TODO Auto-generated method stub
-								filterFunzione = listCategoria.get(arg2);
+								if (filterPersonale
+										.equalsIgnoreCase("Turni personali"))
+									filterFunzione = listPersonalCategoria
+											.get(arg2);
+								else
+									filterFunzione = listCategoria.get(arg2);
 							}
 
 							@Override
@@ -209,7 +213,6 @@ public class FilterCalendarioActivity extends Activity {
 						});
 
 				mSpinnerLuogo = (Spinner) findViewById(R.id.spinner_cal_personale);
-				mSpinnerLuogo.setSelection(0, true);
 				final ArrayList<String> listPersonale = new ArrayList<String>();
 
 				listPersonale.add("Turni personali");
@@ -241,6 +244,8 @@ public class FilterCalendarioActivity extends Activity {
 											simplePersonalListCategoria);
 									mSpinnerCategoria.setAdapter(mAdapter);
 									mAdapter.notifyDataSetChanged();
+									filterFunzione = listPersonalCategoria
+											.get(0);
 								} else {
 									ArrayList<String> simpleListCategoria = new ArrayList<String>();
 									for (int i = 0; i < listCategoria.size(); i++)
@@ -252,6 +257,7 @@ public class FilterCalendarioActivity extends Activity {
 											simpleListCategoria);
 									mSpinnerCategoria.setAdapter(mAdapter);
 									mAdapter.notifyDataSetChanged();
+									filterFunzione = listCategoria.get(0);
 								}
 							}
 

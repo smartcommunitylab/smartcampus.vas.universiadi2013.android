@@ -461,7 +461,8 @@ public class Profile extends Activity {
 					false);
 
 			((TextView) rowView.findViewById(R.id.text_anagrafiche_volontario))
-					.setText(values.get(position).getNome());
+					.setText(values.get(position).getNome() + " "
+							+ values.get(position).getCognome());
 			((TextView) rowView.findViewById(R.id.text_categoria_volontario))
 					.setText("Categoria: " + values.get(position).getAmbito());
 			((TextView) rowView.findViewById(R.id.text_ruolo_volontario))

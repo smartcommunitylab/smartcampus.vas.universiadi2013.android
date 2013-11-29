@@ -276,98 +276,98 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 								Locale.getDefault());
 
 						Address adrs;
+						String address = "";
 						try {
 							adrs = coder.getFromLocation(
 									mMarkerEvento.latitude,
 									mMarkerEvento.longitude, 1).get(0);
-							mMappa.addMarker(new MarkerOptions()
-									.position(mMarkerEvento)
-									.title(mEvento.getNome() + "\n\n"
-											+ adrs.getAddressLine(0) + " - "
-											+ adrs.getAddressLine(1))
-									.icon(BitmapDescriptorFactory
-											.fromResource(R.drawable.marker_search))
-									/*
-									 * .icon(BitmapDescriptorFactory
-									 * .fromBitmap(
-									 * drawMarkerWithTitleAndAddress(
-									 * mEvento.getNome(), adrs.getAddressLine(0)
-									 * + " - " + adrs.getAddressLine(1))))
-									 */
-									.anchor(0.5f, 1));
-							mMappa.setOnMarkerClickListener(new OnMarkerClickListener() {
-
-								@Override
-								public boolean onMarkerClick(final Marker marker) {
-									// TODO Auto-generated method stub
-									final Dialog dialog = new Dialog(
-											InfoEventi.this);
-									dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-									dialog.setContentView(R.layout.dialog_detail_event_sport_poi);
-									dialog.getWindow()
-											.setBackgroundDrawableResource(
-													R.drawable.dialog_rounded_corner);
-
-									((TextView) dialog
-											.findViewById(R.id.text_indirizzo_detail_event_poi))
-											.setText(marker.getTitle() + "\n");
-
-									((ImageView) dialog
-											.findViewById(R.id.btn_go_event))
-											.setOnTouchListener(new OnTouchListener() {
-
-												@Override
-												public boolean onTouch(View v,
-														MotionEvent event) {
-													// TODO Auto-generated
-													// method stub
-													if (event.getAction() == MotionEvent.ACTION_DOWN) {
-														((ImageView) dialog
-																.findViewById(R.id.btn_go_event))
-																.setImageResource(R.drawable.btn_eventi_poi_press);
-														return true;
-													}
-													if (event.getAction() == MotionEvent.ACTION_UP) {
-														((ImageView) dialog
-																.findViewById(R.id.btn_go_event))
-																.setImageResource(R.drawable.btn_eventi_poi);
-
-														if (mMapUtilities
-																.getLastKnownLocation() != null) {
-															Intent intent = new Intent(
-																	android.content.Intent.ACTION_VIEW,
-																	Uri.parse("http://maps.google.com/maps?saddr="
-																			+ mMapUtilities
-																					.getLastKnownLocation()
-																					.getLatitude()
-																			+ ","
-																			+ mMapUtilities
-																					.getLastKnownLocation()
-																					.getLongitude()
-																			+ "&daddr="
-																			+ marker.getPosition().latitude
-																			+ ","
-																			+ marker.getPosition().longitude));
-															startActivity(intent);
-															return true;
-														}
-
-														return true;
-													}
-
-													return false;
-												}
-											});
-
-									dialog.show();
-									return true;
-								}
-
-							});
+							address = adrs.getAddressLine(0) + " - "
+									+ adrs.getAddressLine(1);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							address = "";
 						}
+						mMappa.addMarker(new MarkerOptions()
+								.position(mMarkerEvento)
+								.title(mEvento.getNome() + "\n\n" + address)
+								.icon(BitmapDescriptorFactory
+										.fromResource(R.drawable.marker_search))
+								/*
+								 * .icon(BitmapDescriptorFactory .fromBitmap(
+								 * drawMarkerWithTitleAndAddress(
+								 * mEvento.getNome(), adrs.getAddressLine(0) +
+								 * " - " + adrs.getAddressLine(1))))
+								 */
+								.anchor(0.5f, 1));
+						mMappa.setOnMarkerClickListener(new OnMarkerClickListener() {
+
+							@Override
+							public boolean onMarkerClick(final Marker marker) {
+								// TODO Auto-generated method stub
+								final Dialog dialog = new Dialog(
+										InfoEventi.this);
+								dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+								dialog.setContentView(R.layout.dialog_detail_event_sport_poi);
+								dialog.getWindow()
+										.setBackgroundDrawableResource(
+												R.drawable.dialog_rounded_corner);
+
+								((TextView) dialog
+										.findViewById(R.id.text_indirizzo_detail_event_poi))
+										.setText(marker.getTitle() + "\n");
+
+								((ImageView) dialog
+										.findViewById(R.id.btn_go_event))
+										.setOnTouchListener(new OnTouchListener() {
+
+											@Override
+											public boolean onTouch(View v,
+													MotionEvent event) {
+												// TODO Auto-generated
+												// method stub
+												if (event.getAction() == MotionEvent.ACTION_DOWN) {
+													((ImageView) dialog
+															.findViewById(R.id.btn_go_event))
+															.setImageResource(R.drawable.btn_eventi_poi_press);
+													return true;
+												}
+												if (event.getAction() == MotionEvent.ACTION_UP) {
+													((ImageView) dialog
+															.findViewById(R.id.btn_go_event))
+															.setImageResource(R.drawable.btn_eventi_poi);
+
+													if (mMapUtilities
+															.getLastKnownLocation() != null) {
+														Intent intent = new Intent(
+																android.content.Intent.ACTION_VIEW,
+																Uri.parse("http://maps.google.com/maps?saddr="
+																		+ mMapUtilities
+																				.getLastKnownLocation()
+																				.getLatitude()
+																		+ ","
+																		+ mMapUtilities
+																				.getLastKnownLocation()
+																				.getLongitude()
+																		+ "&daddr="
+																		+ marker.getPosition().latitude
+																		+ ","
+																		+ marker.getPosition().longitude));
+														startActivity(intent);
+														return true;
+													}
+
+													return true;
+												}
+
+												return false;
+											}
+										});
+
+								dialog.show();
+								return true;
+							}
+
+						});
 
 						if (mMarkerEvento != null) {
 

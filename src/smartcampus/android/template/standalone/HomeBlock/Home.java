@@ -17,7 +17,6 @@ import smartcampus.android.template.standalone.Activity.ProfileBlock.Profile;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FilterCalendarioActivity;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FunzioneObj;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock.FAQ;
-import smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock.IceFireWebView;
 import smartcampus.android.template.standalone.Activity.SportBlock.Sport;
 import smartcampus.android.template.standalone.IntroBlock.UserConstant;
 import smartcampus.android.template.universiadi.R;
@@ -33,6 +32,7 @@ import android.content.SharedPreferences.Editor;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,6 +46,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -53,6 +54,9 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -633,18 +637,49 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 				if (event.getAction() == MotionEvent.ACTION_UP) {
 					mFilterPoi.setImageResource(R.drawable.btn_tool_helper);
 
-					String url = getString(R.string.URL_ICE_AND_FIRE);
+					SharedPreferences preferences = PreferenceManager
+							.getDefaultSharedPreferences(Home.this);
+					if (!preferences.getBoolean("checkedTicket", false)) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								Home.this);
+						builder.setTitle(getString(R.string.AVVISO));
+						builder.setMessage(getString(R.string.TICKETS_AVVISO));
+						final View checkBoxContainer = Home.this
+								.getLayoutInflater().inflate(
+										R.layout.dialog_leave_app_checkbox,
+										null);
+						builder.setView(checkBoxContainer);
+						builder.setCancelable(false);
+						builder.setPositiveButton(getString(R.string.ACCEDI),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dialog.dismiss();
 
-					// Intent mCaller = new Intent(Intent.ACTION_VIEW, Uri
-					// .parse(url));
-					// Log.i("", "User: " + UserConstant.getUsername()
-					// + "\nPass: " + UserConstant.getPassword());
-					// mCaller.putExtra("username", UserConstant.getUsername());
-					// mCaller.putExtra("password", UserConstant.getPassword());
-					// startActivity(mCaller);
+										SharedPreferences preferences = PreferenceManager
+												.getDefaultSharedPreferences(Home.this);
+										Editor editor = preferences.edit();
+										editor.putBoolean(
+												"checkedTicket",
+												((CheckBox) checkBoxContainer
+														.findViewById(R.id.skip))
+														.isChecked());
+										editor.commit();
 
-					startActivity(new Intent(getApplicationContext(),
-							IceFireWebView.class));
+										startTicket();
+									}
+								});
+						builder.setNegativeButton(getString(R.string.ANNULLA),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dialog.dismiss();
+									}
+								});
+						builder.create().show();
+					} else
+						startTicket();
+
 					return true;
 				}
 				return false;
@@ -675,6 +710,26 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 		});
 
 		dialog.show();
+	}
+
+	private void startTicket() {
+		String finalUrl = "javascript:" + "var to = '"
+				+ getString(R.string.URL_ICE_AND_FIRE) + "';"
+				+ "var p = {username:'" + UserConstant.getUsername()
+				+ "',password:'" + UserConstant.getPassword() + "'};"
+				+ "var myForm = document.createElement('form');"
+				+ "myForm.method='post' ;" + "myForm.action = to;"
+				+ "for (var k in p) {"
+				+ "var myInput = document.createElement('input') ;"
+				+ "myInput.setAttribute('type', 'text');"
+				+ "myInput.setAttribute('name', k) ;"
+				+ "myInput.setAttribute('value', p[k]);"
+				+ "myForm.appendChild(myInput) ;" + "}"
+				+ "document.body.appendChild(myForm) ;" + "myForm.submit() ;"
+				+ "document.body.removeChild(myForm) ;";
+		Intent browserIntent = new Intent(android.content.Intent.ACTION_VIEW,
+				Uri.parse(finalUrl));
+		startActivity(browserIntent);
 	}
 
 	private void startGeneralInfoDialog() {

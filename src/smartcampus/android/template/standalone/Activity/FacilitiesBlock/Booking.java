@@ -568,9 +568,9 @@ public class Booking extends FragmentActivity implements ILocation {
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_AFFITTO_CAMERE),
 			// "affittocamere", 408));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_BED_BREAKFAST),
-					"bedbreakfast", 410));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_BED_BREAKFAST),
+//					"bedbreakfast", 410));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_GARNI), "garni", 412));
 			mListaSecondLevelCategory.add(new POICategory(

@@ -16,6 +16,8 @@
 -->
 <resources>
 
+    <string name="app_name">Volunteers WU 2013</string>
+
     <!-- App's String -->
     <!-- Backend String -->
     <string name="OBJECT_TYPE_POST">application/x-www-form-urlencoded</string>
@@ -61,7 +63,7 @@
     <string name="FAQ_RISPOSTA">Answer: </string>
     <string name="FAQ_ACCURATEZZA">Accuracy: </string>
     <string name="PROFILO_SALUTO">Hi,\n </string>
-    <string name="PROFILO_FUNZIONE">Superior for role: </string>
+    <string name="PROFILO_FUNZIONE">Contacts for role: </string>
 
     <!-- POI String -->
     <string name="CATEGORIA_SPORT">Sport</string>
@@ -100,7 +102,7 @@
     <string name="CATEGORIA_RESIDENCE">Residence</string>
     <!-- <string name="CATEGORIA_APPARTAMENTO_VACANZE">Appartamento per Vacanze</string> -->
     <!-- <string name="CATEGORIA_AFFITTO_CAMERE">Affittasi Camere</string> -->
-    <string name="CATEGORIA_BED_BREAKFAST">Bed And Breakfast</string>
+    <!-- <string name="CATEGORIA_BED_BREAKFAST">Bed And Breakfast</string> -->
     <string name="CATEGORIA_GARNI">Garni</string>
     <string name="CATEGORIA_RIFUGIO">Rifugio</string>
     <string name="CATEGORIA_CAMPING">Camping</string>
@@ -158,6 +160,9 @@
     <string name="CONTATTO">Contact</string>
     <string name="CHIUDI">Close</string>
     <string name="CHIAMA">Call</string>
+    <string name="AVVISO">Alert</string>
+    <string name="ACCEDI">Login</string>
+    <string name="ANNULLA">Abort</string>
     <string name="NESSUN_NUMERO">No telephone number available</string>
     <string name="NESSUN_EVENTO">No events available</string>
     <string name="NESSUN_ELEMENTO">No elements found</string>
@@ -168,6 +173,11 @@
     <string name="LOGOUT_LOGOUT">Logout</string>
     <string name="LOGOUT_CANCEL">Cancel</string>
     <string name="DIALOG_STRUMENTI">\nChoose tool:</string>
+    <string name="CREDITS_MAIL">"E-mail sent using \"Volunteers WU 2013\""</string>
+    <string name="TICKETS_AVVISO">You are going to leave the app and be automatically logged into the WU2013 trouble ticketing system</string>
+    <string name="TICKETS_NON_CHIEDERE">Never show this warning again</string>
+    <string name="LOGIN_INSUCCESSO">Wrong username or password</string>
+    <string name="LOGIN_NON_COMPLETO">Fill username and password fields</string>
     <!--  -->
 
     <string name="title_activity_credits">Credits</string>
