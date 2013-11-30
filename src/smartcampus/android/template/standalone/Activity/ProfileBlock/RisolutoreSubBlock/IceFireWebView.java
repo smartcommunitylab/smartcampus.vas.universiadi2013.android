@@ -42,6 +42,9 @@ public class IceFireWebView extends Activity {
 
 		webView = (WebView) findViewById(R.id.ice_fire_webview);
 		webView.setWebViewClient(new MyWebViewClient());
+		webView.getSettings().setJavaScriptEnabled(true);
+		webView.getSettings().setLoadWithOverviewMode(true);  
+		webView.getSettings().setLoadWithOverviewMode(true); 
 
 		new AsyncTask<Void, Void, Void>() {
 

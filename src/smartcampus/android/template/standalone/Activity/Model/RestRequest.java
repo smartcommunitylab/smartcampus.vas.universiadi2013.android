@@ -7,8 +7,17 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -101,10 +110,34 @@ class RestRequest {
 			String path = mContext.getString(R.string.URL_BACKEND_JUNIPER)
 					+ mContext.getString(R.string.URL_USER_DATA);
 			url = new URL(path);
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			
+			
+			
+			 HttpURLConnection con = null;
+			   
+			    if (url.getProtocol().toLowerCase().equals("https")) {
+			        trustAllHosts();
+			        HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
+			        https.setHostnameVerifier(DO_NOT_VERIFY);
+			        con = https;
+			    } else {
+			        con = (HttpURLConnection) url.openConnection();
+			    }
+			
+			              
+			//HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+			con.setConnectTimeout(20000);
+			//con.setDoInput(true);
+			//con.setDoOutput(true);
+			
+			
+			
+			
+			//HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.addRequestProperty("Authorization", juniperToken);
 			con.setRequestMethod("GET");
 			con.setConnectTimeout(5000);
+//con.connect();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					con.getInputStream()));
 			String line = "";
@@ -140,6 +173,10 @@ class RestRequest {
 			String path = mContext.getString(R.string.URL_BACKEND) + "/utente/"
 					+ user.getId() + "/funzioni";
 			url = new URL(path);
+			
+			
+			
+			
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.addRequestProperty("Authorization", juniperToken);
 			con.setRequestMethod("GET");
@@ -293,5 +330,43 @@ class RestRequest {
 		}
 		return null;
 	}
+	
+	 // always verify the host - dont check for certificate
+    final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
+          public boolean verify(String hostname, SSLSession session) {
+              return true;
+          }
+   };
+
+
+    /**
+     * Trust every server - dont check for any certificate
+     */
+    private static void trustAllHosts() {
+              // Create a trust manager that does not validate certificate chains
+              TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+                      public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                              return new java.security.cert.X509Certificate[] {};
+                      }
+
+                      public void checkClientTrusted(X509Certificate[] chain,
+                                      String authType) throws CertificateException {
+                      }
+
+                      public void checkServerTrusted(X509Certificate[] chain,
+                                      String authType) throws CertificateException {
+                      }
+              } };
+
+              // Install the all-trusting trust manager
+              try {
+                      SSLContext sc = SSLContext.getInstance("TLS");
+                      sc.init(null, trustAllCerts, new java.security.SecureRandom());
+                      HttpsURLConnection
+                                      .setDefaultSSLSocketFactory(sc.getSocketFactory());
+              } catch (Exception e) {
+                      e.printStackTrace();
+              }
+      }
 
 }
