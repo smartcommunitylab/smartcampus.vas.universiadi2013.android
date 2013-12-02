@@ -21,6 +21,9 @@ import smartcampus.android.template.universiadi.R;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -71,7 +74,8 @@ public class IceFireWebView extends Activity {
 //				});
 
 			}
-
+			
+			
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
@@ -91,7 +95,10 @@ public class IceFireWebView extends Activity {
 					HttpResponse response = httpclient.execute(httppost);
 					String data = new BasicResponseHandler()
 							.handleResponse(response);
-					webView.loadData(data, "text/html", "utf-8");
+				//	webView.loadData(data, "text/html", "utf-8");
+					webView.loadDataWithBaseURL(
+							getString(R.string.URL_ICE_AND_FIRE), data, "text/html", "utf-8", null);
+					
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -109,11 +116,14 @@ public class IceFireWebView extends Activity {
 	}
 
 	private class MyWebViewClient extends WebViewClient {
+		
+	
 
 		@Override
 		public void onPageFinished(WebView view, String url) {
 			// TODO Auto-generated method stub
 			super.onPageFinished(view, url);
+			
 
 //			if (dialog != null)
 //				dialog.dismiss();
@@ -126,6 +136,9 @@ public class IceFireWebView extends Activity {
 			// this will ignore the Ssl error and will go forward to your site
 			handler.proceed();
 		}
+		
+		
+
 	}
 
 }

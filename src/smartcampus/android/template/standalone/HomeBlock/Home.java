@@ -711,26 +711,48 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 		dialog.show();
 	}
+	
+//	private void startTicket() {
+//		Intent browserIntent = new Intent(android.content.Intent.ACTION_VIEW,
+//				Uri.parse(getString(R.string.URL_ICE_AND_FIRE)));
+//		startActivity(browserIntent);
+//	}
 
-	private void startTicket() {
-		String finalUrl = "javascript:" + "var to = '"
-				+ getString(R.string.URL_ICE_AND_FIRE) + "';"
-				+ "var p = {username:'" + UserConstant.getUsername()
-				+ "',password:'" + UserConstant.getPassword() + "'};"
-				+ "var myForm = document.createElement('form');"
-				+ "myForm.method='post' ;" + "myForm.action = to;"
-				+ "for (var k in p) {"
-				+ "var myInput = document.createElement('input') ;"
-				+ "myInput.setAttribute('type', 'text');"
-				+ "myInput.setAttribute('name', k) ;"
-				+ "myInput.setAttribute('value', p[k]);"
-				+ "myForm.appendChild(myInput) ;" + "}"
-				+ "document.body.appendChild(myForm) ;" + "myForm.submit() ;"
-				+ "document.body.removeChild(myForm) ;";
-		Intent browserIntent = new Intent(android.content.Intent.ACTION_VIEW,
-				Uri.parse(finalUrl));
-		startActivity(browserIntent);
-	}
+	 private void startTicket() {
+		 
+		 
+			String finalUrl = "javascript:" + "var to = '"
+					+ getString(R.string.URL_ICE_AND_FIRE) + "';"
+					+ "var p = {username:'" + UserConstant.getUsername()
+					+ "',password:'" + UserConstant.getPassword() + "'};"
+					+ "var myForm = document.createElement('form');"
+					+ "myForm.method='post' ;" + "myForm.action = to;"
+					+ "for (var k in p) {"
+					+ "var myInput = document.createElement('input') ;"
+					+ "myInput.setAttribute('type', 'text');"
+					+ "myInput.setAttribute('name', k) ;"
+					+ "myInput.setAttribute('value', p[k]);"
+					+ "myForm.appendChild(myInput) ;" + "}"
+					+ "document.body.appendChild(myForm) ;" + "myForm.submit() ;"
+					+ "document.body.removeChild(myForm) ;";
+			
+			 int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+				if (currentapiVersion < android.os.Build.VERSION_CODES.HONEYCOMB)
+				{
+					finalUrl = getString(R.string.URL_ICE_AND_FIRE);
+				
+				}
+			
+			
+			Intent browserIntent = new Intent(android.content.Intent.ACTION_VIEW,
+					Uri.parse(finalUrl));
+			
+			
+			
+			startActivity(browserIntent);
+			
+			
+		}
 
 	private void startGeneralInfoDialog() {
 		Dialog dialog = new Dialog(Home.this);
@@ -1413,5 +1435,5 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 	// }
 	// });
 	// }
-
+	
 }
