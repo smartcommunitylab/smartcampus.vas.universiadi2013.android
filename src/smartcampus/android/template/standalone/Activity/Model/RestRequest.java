@@ -155,7 +155,7 @@ class RestRequest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return mReturn;
 	}
 
 	public Map<String, Object> getFunzioni(Utente user) {
@@ -177,7 +177,17 @@ class RestRequest {
 			
 			
 			
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			
+			 HttpURLConnection con = null;
+			   
+			    if (url.getProtocol().toLowerCase().equals("https")) {
+			        trustAllHosts();
+			        HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
+			        https.setHostnameVerifier(DO_NOT_VERIFY);
+			        con = https;
+			    } else {
+			        con = (HttpURLConnection) url.openConnection();
+			    }
 			con.addRequestProperty("Authorization", juniperToken);
 			con.setRequestMethod("GET");
 			con.setConnectTimeout(5000);
@@ -198,7 +208,7 @@ class RestRequest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return mReturn;
 	}
 
 	/*

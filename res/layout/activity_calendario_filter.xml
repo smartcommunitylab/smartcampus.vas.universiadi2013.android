@@ -30,21 +30,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_weight="0"
             android:orientation="vertical" >
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+<!--             <RelativeLayout -->
+<!--                 android:layout_width="match_parent" -->
+<!--                 android:layout_height="wrap_content" > -->
 
-                <TextView
-                    android:id="@+id/TextView01"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="\n"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#00ffffff" />
-            </RelativeLayout>
+<!--                 <TextView -->
+<!--                     android:id="@+id/TextView01" -->
+<!--                     android:layout_width="match_parent" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:text="\n" -->
+<!--                     android:textAppearance="?android:attr/textAppearanceSmall" -->
+<!--                     android:textColor="#00ffffff" /> -->
+<!--             </RelativeLayout> -->
 
             <smartcampus.android.template.standalone.Utilities.FontTextView
                 android:id="@+id/text_indirizzo_poi"
@@ -164,18 +165,18 @@
                 </RelativeLayout>
             </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.0" >
+<!--             <RelativeLayout -->
+<!--                 android:layout_width="match_parent" -->
+<!--                 android:layout_height="wrap_content" -->
+<!--                 android:layout_weight="0.0" > -->
 
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="#00ffffff" />
-            </RelativeLayout>
+<!--                 <TextView -->
+<!--                     android:id="@+id/textView2" -->
+<!--                     android:layout_width="match_parent" -->
+<!--                     android:layout_height="wrap_content" -->
+<!--                     android:textAppearance="?android:attr/textAppearanceLarge" -->
+<!--                     android:textColor="#00ffffff" /> -->
+<!--             </RelativeLayout> -->
 
             <smartcampus.android.template.standalone.Utilities.FontTextView
                 android:id="@+id/textView3"
@@ -241,7 +242,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:paddingTop="@dimen/activity_vertical_margin"
                 android:text="@string/PLANNER_FUNZIONE"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#3294ad" />
@@ -307,7 +307,7 @@
                     android:id="@+id/TextView02"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="\n"
+                    android:text="asdasd"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="#00ffffff" />
             </RelativeLayout>
