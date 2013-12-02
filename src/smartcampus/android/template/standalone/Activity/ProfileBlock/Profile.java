@@ -464,9 +464,9 @@ public class Profile extends Activity {
 					.setText(values.get(position).getNome() + " "
 							+ values.get(position).getCognome());
 			((TextView) rowView.findViewById(R.id.text_categoria_volontario))
-					.setText("Categoria: " + values.get(position).getAmbito());
+					.setText("Categoria: " + values.get(position).getRuolo());
 			((TextView) rowView.findViewById(R.id.text_ruolo_volontario))
-					.setText("Ruolo: " + values.get(position).getRuolo());
+					.setText("Ruolo: " + values.get(position).getAmbito());
 
 			return rowView;
 		}
