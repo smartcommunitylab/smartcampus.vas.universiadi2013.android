@@ -87,7 +87,7 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 
 	private boolean fromSearch;
 
-	private ArrayList<ElementDescRoute> mRouteText;
+	private ArrayList<ElementDescRoute> mRouteText = new ArrayList<ElementDescRoute>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -218,10 +218,14 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 							.getLastKnownLocation().getLatitude(),
 							mMapUtilities.getLastKnownLocation().getLongitude());
 
-					mRouteText = parseGoogleDescRoute(new double[] {
-							mMarkerUser.latitude, mMarkerUser.longitude },
-							new double[] { mMarkerEvento.latitude,
-									mMarkerEvento.longitude });
+					if (mMarkerUser != null)
+						mRouteText = parseGoogleDescRoute(new double[] {
+								mMarkerUser.latitude, mMarkerUser.longitude },
+								new double[] { mMarkerEvento.latitude,
+										mMarkerEvento.longitude });
+					else
+						mRouteText.add(new ElementDescRoute("", "",
+								getString(R.string.NESSUNA_ROUTE), -1));
 				}
 				return null;
 			}

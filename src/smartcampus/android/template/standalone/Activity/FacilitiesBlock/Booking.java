@@ -181,7 +181,8 @@ public class Booking extends FragmentActivity implements ILocation {
 											.position(
 													new LatLng(obj.getLatGPS(),
 															obj.getLngGPS()))
-											.title(obj.getNome()+"\n\n"+obj.getIndirizzo())
+											.title(obj.getNome() + "\n\n"
+													+ obj.getIndirizzo())
 											.snippet(
 													obj.getCategoria()
 															+ "/"
@@ -326,9 +327,9 @@ public class Booking extends FragmentActivity implements ILocation {
 						R.drawable.dialog_rounded_corner);
 
 				((TextView) dialog.findViewById(R.id.text_indirizzo_poi))
-						.setText( marker.getTitle() + "\n");
+						.setText(marker.getTitle() + "\n");
 				((TextView) dialog.findViewById(R.id.text_categoria_poi))
-						.setText("Categoria: "
+						.setText(getString(R.string.POI_CATEGORIA) + " "
 								+ marker.getSnippet().split("/")[0] + "\n");
 				if (!marker.getSnippet().split("//")[1]
 						.equalsIgnoreCase("null"))
@@ -481,27 +482,27 @@ public class Booking extends FragmentActivity implements ILocation {
 		mListaSecondLevelCategory = new ArrayList<Booking.POICategory>();
 		switch (weight) {
 		case 100:
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_NOLLEGGIO_SCI),
-//					"noleggioscii", 102));
-//			mListaSecondLevelCategory
-//					.add(new POICategory(
-//							getString(R.string.CATEGORIA_SCUOLA_SCI),
-//							"scuolasci", 104));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_NOLLEGGIO_SCI),
+			// "noleggioscii", 102));
+			// mListaSecondLevelCategory
+			// .add(new POICategory(
+			// getString(R.string.CATEGORIA_SCUOLA_SCI),
+			// "scuolasci", 104));
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_IMPIANTO_SCII), "impiantosci",
 			// 106));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_STADIO_GHIACCIO),
-//					"stadioghiaccio", 108));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_STADIO_GHIACCIO),
+			// "stadioghiaccio", 108));
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_STADIO_SALTO), "stadiosalto",
 			// 110));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_SNOWPARK), "snowpark", 112));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_CAMPO_SPORTIVO),
-//					"camposportivo", 114));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_CAMPO_SPORTIVO),
+			// "camposportivo", 114));
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_CAMPO_TENNIS), "campotennis",
 			// 116));
@@ -568,9 +569,9 @@ public class Booking extends FragmentActivity implements ILocation {
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_AFFITTO_CAMERE),
 			// "affittocamere", 408));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_BED_BREAKFAST),
-//					"bedbreakfast", 410));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_BED_BREAKFAST),
+			// "bedbreakfast", 410));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_GARNI), "garni", 412));
 			mListaSecondLevelCategory.add(new POICategory(
@@ -807,14 +808,20 @@ public class Booking extends FragmentActivity implements ILocation {
 											.getJSONObject("description")
 											.getString("IT");
 						}
-						String address=obj.getJSONObject("poi").getString("street");
-						if(obj.getJSONObject("poi").has("city") && obj.getJSONObject("poi").getString("city").compareTo("null")!=0){
-							address+=","+obj.getJSONObject("poi").getString("city");
+						String address = obj.getJSONObject("poi").getString(
+								"street");
+						if (obj.getJSONObject("poi").has("city")
+								&& obj.getJSONObject("poi").getString("city")
+										.compareTo("null") != 0) {
+							address += ","
+									+ obj.getJSONObject("poi")
+											.getString("city");
 						}
 						poiForSearch = new POI(null, obj.getString("title"),
 								obj.getString("type"), description, obj
 										.getJSONArray("location").getDouble(0),
-								obj.getJSONArray("location").getDouble(1),address);
+								obj.getJSONArray("location").getDouble(1),
+								address);
 						poiForSearch.getIndirizzo();
 
 					} catch (JSONException e) {
