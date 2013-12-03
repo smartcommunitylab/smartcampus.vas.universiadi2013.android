@@ -102,7 +102,7 @@
     <string name="CATEGORIA_GELATERIA"> Ice Cream</string>
     <string name="CATEGORIA_DORMIRE">Sleeping</string>
     <string name="CATEGORIA_HOTEL">Hotel</string>
-
+    <string name="CATEGORIA_RESIDENCE">Residence</string>
     <string name="CATEGORIA_GARNI">Garni</string>
     <string name="CATEGORIA_RIFUGIO">Refuge</string>
     <string name="CATEGORIA_CAMPING">Camping</string>

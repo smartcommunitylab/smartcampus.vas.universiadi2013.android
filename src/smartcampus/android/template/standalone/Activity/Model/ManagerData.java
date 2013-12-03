@@ -910,14 +910,11 @@ public class ManagerData {
 						ArrayList<POI> mPOICorrelati = new ArrayList<POI>();
 						for (int j = 0; j < poi.length(); j++) {
 							JSONObject poiObj = poi.getJSONObject(j);
-							String address=poiObj.getJSONObject("poi").getString("street");
-							if(poiObj.getJSONObject("poi").has("city") && poiObj.getJSONObject("poi").getString("city").compareTo("null")!=0){
-								address+=","+poiObj.getJSONObject("poi").getString("city");
-							}
+							
 							mPOICorrelati.add(new POI(null, poiObj
 									.getString("title"), null, null, poiObj
 									.getJSONArray("GPS").getDouble(0), poiObj
-									.getJSONArray("GPS").getDouble(1),address));
+									.getJSONArray("GPS").getDouble(1)));
 						}
 						Sport sport = new Sport(obj.getString("nome"),
 								SportImageConstant.resourcesFromID(
