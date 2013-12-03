@@ -44,7 +44,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
-
+                
+                
                 <smartcampus.android.template.standalone.Utilities.FontTextView
                     android:id="@+id/text_indirizzo_poi"
                     android:layout_width="match_parent"

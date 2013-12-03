@@ -455,10 +455,10 @@ public class Profile extends Activity {
 							+ values.get(position).getCognome());
 			((TextView) rowView.findViewById(R.id.text_categoria_volontario))
 					.setText(getString(R.string.PROFILO_CATEGORIA) + " "
-							+ values.get(position).getAmbito());
+							+ values.get(position).getRuolo());
 			((TextView) rowView.findViewById(R.id.text_ruolo_volontario))
 					.setText(getString(R.string.PROFILO_RUOLO) + " "
-							+ values.get(position).getRuolo());
+							+ values.get(position).getAmbito());
 
 			return rowView;
 		}
