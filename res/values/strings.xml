@@ -17,7 +17,6 @@
 <resources>
 
     <string name="app_name">Volunteers WU 2013</string>
-
     <!-- App's String -->
     <!-- Backend String -->
     <string name="OBJECT_TYPE_POST">application/x-www-form-urlencoded</string>
@@ -48,7 +47,6 @@
     <string name="URL_SPORT">/sport</string>
     <string name="URL_ICE_AND_FIRE">https://tickets.gtsu.org/login/</string>
     <string name="title_activity_home_guest">HomeGuest</string>
-
     <!-- Activity String -->
     <string name="ROUTE_FOR">Route for </string>
     <string name="DISCIPLINA">Discipline </string>
@@ -71,27 +69,19 @@
     <string name="PROFILO_CATEGORIA">Function:</string>
     <string name="PROFILO_RUOLO">Role:</string>
     <string name="CREDITS_SVILUPPATA">Developed by</string>
-
     <!-- POI String -->
     <string name="CATEGORIA_SPORT">Sport</string>
     <string name="CATEGORIA_NOLLEGGIO_SCI">Ski rental</string>
     <string name="CATEGORIA_SCUOLA_SCI">Ski School</string>
-
     <string name="CATEGORIA_STADIO_GHIACCIO">Ice stadium</string>
     <string name="CATEGORIA_SNOWPARK">Snowpark</string>
-
     <string name="CATEGORIA_CAMPO_SPORTIVO">Sports Field</string>
-
     <string name="CATEGORIA_TEMPOLIBERO">Freetime</string>
     <string name="CATEGORIA_DISCO">Disco</string>
-
     <string name="CATEGORIA_WELLNESS">Wellness</string>
     <string name="CATEGORIA_PARCO">Park</string>
-
     <string name="CATEGORIA_MUSEO">Museum</string>
-
     <string name="CATEGORIA_TEATRO">Theatre</string>
-
     <string name="CATEGORIA_MANGIARE">Eating</string>
     <string name="CATEGORIA_PIZZERIA">Pizzeria</string>
     <string name="CATEGORIA_RISTORANTE">Restaurant</string>
@@ -110,30 +100,21 @@
     <string name="CATEGORIA_PARCHEGGIO">Parking</string>
     <string name="CATEGORIA_STAZIONE_SERVIZIO">Service Station</string>
     <string name="CATEGORIA_TAXI">Taxi</string>
-
     <string name="CATEGORIA_AUTOSTAZIONE">Bus</string>
     <string name="CATEGORIA_FUNIVIA">Cableway</string>
     <string name="CATEGORIA_STAZIONE_TRENI">Train Station</string>
     <string name="CATEGORIA_SERVIZIO_BICI">Bicycle Rental</string>
-
     <string name="CATEGORIA_SERVIZI">Services</string>
     <string name="CATEGORIA_SERVIZI_SANITARI">Health Services</string>
-
-    <string name="CATEGORIA_FARMACIA">Pharmacy</string>
- 
+    <string name="CATEGORIA_FARMACIA">Pharmacy</string> 
     <string name="CATEGORIA_WIFI">Wi-Fi</string>
-
     <string name="CATEGORIA_INFO">Info</string>
-
     <string name="CATEGORIA_POSTA">Post</string>
     <string name="CATEGORIA_BANCA">Bank</string>
     <string name="CATEGORIA_COMPRARE">Shopping</string>
-
     <string name="CATEGORIA_SOUVENIR">Souvenir</string>
     <string name="CATEGORIA_MERCATO">Market</string>
-
-    <string name="CATEGORIA_TABACCHINO">Tobacco</string>
-    
+    <string name="CATEGORIA_TABACCHINO">Tobacco</string>    
     <string name="CONTATTO">Contact</string>
     <string name="CHIUDI">Close</string>
     <string name="CHIAMA">Call</string>
@@ -154,9 +135,7 @@
     <string name="TICKETS_AVVISO">You are going to leave the app and be automatically logged into the WU2013 trouble ticketing system</string>
     <string name="TICKETS_NON_CHIEDERE">Never show this warning again</string>
     <string name="LOGIN_INSUCCESSO">Wrong username or password</string>
-    <string name="LOGIN_NON_COMPLETO">Fill username and password fields</string>
-    <!--  -->
-
+    <string name="LOGIN_NON_COMPLETO">Fill username and password fields</string>   <!--  -->
     <string name="title_activity_credits">Credits</string>
      <string name="title_activity_evento">Evento</string>
     <string name="title_activity_sport">Sport</string>
