@@ -12,7 +12,7 @@ import smartcampus.android.template.standalone.Utilities.FontTextView;
 import smartcampus.android.template.standalone.Utilities.MapUtilities;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ErrorType;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ILocation;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -481,27 +481,27 @@ public class Booking extends FragmentActivity implements ILocation {
 		mListaSecondLevelCategory = new ArrayList<Booking.POICategory>();
 		switch (weight) {
 		case 100:
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_NOLLEGGIO_SCI),
-					"noleggioscii", 102));
-			mListaSecondLevelCategory
-					.add(new POICategory(
-							getString(R.string.CATEGORIA_SCUOLA_SCI),
-							"scuolasci", 104));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_NOLLEGGIO_SCI),
+//					"noleggioscii", 102));
+//			mListaSecondLevelCategory
+//					.add(new POICategory(
+//							getString(R.string.CATEGORIA_SCUOLA_SCI),
+//							"scuolasci", 104));
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_IMPIANTO_SCII), "impiantosci",
 			// 106));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_STADIO_GHIACCIO),
-					"stadioghiaccio", 108));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_STADIO_GHIACCIO),
+//					"stadioghiaccio", 108));
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_STADIO_SALTO), "stadiosalto",
 			// 110));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_SNOWPARK), "snowpark", 112));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_CAMPO_SPORTIVO),
-					"camposportivo", 114));
+//			mListaSecondLevelCategory.add(new POICategory(
+//					getString(R.string.CATEGORIA_CAMPO_SPORTIVO),
+//					"camposportivo", 114));
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_CAMPO_TENNIS), "campotennis",
 			// 116));

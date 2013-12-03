@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Random;
 
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -157,9 +157,12 @@ public class Calendario extends Activity implements ScrollViewListener {
 
 					}
 
+					String[] funzioneTokenized = ((FunzioneObj) (getIntent()
+							.getSerializableExtra("funzione"))).getFunzione()
+							.split(":");
 					View complex = createComplexColoumn(
-							((FunzioneObj) (getIntent().getSerializableExtra("funzione")))
-									.getFunzione(), list);
+							funzioneTokenized[funzioneTokenized.length - 1],
+							list);
 					complex.setLayoutParams(new LayoutParams(
 							LayoutParams.MATCH_PARENT,
 							LayoutParams.MATCH_PARENT, 0.5f));

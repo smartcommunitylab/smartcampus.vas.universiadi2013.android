@@ -28,7 +28,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;

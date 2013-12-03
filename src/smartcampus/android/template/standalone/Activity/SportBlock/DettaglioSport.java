@@ -10,7 +10,7 @@ import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Utilities.MapUtilities;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ErrorType;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ILocation;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;

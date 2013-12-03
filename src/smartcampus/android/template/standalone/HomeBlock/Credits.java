@@ -1,6 +1,6 @@
 package smartcampus.android.template.standalone.HomeBlock;
 
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;

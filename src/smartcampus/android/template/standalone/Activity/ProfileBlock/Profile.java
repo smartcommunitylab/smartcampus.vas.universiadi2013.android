@@ -7,7 +7,7 @@ import java.util.Map;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FunzioneObj;
 import smartcampus.android.template.standalone.IntroBlock.UserConstant;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -183,44 +183,32 @@ public class Profile extends Activity {
 												Void... params) {
 											// TODO Auto-generated method
 											// stub
-											// mMapListaSuperiori = ManagerData
-											// .getSuperioriForUser(user,
-											// funzione.get(arg2));
-											// if (!((Boolean)
-											// mMapListaSuperiori
-											// .get("connectionError"))) {
-											// mListaSuperiori =
-											// (ArrayList<Utente>)
-											// mMapListaSuperiori
-											// .get("params");
-											// }
-											mMapUserData = new HashMap<String, Object>();
-											mMapUserData.put("connectionError",
-													false);
-											funzione = new ArrayList<FunzioneObj>();
-											funzione.add(new FunzioneObj(
-													"Academic Liaison & Special Projects",
-													"69326"));
-											funzione.add(new FunzioneObj(
-													"Communication", "35152"));
-											// mMapUserData =
-											// ManagerData.getFunzioneForUser(user);
-											// if (!((Boolean)
-											// mMapUserData.get("connectionError")))
-											// {
-											// funzione = (ArrayList<String>)
-											// mMapUserData.get("params");
-											// }
+											mMapListaSuperiori = ManagerData
+													.getSuperioriForUser(
+															user,
+															funzione.get(arg2)
+																	.getFunzione());
+											if (!((Boolean) mMapListaSuperiori
+													.get("connectionError"))) {
+												mListaSuperiori = (ArrayList<UtenteSuperiore>) mMapListaSuperiori
+														.get("params");
+											}
+											mMapUserData = ManagerData
+													.getFunzioneForUser(user);
+											if (!((Boolean) mMapUserData
+													.get("connectionError"))) {
+												funzione = (ArrayList<FunzioneObj>) mMapUserData
+														.get("params");
+											}
 											ArrayList<String> funzioneString = new ArrayList<String>();
 											for (int i = 0; i < funzione.size(); i++)
 												funzioneString.add(funzione
 														.get(i).getFunzione());
-											// mListaSuperiori =
-											// (ArrayList<Utente>) (ManagerData
-											// .getSuperioriForUser(user,
-											// funzioneString
-											// .get(0))
-											// .get("params"));
+											mListaSuperiori = (ArrayList<UtenteSuperiore>) (ManagerData
+													.getSuperioriForUser(user,
+															funzioneString
+																	.get(0))
+													.get("params"));
 											return null;
 										}
 
@@ -287,7 +275,7 @@ public class Profile extends Activity {
 																	if (mUtente
 																			.getNumeroTelefonico()
 																			.equalsIgnoreCase(
-																					"")) {
+																					"null")) {
 																		AlertDialog.Builder builder = new AlertDialog.Builder(
 																				Profile.this);
 																		builder.setTitle(getString(R.string.CONTATTO));
@@ -308,10 +296,12 @@ public class Profile extends Activity {
 																		AlertDialog.Builder builder = new AlertDialog.Builder(
 																				Profile.this);
 																		builder.setTitle(getString(R.string.CONTATTO));
-																		builder.setMessage("Vuoi chiamare "
+																		builder.setMessage(getString(R.string.PROFILO_PHONE1)
+																				+ " "
 																				+ mUtente
 																						.getNome()
-																				+ " al numero "
+																				+ getString(R.string.PROFILO_PHONE2)
+																				+ " "
 																				+ mUtente
 																						.getNumeroTelefonico());
 																		builder.setCancelable(false);
@@ -464,9 +454,11 @@ public class Profile extends Activity {
 					.setText(values.get(position).getNome() + " "
 							+ values.get(position).getCognome());
 			((TextView) rowView.findViewById(R.id.text_categoria_volontario))
-					.setText("Categoria: " + values.get(position).getRuolo());
+					.setText(getString(R.string.PROFILO_CATEGORIA) + " "
+							+ values.get(position).getAmbito());
 			((TextView) rowView.findViewById(R.id.text_ruolo_volontario))
-					.setText("Ruolo: " + values.get(position).getAmbito());
+					.setText(getString(R.string.PROFILO_RUOLO) + " "
+							+ values.get(position).getRuolo());
 
 			return rowView;
 		}
@@ -494,17 +486,18 @@ public class Profile extends Activity {
 				ViewGroup parent) {
 			// TODO Auto-generated method stub
 			return getCustomView(position, convertView, parent,
-					Color.parseColor("#3294ad"));
+					Color.parseColor("#3294ad"), false);
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			return getCustomView(position, convertView, parent, Color.WHITE);
+			return getCustomView(position, convertView, parent, Color.WHITE,
+					true);
 		}
 
 		public View getCustomView(int position, View convertView,
-				ViewGroup parent, int color) {
+				ViewGroup parent, int color, boolean dropDown) {
 			// TODO Auto-generated method stub
 			// return super.getView(position, convertView, parent);
 			LayoutInflater inflater = (LayoutInflater) context
@@ -522,7 +515,7 @@ public class Profile extends Activity {
 					.setTypeface(Typeface.createFromAsset(
 							getApplicationContext().getAssets(),
 							"PatuaOne-Regular.otf"));
-			if (values.get(position).getFunzione().length() > 13)
+			if (values.get(position).getFunzione().length() > 13 && dropDown)
 				((TextView) rowView.findViewById(android.R.id.text1))
 						.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 

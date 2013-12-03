@@ -19,7 +19,7 @@ import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSub
 import smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock.FAQ;
 import smartcampus.android.template.standalone.Activity.SportBlock.Sport;
 import smartcampus.android.template.standalone.IntroBlock.UserConstant;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;

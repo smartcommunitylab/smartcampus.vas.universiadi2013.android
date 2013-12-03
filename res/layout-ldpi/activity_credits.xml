@@ -44,8 +44,7 @@
                         android:id="@+id/btn_credits_sito"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/img_credits_logo_smartcampus"
-                        android:layout_marginTop="10dp" >
+                        android:layout_below="@+id/img_credits_logo_smartcampus" >
 
                         <smartcampus.android.template.standalone.Utilities.FontTextView
                             android:id="@+id/textView3"
@@ -62,8 +61,7 @@
                         android:id="@+id/btn_credits_mail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/btn_credits_sito"
-                        android:layout_marginTop="10dp" >
+                        android:layout_below="@id/btn_credits_sito" >
 
                         <smartcampus.android.template.standalone.Utilities.FontTextView
                             android:id="@+id/FontTextView02"
@@ -93,7 +91,6 @@
                         android:layout_alignParentLeft="false"
                         android:layout_centerInParent="false"
                         android:layout_marginBottom="5dp"
-                        android:layout_marginTop="@dimen/activity_horizontal_margin"
                         android:gravity="center"
                         android:text="@string/CREDITS_SVILUPPATA"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -105,7 +102,6 @@
                         android:layout_alignParentLeft="true"
                         android:layout_below="@id/btn_credits_mail"
                         android:layout_centerInParent="false"
-                        android:layout_marginTop="@dimen/activity_horizontal_margin"
                         android:adjustViewBounds="true"
                         android:src="@drawable/lista_loghi_credits" />
 
@@ -199,18 +195,22 @@
                         android:layout_alignParentLeft="true"
                         android:layout_below="@+id/textView2"
                         android:layout_centerVertical="false"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="5dp"
                         android:gravity="center"
                         android:text="Mattia Scagno\nJacopo Penzo\nDamiano Donati"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textSize="15sp" />
 
                     <smartcampus.android.template.standalone.Utilities.FontTextView
                         android:id="@+id/textView2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:gravity="center"
                         android:text="Credits"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textSize="15sp" />
+
                 </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>
@@ -218,10 +218,12 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:adjustViewBounds="true"
+        android:maxHeight="50dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/intro_bg" />
 
 </RelativeLayout>

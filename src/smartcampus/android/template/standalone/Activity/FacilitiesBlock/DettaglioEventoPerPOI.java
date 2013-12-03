@@ -8,7 +8,7 @@ import java.util.Map;
 import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;

@@ -8,7 +8,7 @@ import java.util.Map;
 
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -72,6 +72,7 @@ public class Evento extends Activity {
 					public void onCancel(DialogInterface dialog) {
 						// TODO Auto-generated method stub
 						cancel(true);
+						finish();
 					}
 				});
 

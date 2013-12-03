@@ -21,7 +21,7 @@ import org.json.JSONObject;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FunzioneObj;
 import smartcampus.android.template.standalone.Activity.SportBlock.SportImageConstant;
 import smartcampus.android.template.standalone.IntroBlock.UserConstant;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -615,9 +615,10 @@ public class ManagerData {
 					String[] pathTokenized = pathFunzione.split(":");
 					if (arrayContains(pathTokenized,
 							(String) obj.get("function"))) {
-						UtenteSuperiore superiore = new UtenteSuperiore(obj.getString("label")
-								.split(" ")[1], obj.getString("label").split(
-								" ")[0], obj.getString("function"),
+						UtenteSuperiore superiore = new UtenteSuperiore(obj
+								.getString("label").split(" ")[1], obj
+								.getString("label").split(" ")[0],
+								obj.getString("function"),
 								obj.getString("arole"), new byte[1],
 								obj.getString("phone"), obj.getString("email"),
 								obj.getString("path"), obj.getString("id"));
@@ -625,14 +626,7 @@ public class ManagerData {
 					}
 				}
 			}
-			
-			
 
-
-
-
-
-				 
 			mResult.put("params", mListaSuperiori);
 			return mResult;
 		} catch (JSONException e) {
@@ -751,7 +745,7 @@ public class ManagerData {
 			Map<String, Object> mMapRequest = mRest
 					.restRequest(new String[] { mContext
 							.getString(R.string.URL_ALL_DOMANDA) },
-							RestRequestType.POST);
+							RestRequestType.GET);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
 					(Boolean) mMapRequest.get("connectionError"));

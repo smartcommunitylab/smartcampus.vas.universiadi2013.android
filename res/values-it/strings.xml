@@ -62,10 +62,17 @@
     <string name="PLANNER_FUNZIONE">Funzione: </string>
     <string name="FAQ_DOMANDA">Domanda: </string>
     <string name="FAQ_RISULTATI">Risultati: </string>
+    <string name="FAQ_ALL_RISULTATI">Tutti i risultati: </string>
     <string name="FAQ_RISPOSTA">Risposta: </string>
     <string name="FAQ_ACCURATEZZA">Accuratezza: </string>
     <string name="PROFILO_SALUTO">Ciao,\n </string>
     <string name="PROFILO_FUNZIONE">Contatti per ruolo: </string>
+    <string name="PROFILO_PHONE1">Vuoi chiamare</string>
+    <string name="PROFILO_PHONE2">al numero</string>
+    <string name="PROFILO_CATEGORIA">Categoria:</string>
+    <string name="PROFILO_RUOLO">Ruolo:</string>
+    <string name="CREDITS_SVILUPPATA">Sviluppata da</string>
+    
 
     <!-- POI String -->
     <string name="CATEGORIA_SPORT">Sport</string>

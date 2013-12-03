@@ -8,7 +8,7 @@ import java.util.Map;
 
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.IntroBlock.UserConstant;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -234,10 +234,13 @@ public class FilterCalendarioActivity extends Activity {
 										.equalsIgnoreCase("Turni personali")) {
 									ArrayList<String> simplePersonalListCategoria = new ArrayList<String>();
 									for (int i = 0; i < listPersonalCategoria
-											.size(); i++)
+											.size(); i++) {
+										String[] funzioneTokenized = listPersonalCategoria
+												.get(i).getFunzione()
+												.split(":");
 										simplePersonalListCategoria
-												.add(listPersonalCategoria.get(
-														i).getFunzione());
+												.add(funzioneTokenized[funzioneTokenized.length - 1]);
+									}
 
 									mAdapter = new SimpleSpinnerAdapter(
 											getApplicationContext(),

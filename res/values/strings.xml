@@ -41,12 +41,13 @@
     <string name="URL_CATEGORIE_VOLONTARI">/volontari/categorie</string>
     <string name="URL_SEND_TICKET">/ticket/send</string>
     <string name="URL_DOMANDA">/domanda</string>
-    <string name="URL_ALL_DOMANDA">/all_domanda</string>
+    <string name="URL_ALL_DOMANDA">/domanda/all</string>
     <string name="URL_TURNI">/turni/</string>
     <string name="URL_UTENTI_PER_TURNO">/users_for_turn</string>
     <string name="URL_SAVE_UTENTE">/utente/save</string>
     <string name="URL_SPORT">/sport</string>
     <string name="URL_ICE_AND_FIRE">https://tickets.gtsu.org/login/</string>
+    <string name="title_activity_home_guest">HomeGuest</string>
 
     <!-- Activity String -->
     <string name="ROUTE_FOR">Route for </string>
@@ -64,6 +65,12 @@
     <string name="FAQ_ACCURATEZZA">Accuracy: </string>
     <string name="PROFILO_SALUTO">Hi,\n </string>
     <string name="PROFILO_FUNZIONE">Contacts for role: </string>
+        <string name="FAQ_ALL_RISULTATI">All results: </string>   
+    <string name="PROFILO_PHONE1">Do you want to call</string>
+    <string name="PROFILO_PHONE2">at</string>
+    <string name="PROFILO_CATEGORIA">Function:</string>
+    <string name="PROFILO_RUOLO">Role:</string>
+    <string name="CREDITS_SVILUPPATA">Developed by</string>
 
     <!-- POI String -->
     <string name="CATEGORIA_SPORT">Sport</string>
@@ -151,5 +158,23 @@
     <!--  -->
 
     <string name="title_activity_credits">Credits</string>
+     <string name="title_activity_evento">Evento</string>
+    <string name="title_activity_sport">Sport</string>
+    <string name="title_activity_facilities">Facilities</string>
+    <string name="title_activity_booking">Booking</string>
+    <string name="title_activity_page_eventi_oggi">PageEventiOggi</string>
+    <string name="title_activity_info_eventi">InfoEventi</string>
+    <string name="title_activity_dettaglio_evento">DettaglioEvento</string>
+    <string name="title_activity_element_sport">ElementSport</string>
+    <string name="title_activity_dettaglio_sport">DettaglioSport</string>
+    <string name="title_activity_page_info_sport">PageInfoSport</string>
+    <string name="title_activity_select_booking">SelectBooking</string>
+    <string name="title_activity_profile">Profile</string>
+    <string name="title_activity_batch">Batch</string>
+    <string name="title_activity_row_desc_route">RowDescRoute</string>
+    <string name="title_activity_page_info_eventi">PageInfoEventi</string>
+    <string name="title_activity_result_search">ResultSearch</string>
+    <string name="lorem_ipsum">"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</string>
+    <string name="title_activity_dettaglio_evento_per_poi">DettaglioEventoPerPOI</string>
 
 </resources>

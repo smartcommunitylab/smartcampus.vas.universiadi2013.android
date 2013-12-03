@@ -5,7 +5,7 @@ import java.util.Map;
 
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.HomeBlock.Home;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
