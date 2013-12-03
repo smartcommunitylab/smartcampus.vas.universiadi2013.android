@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
+import smartcampus.android.template.standalone.Activity.ProfileBlock.Profile;
 import smartcampus.android.template.standalone.IntroBlock.UserConstant;
 import eu.trentorise.smartcampus.universiade.R;
 import android.app.Activity;
@@ -123,303 +124,334 @@ public class FilterCalendarioActivity extends Activity {
 
 				// START ONPOST
 
-				final ArrayList<Long> mSettimana = new ArrayList<Long>();
-				for (int i = 0; i < 7; i++)
-					mSettimana.add(Calendar.getInstance().getTimeInMillis()
-							+ (i * 3600 * 24 * 1000));
+				if ((Boolean) mMapResult.get("connectionError")) {
+					Dialog noConnection = new Dialog(
+							FilterCalendarioActivity.this);
+					noConnection.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					noConnection.setContentView(R.layout.dialog_no_connection);
+					noConnection.getWindow().setBackgroundDrawableResource(
+							R.drawable.dialog_rounded_corner_light_black);
+					noConnection.setCancelable(true);
+					noConnection.show();
+					noConnection.setOnCancelListener(new OnCancelListener() {
 
-				filterDataFrom = mSettimana.get(0);
-				final Spinner mSpinnerDataFrom = (Spinner) findViewById(R.id.spinner_cal_data_from);
-				mSpinnerDataFrom.setSelection(0, true);
-				mSpinnerDataFrom.setAdapter(new SpinnerAdapter(
-						FilterCalendarioActivity.this, mSettimana));
-				mSpinnerDataFrom
-						.setOnItemSelectedListener(new OnItemSelectedListener() {
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							// TODO Auto-generated method stub
+							finish();
+						}
+					});
 
-							@Override
-							public void onItemSelected(AdapterView<?> arg0,
-									View arg1, int arg2, long arg3) {
-								// TODO Auto-generated method stub
-								filterDataFrom = mSettimana.get(arg2);
+				} else {
 
-								// reloadCalendario();
-							}
+					final ArrayList<Long> mSettimana = new ArrayList<Long>();
+					for (int i = 0; i < 7; i++)
+						mSettimana.add(Calendar.getInstance().getTimeInMillis()
+								+ (i * 3600 * 24 * 1000));
 
-							@Override
-							public void onNothingSelected(AdapterView<?> arg0) {
-								// TODO Auto-generated method stub
+					filterDataFrom = mSettimana.get(0);
+					final Spinner mSpinnerDataFrom = (Spinner) findViewById(R.id.spinner_cal_data_from);
+					mSpinnerDataFrom.setSelection(0, true);
+					mSpinnerDataFrom.setAdapter(new SpinnerAdapter(
+							FilterCalendarioActivity.this, mSettimana));
+					mSpinnerDataFrom
+							.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-							}
+								@Override
+								public void onItemSelected(AdapterView<?> arg0,
+										View arg1, int arg2, long arg3) {
+									// TODO Auto-generated method stub
+									filterDataFrom = mSettimana.get(arg2);
 
-						});
-
-				filterDataTo = mSettimana.get(0);
-				final Spinner mSpinnerDataTo = (Spinner) findViewById(R.id.spinner_cal_data_to);
-				mSpinnerDataTo.setSelection(0, true);
-				mSpinnerDataTo.setAdapter(new SpinnerAdapter(
-						FilterCalendarioActivity.this, mSettimana));
-				mSpinnerDataTo
-						.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-							@Override
-							public void onItemSelected(AdapterView<?> arg0,
-									View arg1, int arg2, long arg3) {
-								// TODO Auto-generated method stub
-								filterDataTo = mSettimana.get(arg2);
-
-								// reloadCalendario();
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> arg0) {
-								// TODO Auto-generated method stub
-
-							}
-
-						});
-
-				mSpinnerCategoria = (Spinner) findViewById(R.id.spinner_cal_categoria);
-				filterFunzione = listPersonalCategoria.get(0);
-
-				ArrayList<String> simplePersonalListCategoria = new ArrayList<String>();
-				for (int i = 0; i < listPersonalCategoria.size(); i++)
-					simplePersonalListCategoria.add(listPersonalCategoria
-							.get(i).getFunzione());
-
-				mAdapter = new SimpleSpinnerAdapter(getApplicationContext(),
-						simplePersonalListCategoria);
-				mSpinnerCategoria.setAdapter(mAdapter);
-				mSpinnerCategoria
-						.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-							@Override
-							public void onItemSelected(AdapterView<?> arg0,
-									View arg1, int arg2, long arg3) {
-								// TODO Auto-generated method stub
-								if (filterPersonale
-										.equalsIgnoreCase("Turni personali"))
-									filterFunzione = listPersonalCategoria
-											.get(arg2);
-								else
-									filterFunzione = listCategoria.get(arg2);
-							}
-
-							@Override
-							public void onNothingSelected(AdapterView<?> arg0) {
-								// TODO Auto-generated method stub
-
-							}
-
-						});
-
-				mSpinnerLuogo = (Spinner) findViewById(R.id.spinner_cal_personale);
-				final ArrayList<String> listPersonale = new ArrayList<String>();
-
-				listPersonale.add("Turni personali");
-				listPersonale.add("Turni tutto staff");
-
-				filterPersonale = listPersonale.get(0);
-
-				mSpinnerLuogo.setAdapter(new SimpleSpinnerAdapter(
-						getApplicationContext(), listPersonale));
-				mSpinnerLuogo
-						.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-							@Override
-							public void onItemSelected(AdapterView<?> arg0,
-									View arg1, int arg2, long arg3) {
-								// TODO Auto-generated method stub
-								filterPersonale = listPersonale.get(arg2);
-								if (filterPersonale
-										.equalsIgnoreCase("Turni personali")) {
-									ArrayList<String> simplePersonalListCategoria = new ArrayList<String>();
-									for (int i = 0; i < listPersonalCategoria
-											.size(); i++) {
-										String[] funzioneTokenized = listPersonalCategoria
-												.get(i).getFunzione()
-												.split(":");
-										simplePersonalListCategoria
-												.add(funzioneTokenized[funzioneTokenized.length - 1]);
-									}
-
-									mAdapter = new SimpleSpinnerAdapter(
-											getApplicationContext(),
-											simplePersonalListCategoria);
-									mSpinnerCategoria.setAdapter(mAdapter);
-									mAdapter.notifyDataSetChanged();
-									filterFunzione = listPersonalCategoria
-											.get(0);
-								} else {
-									ArrayList<String> simpleListCategoria = new ArrayList<String>();
-									for (int i = 0; i < listCategoria.size(); i++)
-										simpleListCategoria.add(listCategoria
-												.get(i).getFunzione());
-
-									mAdapter = new SimpleSpinnerAdapter(
-											getApplicationContext(),
-											simpleListCategoria);
-									mSpinnerCategoria.setAdapter(mAdapter);
-									mAdapter.notifyDataSetChanged();
-									filterFunzione = listCategoria.get(0);
+									// reloadCalendario();
 								}
-							}
 
-							@Override
-							public void onNothingSelected(AdapterView<?> arg0) {
-								// TODO Auto-generated method stub
+								@Override
+								public void onNothingSelected(
+										AdapterView<?> arg0) {
+									// TODO Auto-generated method stub
 
-							}
-						});
-
-				((ImageView) findViewById(R.id.btn_calendario))
-						.setOnTouchListener(new OnTouchListener() {
-
-							@Override
-							public boolean onTouch(View arg0, MotionEvent event) {
-								// TODO Auto-generated method stub
-								if (event.getAction() == MotionEvent.ACTION_DOWN) {
-									((ImageView) findViewById(R.id.btn_calendario))
-											.setImageResource(R.drawable.btn_cal_show_press);
-									return true;
 								}
-								if (event.getAction() == MotionEvent.ACTION_UP) {
-									((ImageView) findViewById(R.id.btn_calendario))
-											.setImageResource(R.drawable.btn_cal_show);
 
-									if (filterDataFrom > filterDataTo) {
-										AlertDialog.Builder builder = new AlertDialog.Builder(
-												FilterCalendarioActivity.this);
-										builder.setTitle("Avviso");
-										builder.setMessage("Data iniziale maggiore della data finale");
-										builder.setCancelable(false);
-										builder.setPositiveButton(
-												getString(R.string.CHIUDI),
-												new android.content.DialogInterface.OnClickListener() {
-													public void onClick(
-															DialogInterface dialog,
-															int id) {
-														dialog.dismiss();
+							});
 
-														startCalendar();
-													}
-												});
-										builder.create().show();
-									} else {
-										Intent mCaller = new Intent(
+					filterDataTo = mSettimana.get(0);
+					final Spinner mSpinnerDataTo = (Spinner) findViewById(R.id.spinner_cal_data_to);
+					mSpinnerDataTo.setSelection(0, true);
+					mSpinnerDataTo.setAdapter(new SpinnerAdapter(
+							FilterCalendarioActivity.this, mSettimana));
+					mSpinnerDataTo
+							.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+								@Override
+								public void onItemSelected(AdapterView<?> arg0,
+										View arg1, int arg2, long arg3) {
+									// TODO Auto-generated method stub
+									filterDataTo = mSettimana.get(arg2);
+
+									// reloadCalendario();
+								}
+
+								@Override
+								public void onNothingSelected(
+										AdapterView<?> arg0) {
+									// TODO Auto-generated method stub
+
+								}
+
+							});
+
+					mSpinnerCategoria = (Spinner) findViewById(R.id.spinner_cal_categoria);
+					filterFunzione = listPersonalCategoria.get(0);
+
+					ArrayList<String> simplePersonalListCategoria = new ArrayList<String>();
+					for (int i = 0; i < listPersonalCategoria.size(); i++)
+						simplePersonalListCategoria.add(listPersonalCategoria
+								.get(i).getFunzione());
+
+					mAdapter = new SimpleSpinnerAdapter(
+							getApplicationContext(),
+							simplePersonalListCategoria);
+					mSpinnerCategoria.setAdapter(mAdapter);
+					mSpinnerCategoria
+							.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+								@Override
+								public void onItemSelected(AdapterView<?> arg0,
+										View arg1, int arg2, long arg3) {
+									// TODO Auto-generated method stub
+									if (filterPersonale
+											.equalsIgnoreCase("Turni personali"))
+										filterFunzione = listPersonalCategoria
+												.get(arg2);
+									else
+										filterFunzione = listCategoria
+												.get(arg2);
+								}
+
+								@Override
+								public void onNothingSelected(
+										AdapterView<?> arg0) {
+									// TODO Auto-generated method stub
+
+								}
+
+							});
+
+					mSpinnerLuogo = (Spinner) findViewById(R.id.spinner_cal_personale);
+					final ArrayList<String> listPersonale = new ArrayList<String>();
+
+					listPersonale.add("Turni personali");
+					listPersonale.add("Turni tutto staff");
+
+					filterPersonale = listPersonale.get(0);
+
+					mSpinnerLuogo.setAdapter(new SimpleSpinnerAdapter(
+							getApplicationContext(), listPersonale));
+					mSpinnerLuogo
+							.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+								@Override
+								public void onItemSelected(AdapterView<?> arg0,
+										View arg1, int arg2, long arg3) {
+									// TODO Auto-generated method stub
+									filterPersonale = listPersonale.get(arg2);
+									if (filterPersonale
+											.equalsIgnoreCase("Turni personali")) {
+										ArrayList<String> simplePersonalListCategoria = new ArrayList<String>();
+										for (int i = 0; i < listPersonalCategoria
+												.size(); i++) {
+											String[] funzioneTokenized = listPersonalCategoria
+													.get(i).getFunzione()
+													.split(":");
+											simplePersonalListCategoria
+													.add(funzioneTokenized[funzioneTokenized.length - 1]);
+										}
+
+										mAdapter = new SimpleSpinnerAdapter(
 												getApplicationContext(),
-												Calendario.class);
-										mCaller.putExtra("dataFrom",
-												filterDataFrom);
-										mCaller.putExtra("dataTo", filterDataTo);
-										mCaller.putExtra("personale",
-												filterPersonale);
-										mCaller.putExtra("funzione",
-												filterFunzione);
-										startActivity(mCaller);
+												simplePersonalListCategoria);
+										mSpinnerCategoria.setAdapter(mAdapter);
+										mAdapter.notifyDataSetChanged();
+										filterFunzione = listPersonalCategoria
+												.get(0);
+									} else {
+										ArrayList<String> simpleListCategoria = new ArrayList<String>();
+										for (int i = 0; i < listCategoria
+												.size(); i++)
+											simpleListCategoria
+													.add(listCategoria.get(i)
+															.getFunzione());
+
+										mAdapter = new SimpleSpinnerAdapter(
+												getApplicationContext(),
+												simpleListCategoria);
+										mSpinnerCategoria.setAdapter(mAdapter);
+										mAdapter.notifyDataSetChanged();
+										filterFunzione = listCategoria.get(0);
 									}
-
-									return true;
 								}
-								return false;
-							}
 
-						});
+								@Override
+								public void onNothingSelected(
+										AdapterView<?> arg0) {
+									// TODO Auto-generated method stub
 
-				((RelativeLayout) findViewById(R.id.btn_spinner_data_from))
-						.setOnTouchListener(new OnTouchListener() {
-
-							@Override
-							public boolean onTouch(View v, MotionEvent event) {
-								// TODO Auto-generated method stub
-								if (event.getAction() == MotionEvent.ACTION_DOWN) {
-									((ImageView) findViewById(R.id.img_cal_data_from))
-											.setImageResource(R.drawable.btn_cal_data_press);
-									return true;
 								}
-								if (event.getAction() == MotionEvent.ACTION_UP) {
-									((ImageView) findViewById(R.id.img_cal_data_from))
-											.setImageResource(R.drawable.btn_cal_data);
+							});
 
-									mSpinnerDataFrom.performClick();
+					((ImageView) findViewById(R.id.btn_calendario))
+							.setOnTouchListener(new OnTouchListener() {
 
-									return true;
+								@Override
+								public boolean onTouch(View arg0,
+										MotionEvent event) {
+									// TODO Auto-generated method stub
+									if (event.getAction() == MotionEvent.ACTION_DOWN) {
+										((ImageView) findViewById(R.id.btn_calendario))
+												.setImageResource(R.drawable.btn_cal_show_press);
+										return true;
+									}
+									if (event.getAction() == MotionEvent.ACTION_UP) {
+										((ImageView) findViewById(R.id.btn_calendario))
+												.setImageResource(R.drawable.btn_cal_show);
+
+										if (filterDataFrom > filterDataTo) {
+											AlertDialog.Builder builder = new AlertDialog.Builder(
+													FilterCalendarioActivity.this);
+											builder.setTitle("Avviso");
+											builder.setMessage("Data iniziale maggiore della data finale");
+											builder.setCancelable(false);
+											builder.setPositiveButton(
+													getString(R.string.CHIUDI),
+													new android.content.DialogInterface.OnClickListener() {
+														public void onClick(
+																DialogInterface dialog,
+																int id) {
+															dialog.dismiss();
+
+															startCalendar();
+														}
+													});
+											builder.create().show();
+										} else {
+											Intent mCaller = new Intent(
+													getApplicationContext(),
+													Calendario.class);
+											mCaller.putExtra("dataFrom",
+													filterDataFrom);
+											mCaller.putExtra("dataTo",
+													filterDataTo);
+											mCaller.putExtra("personale",
+													filterPersonale);
+											mCaller.putExtra("funzione",
+													filterFunzione);
+											startActivity(mCaller);
+										}
+
+										return true;
+									}
+									return false;
 								}
-								return false;
-							}
 
-						});
+							});
 
-				((RelativeLayout) findViewById(R.id.btn_spinner_data_to))
-						.setOnTouchListener(new OnTouchListener() {
+					((RelativeLayout) findViewById(R.id.btn_spinner_data_from))
+							.setOnTouchListener(new OnTouchListener() {
 
-							@Override
-							public boolean onTouch(View v, MotionEvent event) {
-								// TODO Auto-generated method stub
-								if (event.getAction() == MotionEvent.ACTION_DOWN) {
-									((ImageView) findViewById(R.id.img_cal_data_to))
-											.setImageResource(R.drawable.btn_cal_data_press);
-									return true;
+								@Override
+								public boolean onTouch(View v, MotionEvent event) {
+									// TODO Auto-generated method stub
+									if (event.getAction() == MotionEvent.ACTION_DOWN) {
+										((ImageView) findViewById(R.id.img_cal_data_from))
+												.setImageResource(R.drawable.btn_cal_data_press);
+										return true;
+									}
+									if (event.getAction() == MotionEvent.ACTION_UP) {
+										((ImageView) findViewById(R.id.img_cal_data_from))
+												.setImageResource(R.drawable.btn_cal_data);
+
+										mSpinnerDataFrom.performClick();
+
+										return true;
+									}
+									return false;
 								}
-								if (event.getAction() == MotionEvent.ACTION_UP) {
-									((ImageView) findViewById(R.id.img_cal_data_to))
-											.setImageResource(R.drawable.btn_cal_data);
 
-									mSpinnerDataTo.performClick();
+							});
 
-									return true;
+					((RelativeLayout) findViewById(R.id.btn_spinner_data_to))
+							.setOnTouchListener(new OnTouchListener() {
+
+								@Override
+								public boolean onTouch(View v, MotionEvent event) {
+									// TODO Auto-generated method stub
+									if (event.getAction() == MotionEvent.ACTION_DOWN) {
+										((ImageView) findViewById(R.id.img_cal_data_to))
+												.setImageResource(R.drawable.btn_cal_data_press);
+										return true;
+									}
+									if (event.getAction() == MotionEvent.ACTION_UP) {
+										((ImageView) findViewById(R.id.img_cal_data_to))
+												.setImageResource(R.drawable.btn_cal_data);
+
+										mSpinnerDataTo.performClick();
+
+										return true;
+									}
+									return false;
 								}
-								return false;
-							}
 
-						});
+							});
 
-				((RelativeLayout) findViewById(R.id.btn_spinner_luogo))
-						.setOnTouchListener(new OnTouchListener() {
+					((RelativeLayout) findViewById(R.id.btn_spinner_luogo))
+							.setOnTouchListener(new OnTouchListener() {
 
-							@Override
-							public boolean onTouch(View v, MotionEvent event) {
-								// TODO Auto-generated method stub
-								if (event.getAction() == MotionEvent.ACTION_DOWN) {
-									((ImageView) findViewById(R.id.img_cal_luogo))
-											.setImageResource(R.drawable.btn_cal_luogo_press);
-									return true;
+								@Override
+								public boolean onTouch(View v, MotionEvent event) {
+									// TODO Auto-generated method stub
+									if (event.getAction() == MotionEvent.ACTION_DOWN) {
+										((ImageView) findViewById(R.id.img_cal_luogo))
+												.setImageResource(R.drawable.btn_cal_luogo_press);
+										return true;
+									}
+									if (event.getAction() == MotionEvent.ACTION_UP) {
+										((ImageView) findViewById(R.id.img_cal_luogo))
+												.setImageResource(R.drawable.btn_cal_luogo);
+
+										mSpinnerLuogo.performClick();
+
+										return true;
+									}
+									return false;
 								}
-								if (event.getAction() == MotionEvent.ACTION_UP) {
-									((ImageView) findViewById(R.id.img_cal_luogo))
-											.setImageResource(R.drawable.btn_cal_luogo);
 
-									mSpinnerLuogo.performClick();
+							});
 
-									return true;
+					((RelativeLayout) findViewById(R.id.btn_spinner_categoria))
+							.setOnTouchListener(new OnTouchListener() {
+
+								@Override
+								public boolean onTouch(View v, MotionEvent event) {
+									// TODO Auto-generated method stub
+									if (event.getAction() == MotionEvent.ACTION_DOWN) {
+										((ImageView) findViewById(R.id.img_cal_categoria))
+												.setImageResource(R.drawable.btn_cal_categoria_press);
+										return true;
+									}
+									if (event.getAction() == MotionEvent.ACTION_UP) {
+										((ImageView) findViewById(R.id.img_cal_categoria))
+												.setImageResource(R.drawable.btn_cal_categoria);
+
+										mSpinnerCategoria.performClick();
+
+										return true;
+									}
+									return false;
 								}
-								return false;
-							}
 
-						});
-
-				((RelativeLayout) findViewById(R.id.btn_spinner_categoria))
-						.setOnTouchListener(new OnTouchListener() {
-
-							@Override
-							public boolean onTouch(View v, MotionEvent event) {
-								// TODO Auto-generated method stub
-								if (event.getAction() == MotionEvent.ACTION_DOWN) {
-									((ImageView) findViewById(R.id.img_cal_categoria))
-											.setImageResource(R.drawable.btn_cal_categoria_press);
-									return true;
-								}
-								if (event.getAction() == MotionEvent.ACTION_UP) {
-									((ImageView) findViewById(R.id.img_cal_categoria))
-											.setImageResource(R.drawable.btn_cal_categoria);
-
-									mSpinnerCategoria.performClick();
-
-									return true;
-								}
-								return false;
-							}
-
-						});
+							});
+				}
 
 				// END ONPOST
 			}

@@ -143,13 +143,8 @@ public class FAQ extends Activity {
 											.findViewById(R.id.text_dettaglio_answer))
 											.setMovementMethod(new ScrollingMovementMethod());
 									((TextView) dialog
-											.findViewById(R.id.text_dettaglio_accuracy)).setText(Float
-											.toString(getAccuracy(
-													mListaRisposte.get(arg2)
-															.getTotalTag(),
-													mListaRisposte.get(arg2)
-															.getUsefulTag()))
-											+ "%");
+											.findViewById(R.id.text_dettaglio_accuracy))
+											.setVisibility(View.INVISIBLE);
 
 									dialog.show();
 								}
@@ -312,6 +307,9 @@ public class FAQ extends Activity {
 												.findViewById(R.id.text_dettaglio_answer))
 												.setMovementMethod(new ScrollingMovementMethod());
 										((TextView) dialog
+												.findViewById(R.id.text_dettaglio_accuracy))
+												.setVisibility(View.VISIBLE);
+										((TextView) dialog
 												.findViewById(R.id.text_dettaglio_accuracy)).setText(Float
 												.toString(getAccuracy(
 														mListaRisposte
@@ -364,10 +362,15 @@ public class FAQ extends Activity {
 					.setText(values.get(position).getQuestion());
 			((TextView) rowView.findViewById(R.id.text_answer)).setText(values
 					.get(position).getAnswer());
-			((TextView) rowView.findViewById(R.id.text_accuracy)).setText(Float
-					.toString(getAccuracy(values.get(position).getTotalTag(),
-							values.get(position).getUsefulTag()))
-					+ "%");
+			if (values.get(position).getUsefulTag() != 0)
+				((TextView) rowView.findViewById(R.id.text_accuracy))
+						.setText(Float.toString(getAccuracy(values
+								.get(position).getTotalTag(),
+								values.get(position).getUsefulTag()))
+								+ "%");
+			else
+				((TextView) rowView.findViewById(R.id.text_accuracy))
+						.setVisibility(View.INVISIBLE);
 
 			return rowView;
 		}

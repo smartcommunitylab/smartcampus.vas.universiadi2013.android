@@ -89,17 +89,19 @@ public class Profile extends Activity {
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
 				user = UserConstant.getUser();
+				Log.i("", user.getId());
 				mMapUserData = ManagerData.getFunzioneForUser(user);
 				if (!((Boolean) mMapUserData.get("connectionError"))) {
 					funzione = (ArrayList<FunzioneObj>) mMapUserData
 							.get("params");
+
+					ArrayList<String> funzioneString = new ArrayList<String>();
+					for (int i = 0; i < funzione.size(); i++)
+						funzioneString.add(funzione.get(i).getFunzione());
+					mListaSuperiori = (ArrayList<UtenteSuperiore>) (ManagerData
+							.getSuperioriForUser(user, funzioneString.get(0))
+							.get("params"));
 				}
-				ArrayList<String> funzioneString = new ArrayList<String>();
-				for (int i = 0; i < funzione.size(); i++)
-					funzioneString.add(funzione.get(i).getFunzione());
-				mListaSuperiori = (ArrayList<UtenteSuperiore>) (ManagerData
-						.getSuperioriForUser(user, funzioneString.get(0))
-						.get("params"));
 				return null;
 			}
 
@@ -199,16 +201,19 @@ public class Profile extends Activity {
 													.get("connectionError"))) {
 												funzione = (ArrayList<FunzioneObj>) mMapUserData
 														.get("params");
+												ArrayList<String> funzioneString = new ArrayList<String>();
+												for (int i = 0; i < funzione
+														.size(); i++)
+													funzioneString.add(funzione
+															.get(i)
+															.getFunzione());
+												mListaSuperiori = (ArrayList<UtenteSuperiore>) (ManagerData
+														.getSuperioriForUser(
+																user,
+																funzioneString
+																		.get(0))
+														.get("params"));
 											}
-											ArrayList<String> funzioneString = new ArrayList<String>();
-											for (int i = 0; i < funzione.size(); i++)
-												funzioneString.add(funzione
-														.get(i).getFunzione());
-											mListaSuperiori = (ArrayList<UtenteSuperiore>) (ManagerData
-													.getSuperioriForUser(user,
-															funzioneString
-																	.get(0))
-													.get("params"));
 											return null;
 										}
 

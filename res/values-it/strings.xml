@@ -72,12 +72,12 @@
     <string name="PROFILO_CATEGORIA">Categoria:</string>
     <string name="PROFILO_RUOLO">Ruolo:</string>
     <string name="CREDITS_SVILUPPATA">Sviluppata da</string>
+    <string name="POI_CATEGORIA">Categoria:</string>
+    <string name="NESSUNA_ROUTE">Nessuna route disponibile</string>
     
 
     <!-- POI String -->
     <string name="CATEGORIA_SPORT">Sport</string>
-    <string name="CATEGORIA_NOLLEGGIO_SCI">Noleggio Scii</string>
-    <string name="CATEGORIA_SCUOLA_SCI">Scuola Scii</string>
  
     <string name="CATEGORIA_STADIO_GHIACCIO">Stadio del Ghiaccio</string>
     <string name="CATEGORIA_SNOWPARK">Snowpark</string>

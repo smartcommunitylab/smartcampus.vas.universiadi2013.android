@@ -94,7 +94,7 @@
                                     android:layout_height="match_parent"
                                     android:background="#0fff"
                                     android:ems="10"
-                                    android:imeOptions="actionDone" />
+                                    android:imeOptions="actionNext" />
 
                             </RelativeLayout>
 

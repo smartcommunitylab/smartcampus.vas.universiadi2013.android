@@ -452,7 +452,6 @@ public class Intro extends Activity {
 	private void saveUtente() {
 		Utente user = (Utente) ManagerData.readUserData().get("params");
 		UserConstant.setUser(user);
-		Map<String, Object> mMapResult = ManagerData.saveUserInfo(user);
 	}
 
 	private void saveUserAndPass() {

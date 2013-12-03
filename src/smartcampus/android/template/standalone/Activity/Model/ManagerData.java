@@ -96,35 +96,6 @@ public class ManagerData {
 		return null;
 	}
 
-	public static Map<String, Object> saveUserInfo(Utente user) {
-		try {
-			JSONObject obj = new JSONObject();
-			obj.put("lastname", user.getCognome());
-			obj.put("firstname", user.getNome());
-			obj.put("email", user.getMail());
-			obj.put("mobile", user.getNumeroTelefonico());
-			obj.put("afunction", user.getAmbito());
-			obj.put("arole", user.getRuolo());
-			obj.put("photo", user.getFoto());
-
-			Map<String, Object> mMapRequest = mRest.restRequest(
-					new String[] { obj.toString(),
-							mContext.getString(R.string.URL_SAVE_UTENTE) },
-					RestRequestType.POST);
-			Map<String, Object> mResult = new HashMap<String, Object>();
-			mResult.put("connectionError",
-					(Boolean) mMapRequest.get("connectionError"));
-			if (!((Boolean) mMapRequest.get("connectionError"))) {
-			}
-			return mResult;
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
 	public static Map<String, Object> getAnonymousToken() {
 		return mRest.authenticate(null, null);
 	}
@@ -466,14 +437,21 @@ public class ManagerData {
 												.getString("IT");
 							}
 						}
-						String address=obj.getJSONObject("poi").getString("street");
-						if(obj.getJSONObject("poi").has("city") && obj.getJSONObject("poi").getString("city").compareTo("null")!=0){
-							address+=","+obj.getJSONObject("poi").getString("city");
+						String address = obj.getJSONObject("poi").getString(
+								"street");
+						if (obj.getJSONObject("poi").has("city")
+								&& obj.getJSONObject("poi").getString("city")
+										.compareTo("null") != 0) {
+							address += ","
+									+ obj.getJSONObject("poi")
+											.getString("city");
 						}
-						mListaPOI.add(new POI(null, obj.getString("title"), obj
-								.getString("type"), description, obj
-								.getJSONArray("location").getDouble(0), obj
-								.getJSONArray("location").getDouble(1),address));
+						mListaPOI
+								.add(new POI(null, obj.getString("title"), obj
+										.getString("type"), description, obj
+										.getJSONArray("location").getDouble(0),
+										obj.getJSONArray("location").getDouble(
+												1), address));
 					}
 				}
 			}
@@ -760,8 +738,8 @@ public class ManagerData {
 					JSONObject obj;
 					obj = arrayRisposte.getJSONObject(i);
 					ExtendedAnswer extAnswer = new ExtendedAnswer(
-							obj.getString("domanda"),
-							obj.getString("risposta"), obj.getInt("totalTag"),
+							obj.getString("risposta"),
+							obj.getString("domanda"), obj.getInt("totalTag"),
 							obj.getInt("usefulTag"));
 					mListaRisposte.add(extAnswer);
 				}
@@ -910,7 +888,7 @@ public class ManagerData {
 						ArrayList<POI> mPOICorrelati = new ArrayList<POI>();
 						for (int j = 0; j < poi.length(); j++) {
 							JSONObject poiObj = poi.getJSONObject(j);
-							
+
 							mPOICorrelati.add(new POI(null, poiObj
 									.getString("title"), null, null, poiObj
 									.getJSONArray("GPS").getDouble(0), poiObj
