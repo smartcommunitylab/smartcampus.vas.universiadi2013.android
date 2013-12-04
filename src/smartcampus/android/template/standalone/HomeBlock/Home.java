@@ -157,21 +157,23 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 				// START ONPOST
 				if (!((Boolean) mResult.get("connectionError"))) {
 					// creating adapter and linking to view pager
+					if (mAdapter == null)
+						mAdapter = new PagerAdapter(
+								getSupportFragmentManager(), fragmentEventi);
+					else
+						mAdapter.fragments = fragmentEventi;
+					if (mPager == null)
+						mPager = (ViewPager) findViewById(R.id.pager_info_eventi);
+					mAdapter.notifyDataSetChanged();
+					mPager.setAdapter(mAdapter);
+					mPager.invalidate();
+					mPager.setVisibility(View.VISIBLE);
+					// Bind the title indicator to the adapter
+					titleIndicator = (CirclePageIndicator) findViewById(R.id.page_indicator);
+					titleIndicator.setViewPager(mPager);
 					if (mListaEventiDiOggi.size() != 0) {
-						if (mAdapter == null)
-							mAdapter = new PagerAdapter(
-									getSupportFragmentManager(), fragmentEventi);
-						else
-							mAdapter.fragments = fragmentEventi;
-						if (mPager == null)
-							mPager = (ViewPager) findViewById(R.id.pager_info_eventi);
-						mAdapter.notifyDataSetChanged();
-						mPager.setAdapter(mAdapter);
-						mPager.invalidate();
-						mPager.setVisibility(View.VISIBLE);
-						// Bind the title indicator to the adapter
-						titleIndicator = (CirclePageIndicator) findViewById(R.id.page_indicator);
-						titleIndicator.setViewPager(mPager);
+						
+						
 
 						class TapGestureListener extends
 								GestureDetector.SimpleOnGestureListener {
@@ -357,6 +359,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 									} else {
 										((RelativeLayout) findViewById(R.id.container_nessun_evento))
 												.setVisibility(View.VISIBLE);
+										
 										mPager.setVisibility(View.GONE);
 										titleIndicator.setVisibility(View.GONE);
 										((RelativeLayout) findViewById(R.id.container_pager_eventi_oggi))
