@@ -172,8 +172,6 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 					titleIndicator = (CirclePageIndicator) findViewById(R.id.page_indicator);
 					titleIndicator.setViewPager(mPager);
 					if (mListaEventiDiOggi.size() != 0) {
-						
-						
 
 						class TapGestureListener extends
 								GestureDetector.SimpleOnGestureListener {
@@ -201,9 +199,12 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 								return false;
 							}
 						});
-					} else
+					} else {
 						((RelativeLayout) findViewById(R.id.container_nessun_evento))
 								.setVisibility(View.VISIBLE);
+						((RelativeLayout) findViewById(R.id.container_pager_eventi_oggi))
+								.setBackgroundResource(R.drawable.scroll_main);
+					}
 				} else {
 					((RelativeLayout) findViewById(R.id.container_nessun_evento))
 							.setVisibility(View.VISIBLE);
@@ -359,7 +360,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 									} else {
 										((RelativeLayout) findViewById(R.id.container_nessun_evento))
 												.setVisibility(View.VISIBLE);
-										
+
 										mPager.setVisibility(View.GONE);
 										titleIndicator.setVisibility(View.GONE);
 										((RelativeLayout) findViewById(R.id.container_pager_eventi_oggi))
@@ -714,48 +715,42 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 		dialog.show();
 	}
-	
-//	private void startTicket() {
-//		Intent browserIntent = new Intent(android.content.Intent.ACTION_VIEW,
-//				Uri.parse(getString(R.string.URL_ICE_AND_FIRE)));
-//		startActivity(browserIntent);
-//	}
 
-	 private void startTicket() {
-		 
-		 
-			String finalUrl = "javascript:" + "var to = '"
-					+ getString(R.string.URL_ICE_AND_FIRE) + "';"
-					+ "var p = {username:'" + UserConstant.getUsername()
-					+ "',password:'" + UserConstant.getPassword() + "'};"
-					+ "var myForm = document.createElement('form');"
-					+ "myForm.method='post' ;" + "myForm.action = to;"
-					+ "for (var k in p) {"
-					+ "var myInput = document.createElement('input') ;"
-					+ "myInput.setAttribute('type', 'text');"
-					+ "myInput.setAttribute('name', k) ;"
-					+ "myInput.setAttribute('value', p[k]);"
-					+ "myForm.appendChild(myInput) ;" + "}"
-					+ "document.body.appendChild(myForm) ;" + "myForm.submit() ;"
-					+ "document.body.removeChild(myForm) ;";
-			
-			 int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-				if (currentapiVersion < android.os.Build.VERSION_CODES.HONEYCOMB)
-				{
-					finalUrl = getString(R.string.URL_ICE_AND_FIRE);
-				
-				}
-			
-			
-			Intent browserIntent = new Intent(android.content.Intent.ACTION_VIEW,
-					Uri.parse(finalUrl));
-			
-			
-			
-			startActivity(browserIntent);
-			
-			
+	// private void startTicket() {
+	// Intent browserIntent = new Intent(android.content.Intent.ACTION_VIEW,
+	// Uri.parse(getString(R.string.URL_ICE_AND_FIRE)));
+	// startActivity(browserIntent);
+	// }
+
+	private void startTicket() {
+
+		String finalUrl = "javascript:" + "var to = '"
+				+ getString(R.string.URL_ICE_AND_FIRE) + "';"
+				+ "var p = {username:'" + UserConstant.getUsername()
+				+ "',password:'" + UserConstant.getPassword() + "'};"
+				+ "var myForm = document.createElement('form');"
+				+ "myForm.method='post' ;" + "myForm.action = to;"
+				+ "for (var k in p) {"
+				+ "var myInput = document.createElement('input') ;"
+				+ "myInput.setAttribute('type', 'text');"
+				+ "myInput.setAttribute('name', k) ;"
+				+ "myInput.setAttribute('value', p[k]);"
+				+ "myForm.appendChild(myInput) ;" + "}"
+				+ "document.body.appendChild(myForm) ;" + "myForm.submit() ;"
+				+ "document.body.removeChild(myForm) ;";
+
+		int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+		if (currentapiVersion < android.os.Build.VERSION_CODES.HONEYCOMB) {
+			finalUrl = getString(R.string.URL_ICE_AND_FIRE);
+
 		}
+
+		Intent browserIntent = new Intent(android.content.Intent.ACTION_VIEW,
+				Uri.parse(finalUrl));
+
+		startActivity(browserIntent);
+
+	}
 
 	private void startGeneralInfoDialog() {
 		Dialog dialog = new Dialog(Home.this);
@@ -1438,5 +1433,5 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 	// }
 	// });
 	// }
-	
+
 }

@@ -894,11 +894,20 @@ public class ManagerData {
 									.getJSONArray("GPS").getDouble(0), poiObj
 									.getJSONArray("GPS").getDouble(1)));
 						}
-						Sport sport = new Sport(obj.getString("nome"),
+						String descrizione = null;
+						String nome = null;
+						if (Locale.getDefault().toString()
+								.equalsIgnoreCase("it_IT")) {
+							descrizione = obj.getString("descrizione");
+							nome = obj.getString("nome");
+						} else {
+							descrizione = obj.getString("descrizioneEn");
+							nome = obj.getString("nomeEn");
+						}
+						Sport sport = new Sport(nome,
 								SportImageConstant.resourcesFromID(
 										obj.getInt("foto"), mContext),
-								obj.getString("descrizione"),
-								obj.getString("atleti"),
+								descrizione, obj.getString("atleti"),
 								obj.getString("specialita"), mPOICorrelati);
 						mListaSport.add(sport);
 					}

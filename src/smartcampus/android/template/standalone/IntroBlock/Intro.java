@@ -372,80 +372,85 @@ public class Intro extends Activity {
 
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(Intro.this);
-		final String username = preferences.getString("username", null);
-		final String password = preferences.getString("password", null);
+		if (preferences.contains("username")
+				&& preferences.contains("password")) {
+			final String username = preferences.getString("username", null);
+			final String password = preferences.getString("password", null);
 
-		if (username != null && password != null) {
-			new AsyncTask<Void, Void, Void>() {
-				private Dialog dialog;
-				private boolean connectionError;
+			if (username != null && password != null) {
+				new AsyncTask<Void, Void, Void>() {
+					private Dialog dialog;
+					private boolean connectionError;
 
-				@Override
-				protected void onPreExecute() {
-					// TODO Auto-generated method stub
-					super.onPreExecute();
+					@Override
+					protected void onPreExecute() {
+						// TODO Auto-generated method stub
+						super.onPreExecute();
 
-					dialog = new Dialog(Intro.this);
-					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-					dialog.setContentView(R.layout.dialog_wait);
-					dialog.getWindow().setBackgroundDrawableResource(
-							R.drawable.dialog_rounded_corner_light_black);
-					dialog.show();
-					dialog.setCancelable(false);
-				}
-
-				@Override
-				protected Void doInBackground(Void... params) {
-					// TODO Auto-generated method stub
-					int loginResult = login(username, password);
-
-					if (loginResult == Intro.CONNECTION_ERROR) {
-						connectionError = true;
-					} else if (loginResult == Intro.LOGIN_SUCCESS) {
-						InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-						imm.hideSoftInputFromWindow(
-								((EditText) findViewById(R.id.text_password))
-										.getWindowToken(), 0);
-
-						loginSuccess.put("success", true);
-						// SAVE NEW UTENTE
-						saveUtente();
-						UserConstant.setUsername(username);
-						UserConstant.setPassword(password);
-					} else if (loginResult == Intro.LOGIN_FAILED) {
-						loginSuccess.put("success", false);
-						loginSuccess.put("notfound", true);
-
-					}
-					return null;
-				}
-
-				@Override
-				protected void onPostExecute(Void result) {
-					// TODO Auto-generated method stub
-					super.onPostExecute(result);
-
-					dialog.dismiss();
-
-					// START ONPOST
-
-					if (connectionError) {
-						Dialog noConnection = new Dialog(Intro.this);
-						noConnection
-								.requestWindowFeature(Window.FEATURE_NO_TITLE);
-						noConnection
-								.setContentView(R.layout.dialog_no_connection);
-						noConnection.getWindow().setBackgroundDrawableResource(
+						dialog = new Dialog(Intro.this);
+						dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+						dialog.setContentView(R.layout.dialog_wait);
+						dialog.getWindow().setBackgroundDrawableResource(
 								R.drawable.dialog_rounded_corner_light_black);
-						noConnection.show();
-						noConnection.setCancelable(true);
-					} else
-						controlAfterLogin();
+						dialog.show();
+						dialog.setCancelable(false);
+					}
 
-					// END ONPOST
-				}
+					@Override
+					protected Void doInBackground(Void... params) {
+						// TODO Auto-generated method stub
+						int loginResult = login(username, password);
 
-			}.execute();
+						if (loginResult == Intro.CONNECTION_ERROR) {
+							connectionError = true;
+						} else if (loginResult == Intro.LOGIN_SUCCESS) {
+							InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+							imm.hideSoftInputFromWindow(
+									((EditText) findViewById(R.id.text_password))
+											.getWindowToken(), 0);
+
+							loginSuccess.put("success", true);
+							// SAVE NEW UTENTE
+							saveUtente();
+							UserConstant.setUsername(username);
+							UserConstant.setPassword(password);
+						} else if (loginResult == Intro.LOGIN_FAILED) {
+							loginSuccess.put("success", false);
+							loginSuccess.put("notfound", true);
+
+						}
+						return null;
+					}
+
+					@Override
+					protected void onPostExecute(Void result) {
+						// TODO Auto-generated method stub
+						super.onPostExecute(result);
+
+						dialog.dismiss();
+
+						// START ONPOST
+
+						if (connectionError) {
+							Dialog noConnection = new Dialog(Intro.this);
+							noConnection
+									.requestWindowFeature(Window.FEATURE_NO_TITLE);
+							noConnection
+									.setContentView(R.layout.dialog_no_connection);
+							noConnection
+									.getWindow()
+									.setBackgroundDrawableResource(
+											R.drawable.dialog_rounded_corner_light_black);
+							noConnection.show();
+							noConnection.setCancelable(true);
+						} else
+							controlAfterLogin();
+
+						// END ONPOST
+					}
+
+				}.execute();
+			}
 		}
 	}
 

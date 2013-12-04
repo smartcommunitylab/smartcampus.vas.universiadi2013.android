@@ -288,7 +288,7 @@ public class Booking extends FragmentActivity implements ILocation {
 						public void onCameraChange(CameraPosition position) {
 							// TODO Auto-generated method stub
 							mMappa.animateCamera(CameraUpdateFactory
-									.newLatLngZoom(mMyMarker, 1));
+									.newLatLngZoom(mMyMarker, 3));
 							mMappa.setOnCameraChangeListener(null);
 						}
 					});

@@ -211,8 +211,8 @@ public class ResultSearch extends Activity {
 								ArrayList<POI> mPOICorrelati = new ArrayList<POI>();
 								for (int j = 0; j < poi.length(); j++) {
 									JSONObject poiObj = poi.getJSONObject(j);
-									String address=poiObj.getJSONObject("poi").getString("street");
-									if(poiObj.getJSONObject("poi").has("city") && poiObj.getJSONObject("poi").getString("city").compareTo("null")!=0){
+									String address=poiObj.getString("street");
+									if(poiObj.has("city") && poiObj.getString("city").compareTo("null")!=0){
 										address+=","+poiObj.getJSONObject("poi").getString("city");
 									}
 									mPOICorrelati.add(new POI(null, poiObj
