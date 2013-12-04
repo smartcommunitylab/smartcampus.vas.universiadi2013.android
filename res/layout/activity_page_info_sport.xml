@@ -79,7 +79,7 @@
             android:id="@+id/lista_specialita"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView1"
+            android:layout_below="@+id/text_hint_login"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:listSelector="@android:color/transparent" >
         </ListView>
@@ -96,7 +96,7 @@
             android:visibility="gone" />
 
         <smartcampus.android.template.standalone.Utilities.FontTextView
-            android:id="@+id/textView1"
+            android:id="@+id/text_hint_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"

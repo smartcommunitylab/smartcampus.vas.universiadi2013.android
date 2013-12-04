@@ -80,14 +80,14 @@
                         android:id="@+id/img_credits_logo_smartcampus"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/textView1"
+                        android:layout_below="@+id/text_hint_login"
                         android:layout_centerHorizontal="true"
                         android:layout_centerInParent="false"
                         android:adjustViewBounds="true"
                         android:src="@drawable/logo_smartcampus" />
 
                     <smartcampus.android.template.standalone.Utilities.FontTextView
-                        android:id="@+id/textView1"
+                        android:id="@+id/text_hint_login"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="false"

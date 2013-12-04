@@ -74,6 +74,7 @@
     <string name="CREDITS_SVILUPPATA">Sviluppata da</string>
     <string name="POI_CATEGORIA">Categoria:</string>
     <string name="NESSUNA_ROUTE">Nessuna route disponibile</string>
+    <string name="HINT_LOGIN">Usa le credenziali stampate sul retro del tuo badge</string>
     
 
     <!-- POI String -->

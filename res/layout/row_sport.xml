@@ -27,7 +27,7 @@
         android:id="@+id/relativeLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/textView1"
+        android:layout_alignBottom="@id/text_hint_login"
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/image_atleta"
         android:layout_toRightOf="@+id/image_sport_search" >
@@ -45,7 +45,7 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/text_hint_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
