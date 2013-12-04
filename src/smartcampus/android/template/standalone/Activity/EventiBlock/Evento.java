@@ -334,9 +334,11 @@ public class Evento extends Activity {
 													mAdapter.notifyDataSetChanged();
 													mListaEventi
 															.setAdapter(mAdapter);
-												} else
+												} else{
 													((TextView) findViewById(R.id.text_nessun_evento))
 															.setVisibility(View.VISIBLE);
+													mAdapter.clear();
+												}
 											}
 											// END ONPOST
 										}
