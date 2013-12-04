@@ -329,8 +329,6 @@ public class FilterCalendarioActivity extends Activity {
 																DialogInterface dialog,
 																int id) {
 															dialog.dismiss();
-
-															startCalendar();
 														}
 													});
 											builder.create().show();
