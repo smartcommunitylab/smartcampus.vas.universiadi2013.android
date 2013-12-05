@@ -75,6 +75,7 @@
     <string name="POI_CATEGORIA">Categoria:</string>
     <string name="NESSUNA_ROUTE">Nessuna route disponibile</string>
     <string name="HINT_LOGIN">Usa le credenziali stampate sul retro del tuo badge</string>
+    <string name="DATO_NON_DISPONIBILE">Dato non disponibile</string>
     
 
     <!-- POI String -->

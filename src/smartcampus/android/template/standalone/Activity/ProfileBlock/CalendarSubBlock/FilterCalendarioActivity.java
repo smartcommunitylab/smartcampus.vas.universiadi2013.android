@@ -45,6 +45,8 @@ public class FilterCalendarioActivity extends Activity {
 
 	private Spinner mSpinnerLuogo;
 	private Spinner mSpinnerCategoria;
+	private Spinner mSpinnerDataTo;
+	private Spinner mSpinnerDataFrom;
 
 	private SimpleSpinnerAdapter mAdapter;
 
@@ -72,7 +74,7 @@ public class FilterCalendarioActivity extends Activity {
 	private void startCalendar() {
 		new AsyncTask<Void, Void, Void>() {
 			private Dialog dialog;
-			private ArrayList<FunzioneObj> listCategoria;
+			// private ArrayList<FunzioneObj> listCategoria;
 			private ArrayList<FunzioneObj> listPersonalCategoria;
 			private Map<String, Object> mMapResult;
 
@@ -103,12 +105,9 @@ public class FilterCalendarioActivity extends Activity {
 			@Override
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
-				mMapResult = ManagerData.getCategorieVolontari();
+				mMapResult = ManagerData.getFunzioneForUser(UserConstant
+						.getUser());
 				if (!(Boolean) (mMapResult.get("connectionError"))) {
-					listCategoria = (ArrayList<FunzioneObj>) mMapResult
-							.get("params");
-					mMapResult = ManagerData.getFunzioneForUser(UserConstant
-							.getUser());
 					listPersonalCategoria = (ArrayList<FunzioneObj>) mMapResult
 							.get("params");
 				}
@@ -145,12 +144,20 @@ public class FilterCalendarioActivity extends Activity {
 				} else {
 
 					final ArrayList<Long> mSettimana = new ArrayList<Long>();
-					for (int i = 0; i < 7; i++)
-						mSettimana.add(Calendar.getInstance().getTimeInMillis()
-								+ (i * 3600 * 24 * 1000));
+
+					Calendar cal = Calendar.getInstance(Locale.getDefault());
+					cal.set(2013, Calendar.DECEMBER, 23, 0, 0);
+					long date = cal.getTimeInMillis();
+					cal.set(2013, Calendar.DECEMBER,
+							cal.get(Calendar.DAY_OF_WEEK_IN_MONTH) + 1, 0, 0);
+					long now = cal.getTimeInMillis();
+					int daysLeft = (int) ((date - now) / (3600 * 24 * 1000));
+
+					for (int i = 0; i < daysLeft; i++)
+						mSettimana.add(now + (i * 3600 * 24 * 1000));
 
 					filterDataFrom = mSettimana.get(0);
-					final Spinner mSpinnerDataFrom = (Spinner) findViewById(R.id.spinner_cal_data_from);
+					mSpinnerDataFrom = (Spinner) findViewById(R.id.spinner_cal_data_from);
 					mSpinnerDataFrom.setSelection(0, true);
 					mSpinnerDataFrom.setAdapter(new SpinnerAdapter(
 							FilterCalendarioActivity.this, mSettimana));
@@ -163,6 +170,7 @@ public class FilterCalendarioActivity extends Activity {
 									// TODO Auto-generated method stub
 									filterDataFrom = mSettimana.get(arg2);
 
+									mSpinnerDataTo.setSelection(arg2);
 									// reloadCalendario();
 								}
 
@@ -176,7 +184,7 @@ public class FilterCalendarioActivity extends Activity {
 							});
 
 					filterDataTo = mSettimana.get(0);
-					final Spinner mSpinnerDataTo = (Spinner) findViewById(R.id.spinner_cal_data_to);
+					mSpinnerDataTo = (Spinner) findViewById(R.id.spinner_cal_data_to);
 					mSpinnerDataTo.setSelection(0, true);
 					mSpinnerDataTo.setAdapter(new SpinnerAdapter(
 							FilterCalendarioActivity.this, mSettimana));
@@ -220,13 +228,8 @@ public class FilterCalendarioActivity extends Activity {
 								public void onItemSelected(AdapterView<?> arg0,
 										View arg1, int arg2, long arg3) {
 									// TODO Auto-generated method stub
-									if (filterPersonale
-											.equalsIgnoreCase("Turni personali"))
-										filterFunzione = listPersonalCategoria
-												.get(arg2);
-									else
-										filterFunzione = listCategoria
-												.get(arg2);
+									filterFunzione = listPersonalCategoria
+											.get(arg2);
 								}
 
 								@Override
@@ -256,40 +259,24 @@ public class FilterCalendarioActivity extends Activity {
 										View arg1, int arg2, long arg3) {
 									// TODO Auto-generated method stub
 									filterPersonale = listPersonale.get(arg2);
-									if (filterPersonale
-											.equalsIgnoreCase("Turni personali")) {
-										ArrayList<String> simplePersonalListCategoria = new ArrayList<String>();
-										for (int i = 0; i < listPersonalCategoria
-												.size(); i++) {
-											String[] funzioneTokenized = listPersonalCategoria
-													.get(i).getFunzione()
-													.split(":");
-											simplePersonalListCategoria
-													.add(funzioneTokenized[funzioneTokenized.length - 1]);
-										}
-
-										mAdapter = new SimpleSpinnerAdapter(
-												getApplicationContext(),
-												simplePersonalListCategoria);
-										mSpinnerCategoria.setAdapter(mAdapter);
-										mAdapter.notifyDataSetChanged();
-										filterFunzione = listPersonalCategoria
-												.get(0);
-									} else {
-										ArrayList<String> simpleListCategoria = new ArrayList<String>();
-										for (int i = 0; i < listCategoria
-												.size(); i++)
-											simpleListCategoria
-													.add(listCategoria.get(i)
-															.getFunzione());
-
-										mAdapter = new SimpleSpinnerAdapter(
-												getApplicationContext(),
-												simpleListCategoria);
-										mSpinnerCategoria.setAdapter(mAdapter);
-										mAdapter.notifyDataSetChanged();
-										filterFunzione = listCategoria.get(0);
+									ArrayList<String> simplePersonalListCategoria = new ArrayList<String>();
+									for (int i = 0; i < listPersonalCategoria
+											.size(); i++) {
+										String[] funzioneTokenized = listPersonalCategoria
+												.get(i).getFunzione()
+												.split(":");
+										simplePersonalListCategoria
+												.add(funzioneTokenized[funzioneTokenized.length - 1]);
 									}
+
+									mAdapter = new SimpleSpinnerAdapter(
+											getApplicationContext(),
+											simplePersonalListCategoria);
+									mSpinnerCategoria.setAdapter(mAdapter);
+									mAdapter.notifyDataSetChanged();
+									filterFunzione = listPersonalCategoria
+											.get(0);
+
 								}
 
 								@Override

@@ -214,9 +214,11 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 				if (mEvento.getLatGPS() != 0 && mEvento.getLngGPS() != 0) {
 					mMarkerEvento = new LatLng(mEvento.getLatGPS(),
 							mEvento.getLngGPS());
-					mMarkerUser = new LatLng(mMapUtilities
-							.getLastKnownLocation().getLatitude(),
-							mMapUtilities.getLastKnownLocation().getLongitude());
+					if (mMapUtilities.getLastKnownLocation() != null)
+						mMarkerUser = new LatLng(mMapUtilities
+								.getLastKnownLocation().getLatitude(),
+								mMapUtilities.getLastKnownLocation()
+										.getLongitude());
 
 					if (mMarkerUser != null)
 						mRouteText = parseGoogleDescRoute(new double[] {

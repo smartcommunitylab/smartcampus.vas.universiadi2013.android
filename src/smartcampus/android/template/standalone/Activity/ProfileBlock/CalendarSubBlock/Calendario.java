@@ -43,10 +43,14 @@ public class Calendario extends Activity implements ScrollViewListener {
 	private ArrayList<Turno> listTurni;
 	private ExtendedTurno[] listaOrari;
 
+	private FunzioneObj funzione;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_calendario);
+
+		funzione = (FunzioneObj) (getIntent().getSerializableExtra("funzione"));
 
 		new AsyncTask<Void, Void, Void>() {
 			private Dialog dialog;
@@ -86,9 +90,7 @@ public class Calendario extends Activity implements ScrollViewListener {
 				mResult = ManagerData.getTurniForDataAndFunzione(getIntent()
 						.getLongExtra("dataFrom", 0),
 						getIntent().getLongExtra("dataTo", 0), getIntent()
-								.getStringExtra("personale"),
-						(FunzioneObj) (getIntent()
-								.getSerializableExtra("funzione")));
+								.getStringExtra("personale"), funzione);
 				if (!((Boolean) mResult.get("connectionError")))
 					listTurni = (ArrayList<Turno>) mResult.get("params");
 				listaOrari = parseTurno(listTurni);
@@ -414,10 +416,6 @@ public class Calendario extends Activity implements ScrollViewListener {
 
 		int numeroTurno = 0;
 
-		ArrayList<Utente> mUtentiFake = new ArrayList<Utente>();
-		mUtentiFake.add(new Utente("Gabriele", "Zacco", "", "", new byte[1],
-				"000", "", "", ""));
-
 		for (Turno turno : list) {
 
 			tmp.set(Calendar.HOUR, 8);
@@ -434,13 +432,15 @@ public class Calendario extends Activity implements ScrollViewListener {
 				String stringIndex = dateFormatter.format(index);
 				if (stringIndex.equalsIgnoreCase(turno.getOraInizio())
 						&& !startTurno) {
-					mResult[i] = new ExtendedTurno((Date) index.clone(),
-							mUtentiFake.size(), mUtentiFake, numeroTurno);
+					mResult[i] = new ExtendedTurno((Date) index.clone(), turno
+							.getVolontari().size(), turno.getVolontari(),
+							numeroTurno);
 					startTurno = true;
 				} else if (!stringIndex.equalsIgnoreCase(turno.getOraFine())
 						&& startTurno) {
-					mResult[i] = new ExtendedTurno((Date) index.clone(),
-							mUtentiFake.size(), mUtentiFake, numeroTurno);
+					mResult[i] = new ExtendedTurno((Date) index.clone(), turno
+							.getVolontari().size(), turno.getVolontari(),
+							numeroTurno);
 				} else if (stringIndex.equalsIgnoreCase(turno.getOraFine())) {
 					startTurno = false;
 				}
@@ -527,9 +527,11 @@ public class Calendario extends Activity implements ScrollViewListener {
 			((TextView) rowView.findViewById(R.id.text_anagrafiche_volontario))
 					.setText(values.get(position).getNome());
 			((TextView) rowView.findViewById(R.id.text_categoria_volontario))
-					.setText("Categoria: " + values.get(position).getAmbito());
+					.setText(getString(R.string.PROFILO_CATEGORIA) + " "
+							+ funzione.getFunzione());
 			((TextView) rowView.findViewById(R.id.text_ruolo_volontario))
-					.setText("Ruolo: " + values.get(position).getRuolo());
+					.setText(getString(R.string.PROFILO_RUOLO) + " "
+							+ getString(R.string.DATO_NON_DISPONIBILE));
 
 			return rowView;
 		}

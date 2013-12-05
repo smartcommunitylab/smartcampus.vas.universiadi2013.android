@@ -72,6 +72,7 @@
     <string name="POI_CATEGORIA">Category:</string>
     <string name="NESSUNA_ROUTE">No route available</string>
     <string name="HINT_LOGIN">Use the credentials printed on the back of your badge</string>
+    <string name="DATO_NON_DISPONIBILE">Not available</string>
     
     <!-- POI String -->
     <string name="CATEGORIA_SPORT">Sport</string>

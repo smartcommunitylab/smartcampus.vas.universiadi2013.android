@@ -6,10 +6,12 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -762,7 +764,7 @@ public class ManagerData {
 		Map<String, Object> mMapRequest = null;
 		Long date = dateFrom;
 		while (date <= dateTo) {
-			if (personale.equalsIgnoreCase("Turni personale")) {
+			if (personale.equalsIgnoreCase("Turni personali")) {
 				mMapRequest = mRest.restRequest(
 						new String[] { mContext.getString(R.string.URL_TURNI)
 								+ date + "/" + funzione.getId() + "/"
@@ -803,29 +805,46 @@ public class ManagerData {
 			if (arrayTurni.length() != 0) {
 				if (!((Boolean) mMapRequest.get("connectionError"))) {
 					for (int i = 0; i < arrayTurni.length(); i++) {
-						JSONObject obj;
-						obj = arrayTurni.getJSONObject(i);
+						JSONArray objArray;
+						objArray = new JSONArray(arrayTurni.getString(i));
 
-						SimpleDateFormat dateFormatter = new SimpleDateFormat(
-								"HH:mm", Locale.getDefault());
-						JSONArray arrayVolontari = new JSONArray(
-								obj.getString("volontari"));
-						ArrayList<Utente> mListaVolontari = new ArrayList<Utente>();
-						for (int j = 0; j < arrayVolontari.length(); j++) {
-							JSONObject objUser = arrayVolontari
-									.getJSONObject(j);
-							mListaVolontari.add(new Utente(objUser.getString(
-									"label").split(" ")[1], objUser.getString(
-									"label").split(" ")[0], null, null,
-									new byte[1], null, null, objUser
-											.getString("uuid"), obj
-											.getString("id")));
+						for (int j = 0; j < objArray.length(); j++) {
+
+							JSONObject obj = objArray.getJSONObject(j);
+
+							JSONArray arrayVolontari = new JSONArray(
+									obj.getString("volontari"));
+							ArrayList<Utente> mListaVolontari = new ArrayList<Utente>();
+							for (int k = 0; k < arrayVolontari.length(); k++) {
+								JSONObject objUser = arrayVolontari
+										.getJSONObject(k);
+								mListaVolontari
+										.add(new Utente(objUser.getString(
+												"label").split(" ")[1],
+												objUser.getString("label")
+														.split(" ")[0], null,
+												null, new byte[1], null, null,
+												null, Integer.toString(objUser
+														.getInt("id"))));
+							}
+							SimpleDateFormat dateFormatter = new SimpleDateFormat(
+									"yyyyMMDDHHmm", Locale.getDefault());
+							Date dateParsed = null;
+							try {
+								dateParsed = dateFormatter.parse(Long
+										.toString(obj.getLong("start")));
+							} catch (ParseException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							SimpleDateFormat hourFormatter = new SimpleDateFormat(
+									"HH:mm", Locale.getDefault());
+							Turno turno = new Turno(dateParsed.getTime(),
+									mListaVolontari, funzione.getFunzione(),
+									hourFormatter.format(dateParsed),
+									hourFormatter.format(dateParsed));
+							mListaTurni.add(turno);
 						}
-						Turno turno = new Turno(obj.getLong("start"),
-								mListaVolontari, funzione.getFunzione(),
-								dateFormatter.format(obj.getLong("start")),
-								dateFormatter.format(obj.getLong("end")));
-						mListaTurni.add(turno);
 					}
 
 				}
