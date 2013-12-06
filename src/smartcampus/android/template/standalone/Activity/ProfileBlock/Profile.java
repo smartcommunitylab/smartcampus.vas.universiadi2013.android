@@ -91,17 +91,34 @@ public class Profile extends Activity {
 				user = UserConstant.getUser();
 				Log.i("", user.getId());
 				mMapUserData = ManagerData.getFunzioneForUser(user);
-				if (!((Boolean) mMapUserData.get("connectionError"))) {
+				if (!((Boolean) mMapUserData.get("connectionError")))
 					funzione = (ArrayList<FunzioneObj>) mMapUserData
 							.get("params");
-
-					ArrayList<String> funzioneString = new ArrayList<String>();
-					for (int i = 0; i < funzione.size(); i++)
-						funzioneString.add(funzione.get(i).getFunzione());
-					mListaSuperiori = (ArrayList<UtenteSuperiore>) (ManagerData
-							.getSuperioriForUser(user, funzioneString.get(0))
-							.get("params"));
-				}
+				//
+				// ArrayList<String> funzioneString = new ArrayList<String>();
+				// for (int i = 0; i < funzione.size(); i++)
+				// funzioneString.add(funzione.get(i).getFunzione());
+				//
+				// ArrayList<UtenteSuperiore> listaTmp =
+				// (ArrayList<UtenteSuperiore>) (ManagerData
+				// .getSuperioriForUser(user, funzioneString.get(0))
+				// .get("params"));
+				// for (int i = 0; i < listaTmp.size(); i++)
+				// if (!mListaSuperiori.contains(listaTmp.get(i))
+				// && !listaTmp
+				// .get(i)
+				// .getCognome()
+				// .equalsIgnoreCase(
+				// UserConstant.getUser()
+				// .getCognome())
+				// && !listaTmp
+				// .get(i)
+				// .getNome()
+				// .equalsIgnoreCase(
+				// UserConstant.getUser()
+				// .getNome()))
+				// mListaSuperiori.add(listaTmp.get(i));
+				// }
 				return null;
 			}
 
@@ -139,6 +156,8 @@ public class Profile extends Activity {
 					((Spinner) findViewById(R.id.spinner_multiple_funzioni))
 							.setAdapter(new SpinnerAdapter(Profile.this,
 									funzione));
+					((Spinner) findViewById(R.id.spinner_multiple_funzioni))
+							.setSelection(0);
 					((Spinner) findViewById(R.id.spinner_multiple_funzioni))
 							.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -185,34 +204,49 @@ public class Profile extends Activity {
 												Void... params) {
 											// TODO Auto-generated method
 											// stub
-											mMapListaSuperiori = ManagerData
-													.getSuperioriForUser(
-															user,
-															funzione.get(arg2)
-																	.getFunzione());
-											if (!((Boolean) mMapListaSuperiori
-													.get("connectionError"))) {
-												mListaSuperiori = (ArrayList<UtenteSuperiore>) mMapListaSuperiori
-														.get("params");
-											}
+											user = UserConstant.getUser();
+											Log.i("", user.getId());
 											mMapUserData = ManagerData
 													.getFunzioneForUser(user);
 											if (!((Boolean) mMapUserData
 													.get("connectionError"))) {
 												funzione = (ArrayList<FunzioneObj>) mMapUserData
 														.get("params");
+
 												ArrayList<String> funzioneString = new ArrayList<String>();
 												for (int i = 0; i < funzione
 														.size(); i++)
 													funzioneString.add(funzione
 															.get(i)
 															.getFunzione());
-												mListaSuperiori = (ArrayList<UtenteSuperiore>) (ManagerData
+
+												ArrayList<UtenteSuperiore> listaTmp = (ArrayList<UtenteSuperiore>) (ManagerData
 														.getSuperioriForUser(
 																user,
 																funzioneString
-																		.get(0))
+																		.get(arg2))
 														.get("params"));
+												for (int i = 0; i < listaTmp
+														.size(); i++)
+													if (!mListaSuperiori
+															.contains(listaTmp
+																	.get(i))
+															&& !listaTmp
+																	.get(i)
+																	.getCognome()
+																	.equalsIgnoreCase(
+																			UserConstant
+																					.getUser()
+																					.getCognome())
+															&& !listaTmp
+																	.get(i)
+																	.getNome()
+																	.equalsIgnoreCase(
+																			UserConstant
+																					.getUser()
+																					.getNome()))
+														mListaSuperiori.add(listaTmp
+																.get(i));
 											}
 											return null;
 										}

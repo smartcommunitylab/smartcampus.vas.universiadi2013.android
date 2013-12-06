@@ -117,20 +117,26 @@ public class Evento extends Activity {
 				} else {
 					mContainer = (LinearLayout) findViewById(R.id.container_scroll_date);
 
-					for (int i = 0; i < 12; i++) {
+					Calendar cal = Calendar.getInstance(Locale.getDefault());
+					cal.set(2013, Calendar.DECEMBER, 22, 0, 0);
+					long date = cal.getTimeInMillis();
+					cal.set(2013, Calendar.DECEMBER,
+							cal.get(Calendar.DAY_OF_WEEK_IN_MONTH) + 1, 0, 0);
+					long now = cal.getTimeInMillis();
+					int daysLeft = (int) ((date - now) / (3600 * 24 * 1000));
+
+					for (int i = 0; i < daysLeft; i++) {
 						Calendar mCal = Calendar.getInstance();
 						mCal.setTimeInMillis(Calendar.getInstance()
 								.getTimeInMillis() + 86400000 * i);
 
-						RelativeLayout mCell = new RelativeLayout(
-								Evento.this);
+						RelativeLayout mCell = new RelativeLayout(Evento.this);
 						mCell.setTag(mCal.getTimeInMillis());
 						mCell.setLayoutParams(new LayoutParams(
 								LayoutParams.WRAP_CONTENT,
 								LayoutParams.WRAP_CONTENT));
 
-						final ImageView mImgCella = new ImageView(
-								Evento.this);
+						final ImageView mImgCella = new ImageView(Evento.this);
 						mImgCella
 								.setImageResource((i == 0) ? R.drawable.cell_event_press
 										: R.drawable.cell_event);
@@ -142,33 +148,27 @@ public class Evento extends Activity {
 
 						FontTextView mData = new FontTextView(Evento.this);
 						mData.setTag(-3);
-						mData.setText(Integer.toString(mCal
-								.get(Calendar.DATE)));
+						mData.setText(Integer.toString(mCal.get(Calendar.DATE)));
 						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 								LayoutParams.WRAP_CONTENT,
 								LayoutParams.WRAP_CONTENT);
 						params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 						params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-						params.setMargins(
-								0,
-								(int) TypedValue.applyDimension(
-										TypedValue.COMPLEX_UNIT_DIP, 7,
-										getResources().getDisplayMetrics()),
-								0, 0);
+						params.setMargins(0, (int) TypedValue.applyDimension(
+								TypedValue.COMPLEX_UNIT_DIP, 7, getResources()
+										.getDisplayMetrics()), 0, 0);
 						mData.setLayoutParams(params);
 						mData.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 45);
 						mData.setTextColor((i == 0) ? Color
-								.parseColor("#FFFFFF") : Color.argb(255,
-								50, 147, 172));
+								.parseColor("#FFFFFF") : Color.argb(255, 50,
+								147, 172));
 
 						mCell.addView(mData);
 
 						FontTextView mGiorno = new FontTextView(Evento.this);
 						mGiorno.setTag(-2);
-						SimpleDateFormat format = new SimpleDateFormat(
-								"MMMM");
-						String formattedDate = format
-								.format(mCal.getTime());
+						SimpleDateFormat format = new SimpleDateFormat("MMMM");
+						String formattedDate = format.format(mCal.getTime());
 						mGiorno.setText(formattedDate.substring(0, 1)
 								.toUpperCase() + formattedDate.substring(1));
 						params = new RelativeLayout.LayoutParams(
@@ -176,17 +176,14 @@ public class Evento extends Activity {
 								LayoutParams.WRAP_CONTENT);
 						params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 						params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-						params.setMargins(
-								0,
-								(int) TypedValue.applyDimension(
-										TypedValue.COMPLEX_UNIT_DIP, 50,
-										getResources().getDisplayMetrics()),
-								0, 0);
+						params.setMargins(0, (int) TypedValue.applyDimension(
+								TypedValue.COMPLEX_UNIT_DIP, 50, getResources()
+										.getDisplayMetrics()), 0, 0);
 						mGiorno.setLayoutParams(params);
 						mGiorno.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
 						mGiorno.setTextColor((i == 0) ? Color
-								.parseColor("#FFFFFF") : Color.argb(255,
-								50, 147, 172));
+								.parseColor("#FFFFFF") : Color.argb(255, 50,
+								147, 172));
 
 						mCell.addView(mGiorno);
 
@@ -206,9 +203,8 @@ public class Evento extends Activity {
 
 									for (int i = 0; i < mContainer
 											.getChildCount(); i++) {
-										if ((Long) (mContainer
-												.getChildAt(i).getTag()) != v
-												.getTag()) {
+										if ((Long) (mContainer.getChildAt(i)
+												.getTag()) != v.getTag()) {
 											((ImageView) (((RelativeLayout) (mContainer
 													.getChildAt(i)))
 													.findViewWithTag(-4)))
@@ -224,14 +220,11 @@ public class Evento extends Activity {
 													.findViewWithTag(-3)).setTextColor(Color
 													.parseColor("#3293AC"));
 										} else {
-											((ImageView) v
-													.findViewWithTag(-4))
+											((ImageView) v.findViewWithTag(-4))
 													.setImageResource(R.drawable.cell_event_press);
-											((TextView) v
-													.findViewWithTag(-2)).setTextColor(Color
+											((TextView) v.findViewWithTag(-2)).setTextColor(Color
 													.parseColor("#FFFFFF"));
-											((TextView) v
-													.findViewWithTag(-3)).setTextColor(Color
+											((TextView) v.findViewWithTag(-3)).setTextColor(Color
 													.parseColor("#FFFFFF"));
 										}
 									}
@@ -285,8 +278,7 @@ public class Evento extends Activity {
 										}
 
 										@Override
-										protected void onPostExecute(
-												Void result) {
+										protected void onPostExecute(Void result) {
 											// TODO Auto-generated method
 											// stub
 											super.onPostExecute(result);
@@ -334,7 +326,7 @@ public class Evento extends Activity {
 													mAdapter.notifyDataSetChanged();
 													mListaEventi
 															.setAdapter(mAdapter);
-												} else{
+												} else {
 													((TextView) findViewById(R.id.text_nessun_evento))
 															.setVisibility(View.VISIBLE);
 													mAdapter.clear();
@@ -352,30 +344,27 @@ public class Evento extends Activity {
 						});
 					}
 					mListaEventi = (ListView) findViewById(R.id.list_eventi);
-					mAdapter = new ListArrayAdapter(
-							getApplicationContext(), mLista);
+					mAdapter = new ListArrayAdapter(getApplicationContext(),
+							mLista);
 					mListaEventi.setAdapter(mAdapter);
-
 
 					mListaEventi
 							.setOnItemClickListener(new OnItemClickListener() {
 
 								@Override
-								public void onItemClick(
-										AdapterView<?> arg0, View arg1,
-										int arg2, long arg3) {
+								public void onItemClick(AdapterView<?> arg0,
+										View arg1, int arg2, long arg3) {
 									// TODO Auto-generated method stub
 									Intent mCaller = new Intent(arg1
 											.getContext(), InfoEventi.class);
-									mCaller.putExtra("evento",
-											mLista.get(arg2));
+									mCaller.putExtra("evento", mLista.get(arg2));
 									startActivity(mCaller);
 								}
 							});
-					
+
 					if (mLista.size() != 0) {
 						((TextView) findViewById(R.id.text_nessun_evento))
-						.setVisibility(View.GONE);
+								.setVisibility(View.GONE);
 					} else
 						((TextView) findViewById(R.id.text_nessun_evento))
 								.setVisibility(View.VISIBLE);
