@@ -148,12 +148,11 @@ public class FilterCalendarioActivity extends Activity {
 					Calendar cal = Calendar.getInstance(Locale.getDefault());
 					cal.set(2013, Calendar.DECEMBER, 23, 0, 0);
 					long date = cal.getTimeInMillis();
-					cal.set(2013, Calendar.DECEMBER,
-							cal.get(Calendar.DAY_OF_WEEK_IN_MONTH) + 1, 0, 0);
-					long now = cal.getTimeInMillis();
+					Calendar nowCal = Calendar.getInstance(Locale.getDefault());
+					long now = nowCal.getTimeInMillis();
 					int daysLeft = (int) ((date - now) / (3600 * 24 * 1000));
 
-					for (int i = 0; i < daysLeft; i++)
+					for (int i = 0; i <= daysLeft; i++)
 						mSettimana.add(now + (i * 3600 * 24 * 1000));
 
 					filterDataFrom = mSettimana.get(0);

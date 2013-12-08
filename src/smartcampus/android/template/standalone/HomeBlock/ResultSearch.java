@@ -190,16 +190,22 @@ public class ResultSearch extends Activity {
 											.getJSONObject("description")
 											.getString("IT");
 								}
-								String address=obj.getJSONObject("poi").getString("street");
-								if(obj.getJSONObject("poi").has("city") && obj.getJSONObject("poi").getString("city").compareTo("null")!=0){
-									address+=","+obj.getJSONObject("poi").getString("city");
+								String address = obj.getJSONObject("poi")
+										.getString("street");
+								if (obj.getJSONObject("poi").has("city")
+										&& obj.getJSONObject("poi")
+												.getString("city")
+												.compareTo("null") != 0) {
+									address += ","
+											+ obj.getJSONObject("poi")
+													.getString("city");
 								}
 								POI poi = new POI(null, obj.getString("title"),
 										obj.getString("type"), description, obj
 												.getJSONArray("location")
 												.getDouble(0), obj
 												.getJSONArray("location")
-												.getDouble(1),address);
+												.getDouble(1), address);
 								poi.getIndirizzo();
 								mListaPOI.add(poi);
 							}
@@ -211,23 +217,37 @@ public class ResultSearch extends Activity {
 								ArrayList<POI> mPOICorrelati = new ArrayList<POI>();
 								for (int j = 0; j < poi.length(); j++) {
 									JSONObject poiObj = poi.getJSONObject(j);
-									String address=poiObj.getString("street");
-									if(poiObj.has("city") && poiObj.getString("city").compareTo("null")!=0){
-										address+=","+poiObj.getJSONObject("poi").getString("city");
+									String address = poiObj.getString("street");
+									if (poiObj.has("city")
+											&& poiObj.getString("city")
+													.compareTo("null") != 0) {
+										address += ","
+												+ poiObj.getJSONObject("poi")
+														.getString("city");
 									}
 									mPOICorrelati.add(new POI(null, poiObj
 											.getString("title"), null, null,
 											poiObj.getJSONArray("GPS")
 													.getDouble(0), poiObj
 													.getJSONArray("GPS")
-													.getDouble(1),address));
+													.getDouble(1), address));
 								}
-								Sport sport = new Sport(obj.getString("nome"),
+								String descrizione = null;
+								String nome = null;
+								if (Locale.getDefault().toString()
+										.equalsIgnoreCase("it_IT")) {
+									descrizione = obj.getString("descrizione");
+									nome = obj.getString("nome");
+								} else {
+									descrizione = obj
+											.getString("descrizioneEn");
+									nome = obj.getString("nomeEn");
+								}
+								Sport sport = new Sport(nome,
 										SportImageConstant.resourcesFromID(
 												obj.getInt("foto"),
 												ResultSearch.this),
-										obj.getString("descrizione"),
-										obj.getString("atleti"),
+										descrizione, obj.getString("atleti"),
 										obj.getString("specialita"),
 										mPOICorrelati);
 

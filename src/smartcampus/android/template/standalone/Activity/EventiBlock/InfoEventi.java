@@ -584,7 +584,9 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 		builder.include(mMyMarker);
 		LatLngBounds bounds = builder.build();
 
-		mMappa.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+		if (mMappa != null)
+			mMappa.animateCamera(CameraUpdateFactory
+					.newLatLngBounds(bounds, 50));
 		// mMappa.animateCamera(CameraUpdateFactory.newLatLng(new
 		// LatLng(location
 		// .getLatitude(), location.getLongitude())));

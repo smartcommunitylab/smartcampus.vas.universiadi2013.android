@@ -60,6 +60,7 @@
     <string name="PLANNER_A">A: </string>
     <string name="PLANNER_VISUALIZZA">Visualizza: </string>
     <string name="PLANNER_FUNZIONE">Funzione: </string>
+    <string name="PLANNER_VOLONTARIO">volontario/i</string>
     <string name="FAQ_DOMANDA">Domanda: </string>
     <string name="FAQ_RISULTATI">Risultati: </string>
     <string name="FAQ_ALL_RISULTATI">Tutti i risultati: </string>
@@ -76,26 +77,18 @@
     <string name="NESSUNA_ROUTE">Nessuna route disponibile</string>
     <string name="HINT_LOGIN">Usa le credenziali stampate sul retro del tuo badge</string>
     <string name="DATO_NON_DISPONIBILE">Dato non disponibile</string>
-    
 
     <!-- POI String -->
     <string name="CATEGORIA_SPORT">Sport</string>
- 
     <string name="CATEGORIA_STADIO_GHIACCIO">Stadio del Ghiaccio</string>
     <string name="CATEGORIA_SNOWPARK">Snowpark</string>
-
     <string name="CATEGORIA_CAMPO_SPORTIVO">Campo Sportivo</string>
-
     <string name="CATEGORIA_TEMPOLIBERO">Tempo Libero</string>
     <string name="CATEGORIA_DISCO">Disco</string>
-  
     <string name="CATEGORIA_WELLNESS">Wellness</string>
     <string name="CATEGORIA_PARCO">Parco</string>
-    
     <string name="CATEGORIA_MUSEO">Museo</string>
-  
     <string name="CATEGORIA_TEATRO">Teatro</string>
-
     <string name="CATEGORIA_MANGIARE">Mangiare</string>
     <string name="CATEGORIA_PIZZERIA">Pizzeria</string>
     <string name="CATEGORIA_RISTORANTE">Ristorante</string>
@@ -107,7 +100,6 @@
     <string name="CATEGORIA_DORMIRE">Dormire</string>
     <string name="CATEGORIA_HOTEL">Hotel</string>
     <string name="CATEGORIA_RESIDENCE">Residence</string>
-  
     <string name="CATEGORIA_GARNI">Garni</string>
     <string name="CATEGORIA_RIFUGIO">Rifugio</string>
     <string name="CATEGORIA_CAMPING">Camping</string>
@@ -115,30 +107,21 @@
     <string name="CATEGORIA_PARCHEGGIO">Parcheggio</string>
     <string name="CATEGORIA_STAZIONE_SERVIZIO">Stazione di Servizio</string>
     <string name="CATEGORIA_TAXI">Taxi</string>
-  
     <string name="CATEGORIA_AUTOSTAZIONE">Autostazione</string>
     <string name="CATEGORIA_FUNIVIA">Funivia</string>
     <string name="CATEGORIA_STAZIONE_TRENI">Stazione dei Treni</string>
     <string name="CATEGORIA_SERVIZIO_BICI">Noleggio Biciclette</string>
-  
     <string name="CATEGORIA_SERVIZI">Servizi</string>
     <string name="CATEGORIA_SERVIZI_SANITARI">Servizi Sanitari</string>
-   
     <string name="CATEGORIA_FARMACIA">Farmacia</string>
-   
     <string name="CATEGORIA_WIFI">Wi-Fi</string>
-   
     <string name="CATEGORIA_INFO">Info</string>
-   
     <string name="CATEGORIA_POSTA">Posta</string>
     <string name="CATEGORIA_BANCA">Banca</string>
     <string name="CATEGORIA_COMPRARE">Shopping</string>
-   
     <string name="CATEGORIA_SOUVENIR">Souvenir</string>
     <string name="CATEGORIA_MERCATO">Mercato</string>
-   
     <string name="CATEGORIA_TABACCHINO">Tabaccheria</string>
-   
     <string name="CONTATTO">Contatto</string>
     <string name="CHIUDI">Chiudi</string>
     <string name="CHIAMA">Chiama</string>
@@ -158,7 +141,6 @@
     <string name="CREDITS_MAIL">E-mail inviata da "Volontari WU 2013"</string>
     <string name="TICKETS_AVVISO">Stai lasciando l\'app e sarai autenticato diretamente sul sito di gestione dei ticket delle WU2013</string>
     <string name="TICKETS_NON_CHIEDERE">Non mostrare più questo avviso</string>
-    
     <string name="LOGIN_INSUCCESSO">Username o password non corretti</string>
     <string name="LOGIN_NON_COMPLETO">Completa i campi Username e Password</string>
     <!--  -->

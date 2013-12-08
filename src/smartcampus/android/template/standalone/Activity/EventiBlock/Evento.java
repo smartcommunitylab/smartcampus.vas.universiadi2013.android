@@ -118,7 +118,7 @@ public class Evento extends Activity {
 					mContainer = (LinearLayout) findViewById(R.id.container_scroll_date);
 
 					Calendar cal = Calendar.getInstance(Locale.getDefault());
-					cal.set(2013, Calendar.DECEMBER, 22, 0, 0);
+					cal.set(2013, Calendar.DECEMBER, 21, 0, 0);
 					long date = cal.getTimeInMillis();
 					cal.set(2013, Calendar.DECEMBER,
 							cal.get(Calendar.DAY_OF_WEEK_IN_MONTH) + 1, 0, 0);

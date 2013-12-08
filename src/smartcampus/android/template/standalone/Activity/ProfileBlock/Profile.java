@@ -339,6 +339,7 @@ public class Profile extends Activity {
 																				+ " "
 																				+ mUtente
 																						.getNome()
+																				+ " "
 																				+ getString(R.string.PROFILO_PHONE2)
 																				+ " "
 																				+ mUtente

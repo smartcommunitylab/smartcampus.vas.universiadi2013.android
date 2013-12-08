@@ -56,30 +56,37 @@ public class PageInfoEventi extends Fragment {
 			mDesc.setLayoutParams(new LinearLayout.LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0.5f));
 			mDesc.setTextColor(Color.parseColor("#3293AC"));
-			mDesc.setText(desc.substring(0, desc.indexOf("http:")));
-			mDesc.setGravity(Gravity.CENTER);
-			mContainer.addView(mDesc);
+			if (desc.indexOf("http:") != -1) {
+				mDesc.setText(desc.substring(0, desc.indexOf("http:")));
+				mDesc.setGravity(Gravity.CENTER);
+				mContainer.addView(mDesc);
 
-			final FontTextView mLink = new FontTextView(mView.getContext());
-			mLink.setLayoutParams(new LinearLayout.LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0.5f));
-			mLink.setTextColor(Color.parseColor("#3293AC"));
-			mLink.setText(desc.substring(desc.indexOf("http:"),
-					desc.length() - 1));
-			mLink.setGravity(Gravity.CENTER_HORIZONTAL);
-			mLink.setOnClickListener(new OnClickListener() {
+				final FontTextView mLink = new FontTextView(mView.getContext());
+				mLink.setLayoutParams(new LinearLayout.LayoutParams(
+						LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
+						0.5f));
+				mLink.setTextColor(Color.parseColor("#3293AC"));
+				mLink.setText(desc.substring(desc.indexOf("http:"),
+						desc.length() - 1));
+				mLink.setGravity(Gravity.CENTER_HORIZONTAL);
+				mLink.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					Intent browserIntent = new Intent(
-							android.content.Intent.ACTION_VIEW, Uri.parse(mLink
-									.getText().toString()));
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						Intent browserIntent = new Intent(
+								android.content.Intent.ACTION_VIEW, Uri
+										.parse(mLink.getText().toString()));
 
-					startActivity(browserIntent);
-				}
-			});
-			mContainer.addView(mLink);
+						startActivity(browserIntent);
+					}
+				});
+				mContainer.addView(mLink);
+			} else {
+				mDesc.setText(desc);
+				mDesc.setGravity(Gravity.CENTER);
+				mContainer.addView(mDesc);
+			}
 
 			break;
 		case 1:
