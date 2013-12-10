@@ -582,12 +582,12 @@ public class ManagerData {
 	}
 
 	public static Map<String, Object> getSuperioriForUser(Utente user,
-			String pathFunzione) {
+			String pathFunzione, String idFunzione) {
 		ArrayList<UtenteSuperiore> mListaSuperiori = new ArrayList<UtenteSuperiore>();
 		try {
 			Map<String, Object> mMapRequest = mRest.restRequest(
-					new String[] { "/utente/" + user.getId() + "/superiori" },
-					RestRequestType.GET);
+					new String[] { "/utente/" + user.getId() + "/superiori/"
+							+ idFunzione }, RestRequestType.GET);
 			Map<String, Object> mResult = new HashMap<String, Object>();
 			mResult.put("connectionError",
 					(Boolean) mMapRequest.get("connectionError"));
@@ -828,21 +828,24 @@ public class ManagerData {
 														.getInt("id"))));
 							}
 							SimpleDateFormat dateFormatter = new SimpleDateFormat(
-									"yyyyMMDDHHmm", Locale.getDefault());
-							Date dateParsed = null;
+									"yyyyMMddHHmm", Locale.getDefault());
+							Date dateStartParsed = null;
+							Date dateEndParsed = null;
 							try {
-								dateParsed = dateFormatter.parse(Long
+								dateStartParsed = dateFormatter.parse(Long
 										.toString(obj.getLong("start")));
+								dateEndParsed = dateFormatter.parse(Long
+										.toString(obj.getLong("end")));
 							} catch (ParseException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 							SimpleDateFormat hourFormatter = new SimpleDateFormat(
 									"HH:mm", Locale.getDefault());
-							Turno turno = new Turno(dateParsed.getTime(),
+							Turno turno = new Turno(dateStartParsed.getTime(),
 									mListaVolontari, funzione.getFunzione(),
-									hourFormatter.format(dateParsed),
-									hourFormatter.format(dateParsed));
+									hourFormatter.format(dateStartParsed),
+									hourFormatter.format(dateEndParsed));
 							mListaTurni.add(turno);
 						}
 					}

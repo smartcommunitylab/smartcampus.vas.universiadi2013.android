@@ -375,23 +375,19 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 
 						});
 
-						if (mMarkerEvento != null) {
-
-							LatLngBounds.Builder builder = new LatLngBounds.Builder();
-							builder.include(mMarkerUser);
+						LatLngBounds.Builder builder = new LatLngBounds.Builder();
+						if (mMarkerEvento != null)
 							builder.include(mMarkerEvento);
-							LatLngBounds bounds = builder.build();
-							mMappa.animateCamera(CameraUpdateFactory
-									.newLatLngBounds(bounds, 50));
+						if (mMarkerUser != null)
+							builder.include(mMarkerUser);
+						LatLngBounds bounds = builder.build();
+						mMappa.animateCamera(CameraUpdateFactory
+								.newLatLngBounds(bounds, 50));
 
-							// mDesc.setText(parseGoogleDescRoute(descRoute.get()));
-							mAdapter.fragments.add(new PageInfoEventi(1,
-									mRouteText));
-							mAdapter.notifyDataSetChanged();
-						} else
-							mMappa.animateCamera(CameraUpdateFactory
-									.newLatLng(new LatLng(mMarkerUser.latitude,
-											mMarkerUser.longitude)));
+						// mDesc.setText(parseGoogleDescRoute(descRoute.get()));
+						mAdapter.fragments
+								.add(new PageInfoEventi(1, mRouteText));
+						mAdapter.notifyDataSetChanged();
 
 					}
 				}

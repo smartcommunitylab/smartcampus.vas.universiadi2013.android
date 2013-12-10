@@ -94,31 +94,29 @@ public class Profile extends Activity {
 				if (!((Boolean) mMapUserData.get("connectionError")))
 					funzione = (ArrayList<FunzioneObj>) mMapUserData
 							.get("params");
-				//
-				// ArrayList<String> funzioneString = new ArrayList<String>();
-				// for (int i = 0; i < funzione.size(); i++)
-				// funzioneString.add(funzione.get(i).getFunzione());
-				//
+
+				ArrayList<String> funzioneString = new ArrayList<String>();
+				for (int i = 0; i < funzione.size(); i++)
+					funzioneString.add(funzione.get(i).getFunzione());
+
 				// ArrayList<UtenteSuperiore> listaTmp =
 				// (ArrayList<UtenteSuperiore>) (ManagerData
 				// .getSuperioriForUser(user, funzioneString.get(0))
 				// .get("params"));
 				// for (int i = 0; i < listaTmp.size(); i++)
-				// if (!mListaSuperiori.contains(listaTmp.get(i))
+				// if (!containsUserInArray(mListaSuperiori, listaTmp.get(i))
 				// && !listaTmp
 				// .get(i)
 				// .getCognome()
 				// .equalsIgnoreCase(
-				// UserConstant.getUser()
-				// .getCognome())
+				// UserConstant.getUser().getCognome())
 				// && !listaTmp
 				// .get(i)
 				// .getNome()
 				// .equalsIgnoreCase(
-				// UserConstant.getUser()
-				// .getNome()))
+				// UserConstant.getUser().getNome()))
 				// mListaSuperiori.add(listaTmp.get(i));
-				// }
+
 				return null;
 			}
 
@@ -209,45 +207,49 @@ public class Profile extends Activity {
 											mMapUserData = ManagerData
 													.getFunzioneForUser(user);
 											if (!((Boolean) mMapUserData
-													.get("connectionError"))) {
+													.get("connectionError")))
 												funzione = (ArrayList<FunzioneObj>) mMapUserData
 														.get("params");
 
-												ArrayList<String> funzioneString = new ArrayList<String>();
-												for (int i = 0; i < funzione
-														.size(); i++)
-													funzioneString.add(funzione
-															.get(i)
-															.getFunzione());
+											ArrayList<String> funzioneString = new ArrayList<String>();
+											for (int i = 0; i < funzione.size(); i++)
+												funzioneString.add(funzione
+														.get(i).getFunzione());
 
-												ArrayList<UtenteSuperiore> listaTmp = (ArrayList<UtenteSuperiore>) (ManagerData
-														.getSuperioriForUser(
-																user,
-																funzioneString
-																		.get(arg2))
-														.get("params"));
-												for (int i = 0; i < listaTmp
-														.size(); i++)
-													if (!mListaSuperiori
-															.contains(listaTmp
-																	.get(i))
-															&& !listaTmp
-																	.get(i)
-																	.getCognome()
-																	.equalsIgnoreCase(
-																			UserConstant
-																					.getUser()
-																					.getCognome())
-															&& !listaTmp
-																	.get(i)
-																	.getNome()
-																	.equalsIgnoreCase(
-																			UserConstant
-																					.getUser()
-																					.getNome()))
-														mListaSuperiori.add(listaTmp
-																.get(i));
-											}
+											mListaSuperiori.clear();
+											ArrayList<UtenteSuperiore> listaTmp = (ArrayList<UtenteSuperiore>) (ManagerData
+													.getSuperioriForUser(
+															user,
+															funzioneString
+																	.get(((Spinner) findViewById(R.id.spinner_multiple_funzioni))
+																	.getSelectedItemPosition()),
+															funzione.get(
+																	((Spinner) findViewById(R.id.spinner_multiple_funzioni))
+																			.getSelectedItemPosition())
+																	.getId())
+													.get("params"));
+											for (int i = 0; i < listaTmp.size(); i++)
+												if (!containsUserInArray(
+														mListaSuperiori,
+														listaTmp.get(i))
+														&& !listaTmp
+																.get(i)
+																.getCognome()
+																.equalsIgnoreCase(
+																		UserConstant
+																				.getUser()
+																				.getCognome())
+														&& !listaTmp
+																.get(i)
+																.getNome()
+																.equalsIgnoreCase(
+																		UserConstant
+																				.getUser()
+																				.getNome()))
+													mListaSuperiori
+															.add(listaTmp
+																	.get(i));
+
 											return null;
 										}
 
@@ -295,6 +297,7 @@ public class Profile extends Activity {
 															mListaSuperiori);
 													listSuperiori
 															.setAdapter(mAdapter);
+													mAdapter.notifyDataSetChanged();
 													listSuperiori
 															.setOnItemClickListener(new OnItemClickListener() {
 
@@ -469,6 +472,18 @@ public class Profile extends Activity {
 		 * ((ImageView)findViewById(R.id.image_profile)).setImageResource(R.
 		 * drawable.profile_boss);
 		 */
+	}
+
+	private boolean containsUserInArray(
+			ArrayList<UtenteSuperiore> mListaSuperiori, UtenteSuperiore user) {
+		for (int i = 0; i < mListaSuperiori.size(); i++)
+			if (mListaSuperiori.get(i).getNome()
+					.equalsIgnoreCase(user.getNome())
+					&& mListaSuperiori.get(i).getCognome()
+							.equalsIgnoreCase(user.getCognome()))
+				return true;
+
+		return false;
 	}
 
 	private class RowVolontario extends ArrayAdapter<UtenteSuperiore> {
