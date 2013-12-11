@@ -27,6 +27,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONObject;
 
 import eu.trentorise.smartcampus.universiade.R;
 import android.content.Context;
@@ -110,34 +111,30 @@ class RestRequest {
 			String path = mContext.getString(R.string.URL_BACKEND_JUNIPER)
 					+ mContext.getString(R.string.URL_USER_DATA);
 			url = new URL(path);
-			
-			
-			
-			 HttpURLConnection con = null;
-			   
-			    if (url.getProtocol().toLowerCase().equals("https")) {
-			        trustAllHosts();
-			        HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
-			        https.setHostnameVerifier(DO_NOT_VERIFY);
-			        con = https;
-			    } else {
-			        con = (HttpURLConnection) url.openConnection();
-			    }
-			
-			              
-			//HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+
+			HttpURLConnection con = null;
+
+			if (url.getProtocol().toLowerCase().equals("https")) {
+				trustAllHosts();
+				HttpsURLConnection https = (HttpsURLConnection) url
+						.openConnection();
+				https.setHostnameVerifier(DO_NOT_VERIFY);
+				con = https;
+			} else {
+				con = (HttpURLConnection) url.openConnection();
+			}
+
+			// HttpsURLConnection con = (HttpsURLConnection)
+			// url.openConnection();
 			con.setConnectTimeout(20000);
-			//con.setDoInput(true);
-			//con.setDoOutput(true);
-			
-			
-			
-			
-			//HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			// con.setDoInput(true);
+			// con.setDoOutput(true);
+
+			// HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.addRequestProperty("Authorization", juniperToken);
 			con.setRequestMethod("GET");
 			con.setConnectTimeout(5000);
-//con.connect();
+			// con.connect();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					con.getInputStream()));
 			String line = "";
@@ -173,21 +170,18 @@ class RestRequest {
 			String path = mContext.getString(R.string.URL_BACKEND) + "/utente/"
 					+ user.getId() + "/funzioni";
 			url = new URL(path);
-			
-			
-			
-			
-			
-			 HttpURLConnection con = null;
-			   
-			    if (url.getProtocol().toLowerCase().equals("https")) {
-			        trustAllHosts();
-			        HttpsURLConnection https = (HttpsURLConnection) url.openConnection();
-			        https.setHostnameVerifier(DO_NOT_VERIFY);
-			        con = https;
-			    } else {
-			        con = (HttpURLConnection) url.openConnection();
-			    }
+
+			HttpURLConnection con = null;
+
+			if (url.getProtocol().toLowerCase().equals("https")) {
+				trustAllHosts();
+				HttpsURLConnection https = (HttpsURLConnection) url
+						.openConnection();
+				https.setHostnameVerifier(DO_NOT_VERIFY);
+				con = https;
+			} else {
+				con = (HttpURLConnection) url.openConnection();
+			}
 			con.addRequestProperty("Authorization", juniperToken);
 			con.setRequestMethod("GET");
 			con.setConnectTimeout(5000);
@@ -264,7 +258,7 @@ class RestRequest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return "";
 	}
 
 	private String login(String username, String password) {
@@ -338,45 +332,44 @@ class RestRequest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return "";
 	}
-	
-	 // always verify the host - dont check for certificate
-    final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
-          public boolean verify(String hostname, SSLSession session) {
-              return true;
-          }
-   };
 
+	// always verify the host - dont check for certificate
+	final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
+		public boolean verify(String hostname, SSLSession session) {
+			return true;
+		}
+	};
 
-    /**
-     * Trust every server - dont check for any certificate
-     */
-    private static void trustAllHosts() {
-              // Create a trust manager that does not validate certificate chains
-              TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-                      public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                              return new java.security.cert.X509Certificate[] {};
-                      }
+	/**
+	 * Trust every server - dont check for any certificate
+	 */
+	private static void trustAllHosts() {
+		// Create a trust manager that does not validate certificate chains
+		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+				return new java.security.cert.X509Certificate[] {};
+			}
 
-                      public void checkClientTrusted(X509Certificate[] chain,
-                                      String authType) throws CertificateException {
-                      }
+			public void checkClientTrusted(X509Certificate[] chain,
+					String authType) throws CertificateException {
+			}
 
-                      public void checkServerTrusted(X509Certificate[] chain,
-                                      String authType) throws CertificateException {
-                      }
-              } };
+			public void checkServerTrusted(X509Certificate[] chain,
+					String authType) throws CertificateException {
+			}
+		} };
 
-              // Install the all-trusting trust manager
-              try {
-                      SSLContext sc = SSLContext.getInstance("TLS");
-                      sc.init(null, trustAllCerts, new java.security.SecureRandom());
-                      HttpsURLConnection
-                                      .setDefaultSSLSocketFactory(sc.getSocketFactory());
-              } catch (Exception e) {
-                      e.printStackTrace();
-              }
-      }
+		// Install the all-trusting trust manager
+		try {
+			SSLContext sc = SSLContext.getInstance("TLS");
+			sc.init(null, trustAllCerts, new java.security.SecureRandom());
+			HttpsURLConnection
+					.setDefaultSSLSocketFactory(sc.getSocketFactory());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }

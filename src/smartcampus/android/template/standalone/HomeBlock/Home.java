@@ -740,7 +740,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 				+ "document.body.removeChild(myForm) ;";
 
 		int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-		if (currentapiVersion < android.os.Build.VERSION_CODES.HONEYCOMB) {
+		if (currentapiVersion < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
 			finalUrl = getString(R.string.URL_ICE_AND_FIRE);
 
 		}

@@ -8,7 +8,7 @@
         android:id="@+id/TextView01"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text=""
         android:textColor="#0fff" />
 
     <RelativeLayout
@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Medium Text"
+            android:text=""
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#fff" />
 
@@ -36,7 +36,7 @@
         android:id="@+id/text_hint_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text=""
         android:textColor="#0fff" />
 
 </LinearLayout>
