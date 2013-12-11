@@ -16,8 +16,10 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import eu.trentorise.smartcampus.universiade.R;
+
 import smartcampus.android.template.standalone.IntroBlock.UserConstant;
-import smartcampus.android.template.universiadi.R;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;

@@ -85,10 +85,10 @@
         android:layout_height="wrap_content" >
 
         <smartcampus.android.template.standalone.Utilities.FontTextView
-            android:id="@+id/text_indirizzo_poi"
+            android:id="@+id/text_risultati_poi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/FAQ_RISPOSTA"
+            android:text="@string/FAQ_ALL_RISULTATI"
             android:textColor="#3294ad"
             android:textSize="20dp" />
 
@@ -96,10 +96,9 @@
             android:id="@+id/lista_risposte"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/text_indirizzo_poi"
+            android:layout_below="@+id/text_risultati_poi"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:listSelector="@drawable/list_selector" >
-
         </ListView>
 
         <smartcampus.android.template.standalone.Utilities.FontTextView
@@ -107,7 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/text_indirizzo_poi"
+            android:layout_below="@+id/text_risultati_poi"
             android:gravity="center"
             android:text="@string/NESSUNA_RISPOSTA"
             android:textAppearance="?android:attr/textAppearanceMedium"

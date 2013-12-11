@@ -2,7 +2,7 @@ package smartcampus.android.template.standalone.Activity.SportBlock;
 
 import java.io.ByteArrayOutputStream;
 
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

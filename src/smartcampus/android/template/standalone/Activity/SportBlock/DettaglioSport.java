@@ -10,7 +10,7 @@ import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Utilities.MapUtilities;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ErrorType;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ILocation;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -35,7 +35,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.Window;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -182,50 +187,98 @@ public class DettaglioSport extends FragmentActivity implements ILocation {
 						Geocoder coder = new Geocoder(DettaglioSport.this,
 								Locale.getDefault());
 
-						Address adrs;
+						Address adrs = new Address(Locale.getDefault());
+						String address = "";
 						try {
 							adrs = coder.getFromLocation(mMarker.latitude,
 									mMarker.longitude, 1).get(0);
-							mMappa.addMarker(new MarkerOptions()
-									.position(mMarker)
-									.icon(BitmapDescriptorFactory
-											.fromBitmap(drawMarkerWithTitleAndAddress(
-													mPOI.getNome(),
-													adrs.getAddressLine(0)
-															+ " - "
-															+ adrs.getAddressLine(1))))
-									.anchor(0.5f, 1));
-							mMappa.setOnMarkerClickListener(new OnMarkerClickListener() {
-
-								@Override
-								public boolean onMarkerClick(Marker marker) {
-									// TODO Auto-generated method stub
-									if (mMapUtilities.getLastKnownLocation() != null) {
-										Intent intent = new Intent(
-												android.content.Intent.ACTION_VIEW,
-												Uri.parse("http://maps.google.com/maps?saddr="
-														+ mMapUtilities
-																.getLastKnownLocation()
-																.getLatitude()
-														+ ","
-														+ mMapUtilities
-																.getLastKnownLocation()
-																.getLongitude()
-														+ "&daddr="
-														+ marker.getPosition().latitude
-														+ ","
-														+ marker.getPosition().longitude));
-										startActivity(intent);
-										return true;
-									}
-									return false;
-								}
-
-							});
+							address = adrs.getAddressLine(0) + " - "
+									+ adrs.getAddressLine(1);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							address = "";
 						}
+						mMappa.addMarker(new MarkerOptions()
+								.position(mMarker)
+								.title(mPOI.getNome() + "\n\n" + address)
+								.icon(BitmapDescriptorFactory
+										.fromResource(R.drawable.marker_search))
+								/*
+								 * .icon(BitmapDescriptorFactory .fromBitmap(
+								 * drawMarkerWithTitleAndAddress(
+								 * mPOI.getNome(), adrs.getAddressLine(0) +
+								 * " - " + adrs.getAddressLine(1))))
+								 */
+								.anchor(0.5f, 1));
+						mMappa.setOnMarkerClickListener(new OnMarkerClickListener() {
+
+							@Override
+							public boolean onMarkerClick(final Marker marker) {
+								// TODO Auto-generated method stub
+								final Dialog dialog = new Dialog(
+										DettaglioSport.this);
+								dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+								dialog.setContentView(R.layout.dialog_detail_event_sport_poi);
+								dialog.getWindow()
+										.setBackgroundDrawableResource(
+												R.drawable.dialog_rounded_corner);
+
+								((TextView) dialog
+										.findViewById(R.id.text_indirizzo_detail_event_poi))
+										.setText(marker.getTitle() + "\n");
+
+								((ImageView) dialog
+										.findViewById(R.id.btn_go_event))
+										.setOnTouchListener(new OnTouchListener() {
+
+											@Override
+											public boolean onTouch(View v,
+													MotionEvent event) {
+												// TODO Auto-generated
+												// method stub
+												if (event.getAction() == MotionEvent.ACTION_DOWN) {
+													((ImageView) dialog
+															.findViewById(R.id.btn_go_event))
+															.setImageResource(R.drawable.btn_eventi_poi_press);
+													return true;
+												}
+												if (event.getAction() == MotionEvent.ACTION_UP) {
+													((ImageView) dialog
+															.findViewById(R.id.btn_go_event))
+															.setImageResource(R.drawable.btn_eventi_poi);
+
+													if (mMapUtilities
+															.getLastKnownLocation() != null) {
+														Intent intent = new Intent(
+																android.content.Intent.ACTION_VIEW,
+																Uri.parse("http://maps.google.com/maps?saddr="
+																		+ mMapUtilities
+																				.getLastKnownLocation()
+																				.getLatitude()
+																		+ ","
+																		+ mMapUtilities
+																				.getLastKnownLocation()
+																				.getLongitude()
+																		+ "&daddr="
+																		+ marker.getPosition().latitude
+																		+ ","
+																		+ marker.getPosition().longitude));
+														startActivity(intent);
+														return true;
+													}
+
+													return true;
+												}
+
+												return false;
+											}
+										});
+
+								dialog.show();
+								return true;
+							}
+
+						});
 					}
 					mMappa.animateCamera(CameraUpdateFactory.newLatLngBounds(
 							builder.build(), 50));
@@ -245,51 +298,51 @@ public class DettaglioSport extends FragmentActivity implements ILocation {
 			mMapUtilities.close();
 	}
 
-	private Bitmap drawMarkerWithTitleAndAddress(String title, String add) {
-
-		Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-		// Create text
-		Paint color = new Paint();
-		color.setAntiAlias(true);
-		color.setTextAlign(Align.CENTER);
-		color.setTextSize(20);
-		color.setColor(Color.WHITE);
-		int measureText = (int) ((color.measureText(add) >= color
-				.measureText(title)) ? color.measureText(add) + 20 : color
-				.measureText(title)) + 20;
-		if (measureText > 230 && measureText <= 460) {
-			color.setTextSize(15);
-			measureText = (int) ((color.measureText(add) >= color
-					.measureText(title)) ? color.measureText(add) + 20 : color
-					.measureText(title)) + 20;
-		} else if (measureText > 460) {
-			color.setTextSize(15);
-			int lastChar = color.breakText(add, true, 460, null);
-			add = add.substring(0, lastChar);
-			measureText = (int) ((color.measureText(add) >= color
-					.measureText(title)) ? color.measureText(add) + 20 : color
-					.measureText(title)) + 20;
-		}
-
-		Bitmap bmpLabel = Bitmap.createBitmap(measureText + 20, 60, conf);
-		Canvas canvasLabel = new Canvas(bmpLabel);
-		bmpLabel.eraseColor(Color.argb(255, 50, 148, 173));
-		canvasLabel.drawText(title, measureText / 2, 25, color);
-		canvasLabel.drawText(add, measureText / 2, 50, color);
-		// Create arrow
-		Bitmap arrow = BitmapFactory.decodeResource(getResources(),
-				R.drawable.marker);
-		// Create all label
-		Bitmap bmpBackground = Bitmap.createBitmap(measureText,
-				40 + arrow.getWidth(), conf);
-		Canvas canvasBackGround = new Canvas(bmpBackground);
-		// Merge Canvas and Bitmap
-		canvasBackGround.drawBitmap(bmpLabel, 0, 0, null);
-		canvasBackGround.drawBitmap(arrow, measureText / 2 - arrow.getWidth()
-				/ 2, 60, null);
-
-		return bmpBackground;
-	}
+	// private Bitmap drawMarkerWithTitleAndAddress(String title, String add) {
+	//
+	// Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+	// // Create text
+	// Paint color = new Paint();
+	// color.setAntiAlias(true);
+	// color.setTextAlign(Align.CENTER);
+	// color.setTextSize(20);
+	// color.setColor(Color.WHITE);
+	// int measureText = (int) ((color.measureText(add) >= color
+	// .measureText(title)) ? color.measureText(add) + 20 : color
+	// .measureText(title)) + 20;
+	// if (measureText > 230 && measureText <= 460) {
+	// color.setTextSize(15);
+	// measureText = (int) ((color.measureText(add) >= color
+	// .measureText(title)) ? color.measureText(add) + 20 : color
+	// .measureText(title)) + 20;
+	// } else if (measureText > 460) {
+	// color.setTextSize(15);
+	// int lastChar = color.breakText(add, true, 460, null);
+	// add = add.substring(0, lastChar);
+	// measureText = (int) ((color.measureText(add) >= color
+	// .measureText(title)) ? color.measureText(add) + 20 : color
+	// .measureText(title)) + 20;
+	// }
+	//
+	// Bitmap bmpLabel = Bitmap.createBitmap(measureText + 20, 60, conf);
+	// Canvas canvasLabel = new Canvas(bmpLabel);
+	// bmpLabel.eraseColor(Color.argb(255, 50, 148, 173));
+	// canvasLabel.drawText(title, measureText / 2, 25, color);
+	// canvasLabel.drawText(add, measureText / 2, 50, color);
+	// // Create arrow
+	// Bitmap arrow = BitmapFactory.decodeResource(getResources(),
+	// R.drawable.marker);
+	// // Create all label
+	// Bitmap bmpBackground = Bitmap.createBitmap(measureText,
+	// 40 + arrow.getWidth(), conf);
+	// Canvas canvasBackGround = new Canvas(bmpBackground);
+	// // Merge Canvas and Bitmap
+	// canvasBackGround.drawBitmap(bmpLabel, 0, 0, null);
+	// canvasBackGround.drawBitmap(arrow, measureText / 2 - arrow.getWidth()
+	// / 2, 60, null);
+	//
+	// return bmpBackground;
+	// }
 
 	private class PagerAdapter extends FragmentPagerAdapter {
 

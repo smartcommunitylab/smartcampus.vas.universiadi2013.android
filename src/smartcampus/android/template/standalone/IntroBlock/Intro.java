@@ -5,7 +5,7 @@ import java.util.Map;
 
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.HomeBlock.Home;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -38,6 +38,8 @@ public class Intro extends Activity {
 	private static final int CONNECTION_ERROR = 0;
 	private static final int LOGIN_SUCCESS = 1;
 	private static final int LOGIN_FAILED = 2;
+
+	// 100345 /UmmTaVOi
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -299,6 +301,14 @@ public class Intro extends Activity {
 												((EditText) findViewById(R.id.text_password))
 														.getText().toString());
 
+										UserConstant
+												.setUsername(((EditText) findViewById(R.id.text_username))
+														.getText().toString()
+														.replace(" ", ""));
+										UserConstant
+												.setPassword(((EditText) findViewById(R.id.text_password))
+														.getText().toString());
+
 										if (loginResult == Intro.CONNECTION_ERROR) {
 											connectionError = true;
 										} else if (loginResult == Intro.LOGIN_SUCCESS) {
@@ -335,7 +345,21 @@ public class Intro extends Activity {
 
 									// START ONPOST
 
-									controlAfterLogin();
+									if (connectionError) {
+										Dialog noConnection = new Dialog(
+												Intro.this);
+										noConnection
+												.requestWindowFeature(Window.FEATURE_NO_TITLE);
+										noConnection
+												.setContentView(R.layout.dialog_no_connection);
+										noConnection
+												.getWindow()
+												.setBackgroundDrawableResource(
+														R.drawable.dialog_rounded_corner_light_black);
+										noConnection.show();
+										noConnection.setCancelable(true);
+									} else
+										controlAfterLogin();
 
 									// END ONPOST
 								}
@@ -348,84 +372,91 @@ public class Intro extends Activity {
 
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(Intro.this);
-		final String username = preferences.getString("username", null);
-		final String password = preferences.getString("password", null);
+		if (preferences.contains("username")
+				&& preferences.contains("password")) {
+			final String username = preferences.getString("username", null);
+			final String password = preferences.getString("password", null);
 
-		if (username != null && password != null) {
-			new AsyncTask<Void, Void, Void>() {
-				private Dialog dialog;
-				private boolean connectionError;
+			if (username != null && password != null) {
+				new AsyncTask<Void, Void, Void>() {
+					private Dialog dialog;
+					private boolean connectionError;
 
-				@Override
-				protected void onPreExecute() {
-					// TODO Auto-generated method stub
-					super.onPreExecute();
+					@Override
+					protected void onPreExecute() {
+						// TODO Auto-generated method stub
+						super.onPreExecute();
 
-					dialog = new Dialog(Intro.this);
-					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-					dialog.setContentView(R.layout.dialog_wait);
-					dialog.getWindow().setBackgroundDrawableResource(
-							R.drawable.dialog_rounded_corner_light_black);
-					dialog.show();
-					dialog.setCancelable(true);
-					dialog.setOnCancelListener(new OnCancelListener() {
-
-						@Override
-						public void onCancel(DialogInterface dialog) {
-							// TODO Auto-generated method stub
-							Log.i("", "Cancel");
-							cancel(true);
-						}
-					});
-
-				}
-
-				@Override
-				protected Void doInBackground(Void... params) {
-					// TODO Auto-generated method stub
-					int loginResult = login(username, password);
-
-					if (loginResult == Intro.CONNECTION_ERROR) {
-						connectionError = true;
-					} else if (loginResult == Intro.LOGIN_SUCCESS) {
-						InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-						imm.hideSoftInputFromWindow(
-								((EditText) findViewById(R.id.text_password))
-										.getWindowToken(), 0);
-
-						loginSuccess.put("success", true);
-						// SAVE NEW UTENTE
-						saveUtente();
-					} else if (loginResult == Intro.LOGIN_FAILED) {
-						loginSuccess.put("success", false);
-						loginSuccess.put("notfound", true);
-
+						dialog = new Dialog(Intro.this);
+						dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+						dialog.setContentView(R.layout.dialog_wait);
+						dialog.getWindow().setBackgroundDrawableResource(
+								R.drawable.dialog_rounded_corner_light_black);
+						dialog.show();
+						dialog.setCancelable(false);
 					}
-					return null;
-				}
 
-				@Override
-				protected void onPostExecute(Void result) {
-					// TODO Auto-generated method stub
-					super.onPostExecute(result);
+					@Override
+					protected Void doInBackground(Void... params) {
+						// TODO Auto-generated method stub
+						int loginResult = login(username, password);
 
-					dialog.dismiss();
+						if (loginResult == Intro.CONNECTION_ERROR) {
+							connectionError = true;
+						} else if (loginResult == Intro.LOGIN_SUCCESS) {
+							InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+							imm.hideSoftInputFromWindow(
+									((EditText) findViewById(R.id.text_password))
+											.getWindowToken(), 0);
 
-					// START ONPOST
+							loginSuccess.put("success", true);
+							// SAVE NEW UTENTE
+							saveUtente();
+							UserConstant.setUsername(username);
+							UserConstant.setPassword(password);
+						} else if (loginResult == Intro.LOGIN_FAILED) {
+							loginSuccess.put("success", false);
+							loginSuccess.put("notfound", true);
 
-					controlAfterLogin();
+						}
+						return null;
+					}
 
-					// END ONPOST
-				}
+					@Override
+					protected void onPostExecute(Void result) {
+						// TODO Auto-generated method stub
+						super.onPostExecute(result);
 
-			}.execute();
+						dialog.dismiss();
+
+						// START ONPOST
+
+						if (connectionError) {
+							Dialog noConnection = new Dialog(Intro.this);
+							noConnection
+									.requestWindowFeature(Window.FEATURE_NO_TITLE);
+							noConnection
+									.setContentView(R.layout.dialog_no_connection);
+							noConnection
+									.getWindow()
+									.setBackgroundDrawableResource(
+											R.drawable.dialog_rounded_corner_light_black);
+							noConnection.show();
+							noConnection.setCancelable(true);
+						} else
+							controlAfterLogin();
+
+						// END ONPOST
+					}
+
+				}.execute();
+			}
 		}
 	}
 
 	private void saveUtente() {
 		Utente user = (Utente) ManagerData.readUserData().get("params");
 		UserConstant.setUser(user);
-		Map<String, Object> mMapResult = ManagerData.saveUserInfo(user);
 	}
 
 	private void saveUserAndPass() {
@@ -478,10 +509,10 @@ public class Intro extends Activity {
 			startActivity(mCaller);
 		} else if (loginSuccess.get("notfound")) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(Intro.this);
-			builder.setTitle("Attenzione");
-			builder.setMessage("Username o password non corretti");
+			builder.setTitle(getString(R.string.AVVISO));
+			builder.setMessage(getString(R.string.LOGIN_INSUCCESSO));
 			builder.setCancelable(false);
-			builder.setPositiveButton("Chiudi",
+			builder.setPositiveButton(getString(R.string.CHIUDI),
 					new android.content.DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
 							dialog.dismiss();
@@ -490,10 +521,10 @@ public class Intro extends Activity {
 			builder.create().show();
 		} else {
 			AlertDialog.Builder builder = new AlertDialog.Builder(Intro.this);
-			builder.setTitle("Attenzione");
-			builder.setMessage("Completa i campi Username e Password");
+			builder.setTitle(getString(R.string.AVVISO));
+			builder.setMessage(getString(R.string.LOGIN_NON_COMPLETO));
 			builder.setCancelable(false);
-			builder.setPositiveButton("Chiudi",
+			builder.setPositiveButton(getString(R.string.CHIUDI),
 					new android.content.DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
 							dialog.dismiss();

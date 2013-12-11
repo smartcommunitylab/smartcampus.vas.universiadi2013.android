@@ -17,10 +17,9 @@ import smartcampus.android.template.standalone.Activity.ProfileBlock.Profile;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FilterCalendarioActivity;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FunzioneObj;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock.FAQ;
-import smartcampus.android.template.standalone.Activity.ProfileBlock.RisolutoreSubBlock.IceFireWebView;
 import smartcampus.android.template.standalone.Activity.SportBlock.Sport;
 import smartcampus.android.template.standalone.IntroBlock.UserConstant;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -33,6 +32,7 @@ import android.content.SharedPreferences.Editor;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -46,6 +46,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -53,6 +54,9 @@ import android.view.View.OnTouchListener;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -153,21 +157,21 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 				// START ONPOST
 				if (!((Boolean) mResult.get("connectionError"))) {
 					// creating adapter and linking to view pager
+					if (mAdapter == null)
+						mAdapter = new PagerAdapter(
+								getSupportFragmentManager(), fragmentEventi);
+					else
+						mAdapter.fragments = fragmentEventi;
+					if (mPager == null)
+						mPager = (ViewPager) findViewById(R.id.pager_info_eventi);
+					mAdapter.notifyDataSetChanged();
+					mPager.setAdapter(mAdapter);
+					mPager.invalidate();
+					mPager.setVisibility(View.VISIBLE);
+					// Bind the title indicator to the adapter
+					titleIndicator = (CirclePageIndicator) findViewById(R.id.page_indicator);
+					titleIndicator.setViewPager(mPager);
 					if (mListaEventiDiOggi.size() != 0) {
-						if (mAdapter == null)
-							mAdapter = new PagerAdapter(
-									getSupportFragmentManager(), fragmentEventi);
-						else
-							mAdapter.fragments = fragmentEventi;
-						if (mPager == null)
-							mPager = (ViewPager) findViewById(R.id.pager_info_eventi);
-						mAdapter.notifyDataSetChanged();
-						mPager.setAdapter(mAdapter);
-						mPager.invalidate();
-						mPager.setVisibility(View.VISIBLE);
-						// Bind the title indicator to the adapter
-						titleIndicator = (CirclePageIndicator) findViewById(R.id.page_indicator);
-						titleIndicator.setViewPager(mPager);
 
 						class TapGestureListener extends
 								GestureDetector.SimpleOnGestureListener {
@@ -195,11 +199,14 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 								return false;
 							}
 						});
-					} else
-						((TextView) findViewById(R.id.text_nessun_evento))
+					} else {
+						((RelativeLayout) findViewById(R.id.container_nessun_evento))
 								.setVisibility(View.VISIBLE);
+						((RelativeLayout) findViewById(R.id.container_pager_eventi_oggi))
+								.setBackgroundResource(R.drawable.scroll_main);
+					}
 				} else {
-					((TextView) findViewById(R.id.text_nessun_evento))
+					((RelativeLayout) findViewById(R.id.container_nessun_evento))
 							.setVisibility(View.VISIBLE);
 					Dialog noConnection = new Dialog(Home.this);
 					noConnection.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -293,7 +300,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 											.setTag("normal");
 
 									if (mListaEventiDiOggi.size() != 0) {
-										((TextView) findViewById(R.id.text_nessun_evento))
+										((RelativeLayout) findViewById(R.id.container_nessun_evento))
 												.setVisibility(View.GONE);
 										mAdapter.fragments = fragmentEventi;
 										mAdapter.notifyDataSetChanged();
@@ -304,7 +311,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 										// findViewById(R.id.container_pager_eventi_oggi))
 										// .setBackgroundResource(R.drawable.scroll_main);
 									} else {
-										((TextView) findViewById(R.id.text_nessun_evento))
+										((RelativeLayout) findViewById(R.id.container_nessun_evento))
 												.setVisibility(View.VISIBLE);
 										mPager.setVisibility(View.GONE);
 										titleIndicator.setVisibility(View.GONE);
@@ -340,7 +347,7 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 									// Change datasource in my meeting
 									if (mListaMeetingDiOggi.size() != 0) {
-										((TextView) findViewById(R.id.text_nessun_evento))
+										((RelativeLayout) findViewById(R.id.container_nessun_evento))
 												.setVisibility(View.GONE);
 										mAdapter.fragments = fragmentMeeting;
 										mAdapter.notifyDataSetChanged();
@@ -351,8 +358,9 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 										// findViewById(R.id.container_pager_eventi_oggi))
 										// .setBackgroundResource(R.drawable.scroll_main);
 									} else {
-										((TextView) findViewById(R.id.text_nessun_evento))
+										((RelativeLayout) findViewById(R.id.container_nessun_evento))
 												.setVisibility(View.VISIBLE);
+
 										mPager.setVisibility(View.GONE);
 										titleIndicator.setVisibility(View.GONE);
 										((RelativeLayout) findViewById(R.id.container_pager_eventi_oggi))
@@ -633,18 +641,49 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 				if (event.getAction() == MotionEvent.ACTION_UP) {
 					mFilterPoi.setImageResource(R.drawable.btn_tool_helper);
 
-					String url = getString(R.string.URL_ICE_AND_FIRE);
+					SharedPreferences preferences = PreferenceManager
+							.getDefaultSharedPreferences(Home.this);
+					if (!preferences.getBoolean("checkedTicket", false)) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(
+								Home.this);
+						builder.setTitle(getString(R.string.AVVISO));
+						builder.setMessage(getString(R.string.TICKETS_AVVISO));
+						final View checkBoxContainer = Home.this
+								.getLayoutInflater().inflate(
+										R.layout.dialog_leave_app_checkbox,
+										null);
+						builder.setView(checkBoxContainer);
+						builder.setCancelable(false);
+						builder.setPositiveButton(getString(R.string.ACCEDI),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dialog.dismiss();
 
-					// Intent mCaller = new Intent(Intent.ACTION_VIEW, Uri
-					// .parse(url));
-					// Log.i("", "User: " + UserConstant.getUsername()
-					// + "\nPass: " + UserConstant.getPassword());
-					// mCaller.putExtra("username", UserConstant.getUsername());
-					// mCaller.putExtra("password", UserConstant.getPassword());
-					// startActivity(mCaller);
+										SharedPreferences preferences = PreferenceManager
+												.getDefaultSharedPreferences(Home.this);
+										Editor editor = preferences.edit();
+										editor.putBoolean(
+												"checkedTicket",
+												((CheckBox) checkBoxContainer
+														.findViewById(R.id.skip))
+														.isChecked());
+										editor.commit();
 
-					startActivity(new Intent(getApplicationContext(),
-							IceFireWebView.class));
+										startTicket();
+									}
+								});
+						builder.setNegativeButton(getString(R.string.ANNULLA),
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dialog.dismiss();
+									}
+								});
+						builder.create().show();
+					} else
+						startTicket();
+
 					return true;
 				}
 				return false;
@@ -675,6 +714,42 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 		});
 
 		dialog.show();
+	}
+
+	// private void startTicket() {
+	// Intent browserIntent = new Intent(android.content.Intent.ACTION_VIEW,
+	// Uri.parse(getString(R.string.URL_ICE_AND_FIRE)));
+	// startActivity(browserIntent);
+	// }
+
+	private void startTicket() {
+
+		String finalUrl = "javascript:" + "var to = '"
+				+ getString(R.string.URL_ICE_AND_FIRE) + "';"
+				+ "var p = {username:'" + UserConstant.getUsername()
+				+ "',password:'" + UserConstant.getPassword() + "'};"
+				+ "var myForm = document.createElement('form');"
+				+ "myForm.method='post' ;" + "myForm.action = to;"
+				+ "for (var k in p) {"
+				+ "var myInput = document.createElement('input') ;"
+				+ "myInput.setAttribute('type', 'text');"
+				+ "myInput.setAttribute('name', k) ;"
+				+ "myInput.setAttribute('value', p[k]);"
+				+ "myForm.appendChild(myInput) ;" + "}"
+				+ "document.body.appendChild(myForm) ;" + "myForm.submit() ;"
+				+ "document.body.removeChild(myForm) ;";
+
+		int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+		if (currentapiVersion < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			finalUrl = getString(R.string.URL_ICE_AND_FIRE);
+
+		}
+
+		Intent browserIntent = new Intent(android.content.Intent.ACTION_VIEW,
+				Uri.parse(finalUrl));
+
+		startActivity(browserIntent);
+
 	}
 
 	private void startGeneralInfoDialog() {
@@ -787,11 +862,10 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 								ResultSearch.class);
 						mCaller.putExtra("rest", "/evento/search");
 						JSONObject obj = new JSONObject();
-						obj.put("tipoFiltro", "SPORT");
-						obj.put("nome", "re");
-						// obj.put("nome",((EditText)
-						// findViewById(R.id.text_search))
-						// .getText().toString()));
+						obj.put("tipoFiltro", "EVENTO");
+						obj.put("nome",
+								((EditText) findViewById(R.id.text_search))
+										.getText().toString());
 						mCaller.putExtra("search", obj.toString());
 						startActivity(mCaller);
 					} catch (JSONException e) {
@@ -823,13 +897,12 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 						Intent mCaller = new Intent(getApplicationContext(),
 								ResultSearch.class);
-						mCaller.putExtra("rest", "/evento/search");
+						mCaller.putExtra("rest", "/poi/search");
 						JSONObject obj = new JSONObject();
-						obj.put("tipoFiltro", "SPORT");
-						obj.put("nome", "re");
-						// obj.put("nome",(((EditText)
-						// findViewById(R.id.text_search))
-						// .getText().toString());
+						obj.put("tipoFiltro", "POI");
+						obj.put("nome",
+								(((EditText) findViewById(R.id.text_search))
+										.getText().toString()));
 						mCaller.putExtra("search", obj.toString());
 						startActivity(mCaller);
 					} catch (JSONException e) {
@@ -861,13 +934,12 @@ public class Home extends FragmentActivity /* implements EventoUpdateListener */
 
 						Intent mCaller = new Intent(getApplicationContext(),
 								ResultSearch.class);
-						mCaller.putExtra("rest", "/evento/search");
+						mCaller.putExtra("rest", "/sport/search");
 						JSONObject obj = new JSONObject();
 						obj.put("tipoFiltro", "SPORT");
-						obj.put("nome", "re");
-						// obj.put("nome",(((EditText)
-						// findViewById(R.id.text_search))
-						// .getText().toString());
+						obj.put("nome",
+								(((EditText) findViewById(R.id.text_search))
+										.getText().toString()));
 						mCaller.putExtra("search", obj.toString());
 						startActivity(mCaller);
 					} catch (JSONException e) {

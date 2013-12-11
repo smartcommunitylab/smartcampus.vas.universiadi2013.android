@@ -30,6 +30,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="false"
             android:layout_weight="0"
             android:orientation="vertical" >
 
@@ -241,7 +242,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:paddingTop="@dimen/activity_vertical_margin"
                 android:text="@string/PLANNER_FUNZIONE"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#3294ad" />
@@ -310,6 +310,7 @@
                     android:text="\n"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="#00ffffff" />
+
             </RelativeLayout>
 
             <RelativeLayout

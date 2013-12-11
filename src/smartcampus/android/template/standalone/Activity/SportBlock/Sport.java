@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
-import smartcampus.android.template.universiadi.R;
+import smartcampus.android.template.standalone.Activity.ProfileBlock.Profile;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -81,22 +82,43 @@ public class Sport extends Activity {
 
 				// START ONPOST
 
-				GridView mGrigliaSport = (GridView) findViewById(R.id.griglia_sport);
-				mGrigliaSport.setAdapter(new GridArrayAdapter(Sport.this,
-						mSport));
+				if ((Boolean) mResult.get("connectionError")) {
+					Dialog noConnection = new Dialog(Sport.this);
+					noConnection.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					noConnection.setContentView(R.layout.dialog_no_connection);
+					noConnection.getWindow().setBackgroundDrawableResource(
+							R.drawable.dialog_rounded_corner_light_black);
+					noConnection.setCancelable(true);
+					noConnection.show();
+					noConnection.setOnCancelListener(new OnCancelListener() {
 
-				mGrigliaSport.setOnItemClickListener(new OnItemClickListener() {
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							// TODO Auto-generated method stub
+							finish();
+						}
+					});
 
-					@Override
-					public void onItemClick(AdapterView<?> arg0, View arg1,
-							int arg2, long arg3) {
-						// TODO Auto-generated method stub
-						Intent mCaller = new Intent(arg1.getContext(),
-								DettaglioSport.class);
-						mCaller.putExtra("sport", mSport.get(arg2));
-						startActivity(mCaller);
-					}
-				});
+				} else {
+
+					GridView mGrigliaSport = (GridView) findViewById(R.id.griglia_sport);
+					mGrigliaSport.setAdapter(new GridArrayAdapter(Sport.this,
+							mSport));
+
+					mGrigliaSport
+							.setOnItemClickListener(new OnItemClickListener() {
+
+								@Override
+								public void onItemClick(AdapterView<?> arg0,
+										View arg1, int arg2, long arg3) {
+									// TODO Auto-generated method stub
+									Intent mCaller = new Intent(arg1
+											.getContext(), DettaglioSport.class);
+									mCaller.putExtra("sport", mSport.get(arg2));
+									startActivity(mCaller);
+								}
+							});
+				}
 
 				// END ONPOST
 			}

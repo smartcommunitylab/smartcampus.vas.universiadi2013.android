@@ -12,7 +12,7 @@ import smartcampus.android.template.standalone.Utilities.FontTextView;
 import smartcampus.android.template.standalone.Utilities.MapUtilities;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ErrorType;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ILocation;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.smartcampus.template.standalone.POI;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -180,7 +181,8 @@ public class Booking extends FragmentActivity implements ILocation {
 											.position(
 													new LatLng(obj.getLatGPS(),
 															obj.getLngGPS()))
-											.title(obj.getIndirizzo())
+											.title(obj.getNome() + "\n\n"
+													+ obj.getIndirizzo())
 											.snippet(
 													obj.getCategoria()
 															+ "/"
@@ -286,7 +288,7 @@ public class Booking extends FragmentActivity implements ILocation {
 						public void onCameraChange(CameraPosition position) {
 							// TODO Auto-generated method stub
 							mMappa.animateCamera(CameraUpdateFactory
-									.newLatLngZoom(mMyMarker, 1));
+									.newLatLngZoom(mMyMarker, 3));
 							mMappa.setOnCameraChangeListener(null);
 						}
 					});
@@ -325,9 +327,9 @@ public class Booking extends FragmentActivity implements ILocation {
 						R.drawable.dialog_rounded_corner);
 
 				((TextView) dialog.findViewById(R.id.text_indirizzo_poi))
-						.setText("Indirizzo: " + marker.getTitle() + "\n");
+						.setText(marker.getTitle() + "\n");
 				((TextView) dialog.findViewById(R.id.text_categoria_poi))
-						.setText("Categoria: "
+						.setText(getString(R.string.POI_CATEGORIA) + " "
 								+ marker.getSnippet().split("/")[0] + "\n");
 				if (!marker.getSnippet().split("//")[1]
 						.equalsIgnoreCase("null"))
@@ -336,6 +338,8 @@ public class Booking extends FragmentActivity implements ILocation {
 				else
 					((TextView) dialog.findViewById(R.id.text_descrizione_poi))
 							.setVisibility(View.INVISIBLE);
+				((TextView) dialog.findViewById(R.id.text_descrizione_poi))
+						.setMovementMethod(new ScrollingMovementMethod());
 				// ((ImageView) dialog.findViewById(R.id.btn_go_event))
 				// .setOnTouchListener(new OnTouchListener() {
 				//
@@ -478,27 +482,27 @@ public class Booking extends FragmentActivity implements ILocation {
 		mListaSecondLevelCategory = new ArrayList<Booking.POICategory>();
 		switch (weight) {
 		case 100:
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_NOLLEGGIO_SCI),
-					"noleggioscii", 102));
-			mListaSecondLevelCategory
-					.add(new POICategory(
-							getString(R.string.CATEGORIA_SCUOLA_SCI),
-							"scuolasci", 104));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_IMPIANTO_SCII), "impiantosci",
-//					106));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_STADIO_GHIACCIO),
-					"stadioghiaccio", 108));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_STADIO_SALTO), "stadiosalto",
-//					110));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_NOLLEGGIO_SCI),
+			// "noleggioscii", 102));
+			// mListaSecondLevelCategory
+			// .add(new POICategory(
+			// getString(R.string.CATEGORIA_SCUOLA_SCI),
+			// "scuolasci", 104));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_IMPIANTO_SCII), "impiantosci",
+			// 106));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_STADIO_GHIACCIO),
+			// "stadioghiaccio", 108));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_STADIO_SALTO), "stadiosalto",
+			// 110));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_SNOWPARK), "snowpark", 112));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_CAMPO_SPORTIVO),
-					"camposportivo", 114));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_CAMPO_SPORTIVO),
+			// "camposportivo", 114));
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_CAMPO_TENNIS), "campotennis",
 			// 116));
@@ -518,22 +522,22 @@ public class Booking extends FragmentActivity implements ILocation {
 					getString(R.string.CATEGORIA_WELLNESS), "wellness", 206));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_PARCO), "parco", 208));
-//			mListaSecondLevelCategory
-//					.add(new POICategory(
-//							getString(R.string.CATEGORIA_ATTRAZIONE),
-//							"attrazione", 210));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_MUSEO), "museo", 212));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_MONUMENTO), "monumento", 214));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_SITO_ARCHEOLOGICO),
-//					"sitoarcheologico", 216));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_TEATRO), "teatro", 218));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_LUOGO_CULTO), "luogoculto",
-//					220));
+			// mListaSecondLevelCategory
+			// .add(new POICategory(
+			// getString(R.string.CATEGORIA_ATTRAZIONE),
+			// "attrazione", 210));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_MUSEO), "museo", 212));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_MONUMENTO), "monumento", 214));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_SITO_ARCHEOLOGICO),
+			// "sitoarcheologico", 216));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_TEATRO), "teatro", 218));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_LUOGO_CULTO), "luogoculto",
+			// 220));
 			break;
 		case 300:
 			mListaSecondLevelCategory.add(new POICategory(
@@ -565,9 +569,9 @@ public class Booking extends FragmentActivity implements ILocation {
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_AFFITTO_CAMERE),
 			// "affittocamere", 408));
-			mListaSecondLevelCategory.add(new POICategory(
-					getString(R.string.CATEGORIA_BED_BREAKFAST),
-					"bedbreakfast", 410));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_BED_BREAKFAST),
+			// "bedbreakfast", 410));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_GARNI), "garni", 412));
 			mListaSecondLevelCategory.add(new POICategory(
@@ -602,9 +606,9 @@ public class Booking extends FragmentActivity implements ILocation {
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_SERVIZIO_BICI),
 					"serviziobici", 518));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_NOLEGGIO_PRIVATO),
-//					"noleggioprivate", 520));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_NOLEGGIO_PRIVATO),
+			// "noleggioprivate", 520));
 			break;
 		case 600:
 			mListaSecondLevelCategory.add(new POICategory(
@@ -617,8 +621,8 @@ public class Booking extends FragmentActivity implements ILocation {
 			// 606));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_FARMACIA), "farmacia", 608));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_IGIENICI), "igienici", 610));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_IGIENICI), "igienici", 610));
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_ISOLE_ECOLOGICHE),
 			// "isoleecologiche", 612));
@@ -642,26 +646,26 @@ public class Booking extends FragmentActivity implements ILocation {
 			// "biblioteca", 624));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_WIFI), "wifi", 626));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_AGENZIA_VIAGGI),
-//					"agenziaviaggi", 628));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_AGENZIA_VIAGGI),
+			// "agenziaviaggi", 628));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_INFO), "info", 630));
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_FORZE_ORDINE), "forzeordine",
 			// 632));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_SERVIZI_MUNICIPALI),
-//					"servizimunicipali", 634));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_SERVIZI_MUNICIPALI),
+			// "servizimunicipali", 634));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_POSTA), "posta", 636));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_BANCA), "banca", 638));
 			break;
 		case 700:
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_PRODOTTI_TIPICI),
-//					"prodottitipici", 702));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_PRODOTTI_TIPICI),
+			// "prodottitipici", 702));
 			mListaSecondLevelCategory.add(new POICategory(
 					getString(R.string.CATEGORIA_SOUVENIR), "souvenir", 704));
 			mListaSecondLevelCategory.add(new POICategory(
@@ -677,9 +681,9 @@ public class Booking extends FragmentActivity implements ILocation {
 					.add(new POICategory(
 							getString(R.string.CATEGORIA_TABACCHINO),
 							"tabacchino", 712));
-//			mListaSecondLevelCategory.add(new POICategory(
-//					getString(R.string.CATEGORIA_CENTROCOMMERCIALE),
-//					"centrocommerciale", 714));
+			// mListaSecondLevelCategory.add(new POICategory(
+			// getString(R.string.CATEGORIA_CENTROCOMMERCIALE),
+			// "centrocommerciale", 714));
 			// mListaSecondLevelCategory.add(new POICategory(
 			// getString(R.string.CATEGORIA_NEGOZIO_ANIMALI),
 			// "negozioanimali", 716));
@@ -738,15 +742,19 @@ public class Booking extends FragmentActivity implements ILocation {
 	}
 
 	private void setMapForSearch() {
+
 		new AsyncTask<Void, Void, Void>() {
 			private Dialog dialog;
 			private ArrayList<JSONObject> mListaPOI;
 			private Map<String, Object> mResult;
+			private LatLngBounds.Builder builderSearch;
 
 			@Override
 			protected void onPreExecute() {
 				// TODO Auto-generated method stub
 				super.onPreExecute();
+
+				builderSearch = new LatLngBounds.Builder();
 
 				dialog = new Dialog(Booking.this);
 				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -800,11 +808,20 @@ public class Booking extends FragmentActivity implements ILocation {
 											.getJSONObject("description")
 											.getString("IT");
 						}
+						String address = obj.getJSONObject("poi").getString(
+								"street");
+						if (obj.getJSONObject("poi").has("city")
+								&& obj.getJSONObject("poi").getString("city")
+										.compareTo("null") != 0) {
+							address += ","
+									+ obj.getJSONObject("poi")
+											.getString("city");
+						}
 						poiForSearch = new POI(null, obj.getString("title"),
-								obj.getString("type").split(" - ")[1],
-								description, obj.getJSONArray("location")
-										.getDouble(0), obj.getJSONArray(
-										"location").getDouble(1));
+								obj.getString("type"), description, obj
+										.getJSONArray("location").getDouble(0),
+								obj.getJSONArray("location").getDouble(1),
+								address);
 						poiForSearch.getIndirizzo();
 
 					} catch (JSONException e) {
@@ -852,10 +869,17 @@ public class Booking extends FragmentActivity implements ILocation {
 											+ poiForSearch.getDescrizione())
 							.icon(BitmapDescriptorFactory
 									.fromResource(R.drawable.marker_search)));
+					builderSearch.include(new LatLng(poiForSearch.getLatGPS(),
+							poiForSearch.getLngGPS()));
 				}
+
+				builderSearch.include(new LatLng(mMapUtilities
+						.getLastKnownLocation().getLatitude(), mMapUtilities
+						.getLastKnownLocation().getLongitude()));
+				mMappa.animateCamera(CameraUpdateFactory.newLatLngBounds(
+						builderSearch.build(), 50));
 				// END ONPOST
 			}
-
 		}.execute();
 	}
 
@@ -881,8 +905,8 @@ public class Booking extends FragmentActivity implements ILocation {
 			FontTextView mSelect = (FontTextView) rowView
 					.findViewById(R.id.text_select);
 			mSelect.setText(values.get(position).getPublicName());
-//			if (values.get(position).getPublicName().length() > 13)
-//				mSelect.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+			// if (values.get(position).getPublicName().length() > 13)
+			// mSelect.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
 			ImageView mLogo = (ImageView) rowView.findViewById(R.id.image_logo);
 			mLogo.setImageResource(R.drawable.game);

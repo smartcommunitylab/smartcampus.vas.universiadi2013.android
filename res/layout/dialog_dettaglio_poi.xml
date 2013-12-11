@@ -44,7 +44,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
-
+                
+                
                 <smartcampus.android.template.standalone.Utilities.FontTextView
                     android:id="@+id/text_indirizzo_poi"
                     android:layout_width="match_parent"
@@ -71,8 +72,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
+                        android:layout_marginRight="@dimen/activity_horizontal_margin"
                         android:gravity="center"
                         android:lines="4"
+                        android:scrollbars="vertical"
                         android:text="Choose tool:\n"
                         android:textColor="#3294ad" />
 
@@ -83,7 +86,6 @@
                         android:src="@drawable/btn_eventi_poi"
                         android:visibility="invisible" />
                 </RelativeLayout>
-
             </LinearLayout>
         </RelativeLayout>
 

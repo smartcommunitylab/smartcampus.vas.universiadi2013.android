@@ -1,10 +1,14 @@
 package smartcampus.android.template.standalone.Activity.ProfileBlock.FAQSubBlock;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
+import smartcampus.android.template.standalone.Activity.EventiBlock.Evento;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -45,52 +49,161 @@ public class FAQ extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_faq);
 
-		mTextDomanda = (EditText) findViewById(R.id.text_domanda);
-		mTextDomanda.setTypeface(Typeface.createFromAsset(
-				getApplicationContext().getAssets(), "PatuaOne-Regular.otf"));
-		mTextDomanda.setOnEditorActionListener(new OnEditorActionListener() {
+		new AsyncTask<Void, Void, Void>() {
+			private Dialog dialog;
+			private Map<String, Object> mResult;
 
 			@Override
-			public boolean onEditorAction(TextView v, int actionId,
-					KeyEvent event) {
+			protected void onPreExecute() {
 				// TODO Auto-generated method stub
-				if (actionId == EditorInfo.IME_ACTION_DONE) {
-					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-					imm.hideSoftInputFromWindow(
-							((EditText) findViewById(R.id.text_domanda))
-									.getWindowToken(), 0);
-					inviaDomandaFAQ(mTextDomanda.getText().toString());
-				}
-				return false;
-			}
+				super.onPreExecute();
 
-		});
-
-		((RelativeLayout) findViewById(R.id.btn_invia_domanda))
-				.setOnTouchListener(new OnTouchListener() {
+				dialog = new Dialog(FAQ.this);
+				dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+				dialog.setContentView(R.layout.dialog_wait);
+				dialog.getWindow().setBackgroundDrawableResource(
+						R.drawable.dialog_rounded_corner_light_black);
+				dialog.show();
+				dialog.setCancelable(true);
+				dialog.setOnCancelListener(new OnCancelListener() {
 
 					@Override
-					public boolean onTouch(View v, MotionEvent event) {
+					public void onCancel(DialogInterface dialog) {
 						// TODO Auto-generated method stub
-						if (event.getAction() == MotionEvent.ACTION_DOWN) {
-							((ImageView) findViewById(R.id.image_search))
-									.setImageResource(R.drawable.btn_main_cerca_press);
-							return true;
-						}
-						if (event.getAction() == MotionEvent.ACTION_UP) {
-							((ImageView) findViewById(R.id.image_search))
-									.setImageResource(R.drawable.btn_main_cerca);
-							InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-							imm.hideSoftInputFromWindow(
-									((EditText) findViewById(R.id.text_domanda))
-											.getWindowToken(), 0);
-							inviaDomandaFAQ(mTextDomanda.getText().toString());
-
-							return true;
-						}
-						return false;
+						cancel(true);
+						finish();
 					}
 				});
+
+			}
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				// TODO Auto-generated method stub
+				mResult = (Map<String, Object>) ManagerData.getAllRisposte();
+				if (!((Boolean) mResult.get("connectionError")))
+					mListaRisposte = (ArrayList<ExtendedAnswer>) mResult
+							.get("params");
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(Void result) {
+				// TODO Auto-generated method stub
+				super.onPostExecute(result);
+
+				dialog.dismiss();
+
+				// START ONPOST
+				if ((Boolean) mResult.get("connectionError")) {
+					Dialog noConnection = new Dialog(FAQ.this);
+					noConnection.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					noConnection.setContentView(R.layout.dialog_no_connection);
+					noConnection.getWindow().setBackgroundDrawableResource(
+							R.drawable.dialog_rounded_corner_light_black);
+					noConnection.show();
+					noConnection.setCancelable(true);
+					noConnection.setOnCancelListener(new OnCancelListener() {
+
+						@Override
+						public void onCancel(DialogInterface dialog) {
+							// TODO Auto-generated method stub
+							finish();
+						}
+					});
+				} else {
+					((ListView) findViewById(R.id.lista_risposte))
+							.setVisibility(View.VISIBLE);
+					((ListView) findViewById(R.id.lista_risposte))
+							.setAdapter(new RowAnswer(getApplicationContext(),
+									mListaRisposte));
+					((ListView) findViewById(R.id.lista_risposte))
+							.setOnItemClickListener(new OnItemClickListener() {
+
+								@Override
+								public void onItemClick(AdapterView<?> arg0,
+										View arg1, int arg2, long arg3) {
+									// TODO Auto-generated method stub
+									Dialog dialog = new Dialog(FAQ.this);
+									dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+									dialog.setContentView(R.layout.dialog_dettaglio);
+									dialog.getWindow()
+											.setBackgroundDrawableResource(
+													R.drawable.dialog_rounded_corner);
+
+									((TextView) dialog
+											.findViewById(R.id.text_dettaglio_question))
+											.setText(mListaRisposte.get(arg2)
+													.getQuestion());
+									((TextView) dialog
+											.findViewById(R.id.text_dettaglio_answer))
+											.setText(mListaRisposte.get(arg2)
+													.getAnswer());
+									((TextView) dialog
+											.findViewById(R.id.text_dettaglio_answer))
+											.setMovementMethod(new ScrollingMovementMethod());
+									((TextView) dialog
+											.findViewById(R.id.text_dettaglio_accuracy))
+											.setVisibility(View.INVISIBLE);
+
+									dialog.show();
+								}
+							});
+				}
+				mTextDomanda = (EditText) findViewById(R.id.text_domanda);
+				mTextDomanda.setTypeface(Typeface.createFromAsset(
+						getApplicationContext().getAssets(),
+						"PatuaOne-Regular.otf"));
+				mTextDomanda
+						.setOnEditorActionListener(new OnEditorActionListener() {
+
+							@Override
+							public boolean onEditorAction(TextView v,
+									int actionId, KeyEvent event) {
+								// TODO Auto-generated method stub
+								if (actionId == EditorInfo.IME_ACTION_DONE) {
+									InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+									imm.hideSoftInputFromWindow(
+											((EditText) findViewById(R.id.text_domanda))
+													.getWindowToken(), 0);
+									inviaDomandaFAQ(mTextDomanda.getText()
+											.toString());
+								}
+								return false;
+							}
+
+						});
+
+				((RelativeLayout) findViewById(R.id.btn_invia_domanda))
+						.setOnTouchListener(new OnTouchListener() {
+
+							@Override
+							public boolean onTouch(View v, MotionEvent event) {
+								// TODO Auto-generated method stub
+								if (event.getAction() == MotionEvent.ACTION_DOWN) {
+									((ImageView) findViewById(R.id.image_search))
+											.setImageResource(R.drawable.btn_main_cerca_press);
+									return true;
+								}
+								if (event.getAction() == MotionEvent.ACTION_UP) {
+									((ImageView) findViewById(R.id.image_search))
+											.setImageResource(R.drawable.btn_main_cerca);
+									InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+									imm.hideSoftInputFromWindow(
+											((EditText) findViewById(R.id.text_domanda))
+													.getWindowToken(), 0);
+									inviaDomandaFAQ(mTextDomanda.getText()
+											.toString());
+
+									return true;
+								}
+								return false;
+							}
+						});
+				// END ONPOST
+			}
+
+		}.execute();
 	}
 
 	private void inviaDomandaFAQ(final String mDomanda) {
@@ -158,6 +271,8 @@ public class FAQ extends Activity {
 					});
 				} else {
 					if (mListaRisposte.size() != 0) {
+						((TextView) findViewById(R.id.text_risultati_poi))
+								.setText(getString(R.string.FAQ_RISULTATI));
 						((TextView) findViewById(R.id.text_nessun_risultato_faq))
 								.setVisibility(View.GONE);
 						((ListView) findViewById(R.id.lista_risposte))
@@ -191,6 +306,9 @@ public class FAQ extends Activity {
 										((TextView) dialog
 												.findViewById(R.id.text_dettaglio_answer))
 												.setMovementMethod(new ScrollingMovementMethod());
+										((TextView) dialog
+												.findViewById(R.id.text_dettaglio_accuracy))
+												.setVisibility(View.VISIBLE);
 										((TextView) dialog
 												.findViewById(R.id.text_dettaglio_accuracy)).setText(Float
 												.toString(getAccuracy(
@@ -244,10 +362,15 @@ public class FAQ extends Activity {
 					.setText(values.get(position).getQuestion());
 			((TextView) rowView.findViewById(R.id.text_answer)).setText(values
 					.get(position).getAnswer());
-			((TextView) rowView.findViewById(R.id.text_accuracy)).setText(Float
-					.toString(getAccuracy(values.get(position).getTotalTag(),
-							values.get(position).getUsefulTag()))
-					+ "%");
+			if (values.get(position).getUsefulTag() != 0)
+				((TextView) rowView.findViewById(R.id.text_accuracy))
+						.setText(Float.toString(getAccuracy(values
+								.get(position).getTotalTag(),
+								values.get(position).getUsefulTag()))
+								+ "%");
+			else
+				((TextView) rowView.findViewById(R.id.text_accuracy))
+						.setVisibility(View.INVISIBLE);
 
 			return rowView;
 		}

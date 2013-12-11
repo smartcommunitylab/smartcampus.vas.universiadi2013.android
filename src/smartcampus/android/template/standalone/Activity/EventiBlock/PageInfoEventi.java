@@ -4,18 +4,22 @@ import java.util.ArrayList;
 
 import smartcampus.android.template.standalone.Utilities.ElementDescRoute;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -41,18 +45,49 @@ public class PageInfoEventi extends Fragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		View mView = inflater.inflate(R.layout.activity_page_info_eventi, null);
-		RelativeLayout mContainer = (RelativeLayout) mView
+		LinearLayout mContainer = (LinearLayout) mView
 				.findViewById(R.id.container_page_eventi);
 
 		switch (position) {
 		case 0:
+			String desc = (String) params;
+
 			FontTextView mDesc = new FontTextView(mView.getContext());
-			mDesc.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-					LayoutParams.MATCH_PARENT));
+			mDesc.setLayoutParams(new LinearLayout.LayoutParams(
+					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 0.5f));
 			mDesc.setTextColor(Color.parseColor("#3293AC"));
-			mDesc.setText((String) params);
-			mDesc.setGravity(Gravity.CENTER);
-			mContainer.addView(mDesc);
+			if (desc.indexOf("http:") != -1) {
+				mDesc.setText(desc.substring(0, desc.indexOf("http:")));
+				mDesc.setGravity(Gravity.CENTER);
+				mContainer.addView(mDesc);
+
+				final FontTextView mLink = new FontTextView(mView.getContext());
+				mLink.setLayoutParams(new LinearLayout.LayoutParams(
+						LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT,
+						0.5f));
+				mLink.setTextColor(Color.parseColor("#3293AC"));
+				mLink.setText(desc.substring(desc.indexOf("http:"),
+						desc.length() - 1));
+				mLink.setGravity(Gravity.CENTER_HORIZONTAL);
+				mLink.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						Intent browserIntent = new Intent(
+								android.content.Intent.ACTION_VIEW, Uri
+										.parse(mLink.getText().toString()));
+
+						startActivity(browserIntent);
+					}
+				});
+				mContainer.addView(mLink);
+			} else {
+				mDesc.setText(desc);
+				mDesc.setGravity(Gravity.CENTER);
+				mContainer.addView(mDesc);
+			}
+
 			break;
 		case 1:
 			ListView mLista = new ListView(mView.getContext());

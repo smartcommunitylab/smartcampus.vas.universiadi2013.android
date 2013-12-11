@@ -7,7 +7,7 @@ import java.util.Map;
 import smartcampus.android.template.standalone.Activity.Model.ManagerData;
 import smartcampus.android.template.standalone.Activity.ProfileBlock.CalendarSubBlock.FunzioneObj;
 import smartcampus.android.template.standalone.IntroBlock.UserConstant;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.smartcampus.template.standalone.Utente;
+import android.smartcampus.template.standalone.UtenteSuperiore;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -43,7 +44,7 @@ public class Profile extends Activity {
 
 	private Utente user;
 	private ArrayList<FunzioneObj> funzione;
-	private ArrayList<Utente> mListaSuperiori = new ArrayList<Utente>();
+	private ArrayList<UtenteSuperiore> mListaSuperiori = new ArrayList<UtenteSuperiore>();
 
 	private ListView listSuperiori;
 	private RowVolontario mAdapter;
@@ -88,17 +89,34 @@ public class Profile extends Activity {
 			protected Void doInBackground(Void... params) {
 				// TODO Auto-generated method stub
 				user = UserConstant.getUser();
+				Log.i("", user.getId());
 				mMapUserData = ManagerData.getFunzioneForUser(user);
-				if (!((Boolean) mMapUserData.get("connectionError"))) {
+				if (!((Boolean) mMapUserData.get("connectionError")))
 					funzione = (ArrayList<FunzioneObj>) mMapUserData
 							.get("params");
-				}
+
 				ArrayList<String> funzioneString = new ArrayList<String>();
 				for (int i = 0; i < funzione.size(); i++)
 					funzioneString.add(funzione.get(i).getFunzione());
-				mListaSuperiori = (ArrayList<Utente>) (ManagerData
-						.getSuperioriForUser(user, funzioneString.get(0))
-						.get("params"));
+
+				// ArrayList<UtenteSuperiore> listaTmp =
+				// (ArrayList<UtenteSuperiore>) (ManagerData
+				// .getSuperioriForUser(user, funzioneString.get(0))
+				// .get("params"));
+				// for (int i = 0; i < listaTmp.size(); i++)
+				// if (!containsUserInArray(mListaSuperiori, listaTmp.get(i))
+				// && !listaTmp
+				// .get(i)
+				// .getCognome()
+				// .equalsIgnoreCase(
+				// UserConstant.getUser().getCognome())
+				// && !listaTmp
+				// .get(i)
+				// .getNome()
+				// .equalsIgnoreCase(
+				// UserConstant.getUser().getNome()))
+				// mListaSuperiori.add(listaTmp.get(i));
+
 				return null;
 			}
 
@@ -136,6 +154,8 @@ public class Profile extends Activity {
 					((Spinner) findViewById(R.id.spinner_multiple_funzioni))
 							.setAdapter(new SpinnerAdapter(Profile.this,
 									funzione));
+					((Spinner) findViewById(R.id.spinner_multiple_funzioni))
+							.setSelection(0);
 					((Spinner) findViewById(R.id.spinner_multiple_funzioni))
 							.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -182,44 +202,54 @@ public class Profile extends Activity {
 												Void... params) {
 											// TODO Auto-generated method
 											// stub
-											// mMapListaSuperiori = ManagerData
-											// .getSuperioriForUser(user,
-											// funzione.get(arg2));
-											// if (!((Boolean)
-											// mMapListaSuperiori
-											// .get("connectionError"))) {
-											// mListaSuperiori =
-											// (ArrayList<Utente>)
-											// mMapListaSuperiori
-											// .get("params");
-											// }
-											mMapUserData = new HashMap<String, Object>();
-											mMapUserData.put("connectionError",
-													false);
-											funzione = new ArrayList<FunzioneObj>();
-											funzione.add(new FunzioneObj(
-													"Academic Liaison & Special Projects",
-													69326));
-											funzione.add(new FunzioneObj(
-													"Communication", 35152));
-											// mMapUserData =
-											// ManagerData.getFunzioneForUser(user);
-											// if (!((Boolean)
-											// mMapUserData.get("connectionError")))
-											// {
-											// funzione = (ArrayList<String>)
-											// mMapUserData.get("params");
-											// }
+											user = UserConstant.getUser();
+											Log.i("", user.getId());
+											mMapUserData = ManagerData
+													.getFunzioneForUser(user);
+											if (!((Boolean) mMapUserData
+													.get("connectionError")))
+												funzione = (ArrayList<FunzioneObj>) mMapUserData
+														.get("params");
+
 											ArrayList<String> funzioneString = new ArrayList<String>();
 											for (int i = 0; i < funzione.size(); i++)
 												funzioneString.add(funzione
 														.get(i).getFunzione());
-											// mListaSuperiori =
-											// (ArrayList<Utente>) (ManagerData
-											// .getSuperioriForUser(user,
-											// funzioneString
-											// .get(0))
-											// .get("params"));
+
+											mListaSuperiori.clear();
+											ArrayList<UtenteSuperiore> listaTmp = (ArrayList<UtenteSuperiore>) (ManagerData
+													.getSuperioriForUser(
+															user,
+															funzioneString
+																	.get(((Spinner) findViewById(R.id.spinner_multiple_funzioni))
+																	.getSelectedItemPosition()),
+															funzione.get(
+																	((Spinner) findViewById(R.id.spinner_multiple_funzioni))
+																			.getSelectedItemPosition())
+																	.getId())
+													.get("params"));
+											for (int i = 0; i < listaTmp.size(); i++)
+												if (!containsUserInArray(
+														mListaSuperiori,
+														listaTmp.get(i))
+														&& !listaTmp
+																.get(i)
+																.getCognome()
+																.equalsIgnoreCase(
+																		UserConstant
+																				.getUser()
+																				.getCognome())
+														&& !listaTmp
+																.get(i)
+																.getNome()
+																.equalsIgnoreCase(
+																		UserConstant
+																				.getUser()
+																				.getNome()))
+													mListaSuperiori
+															.add(listaTmp
+																	.get(i));
+
 											return null;
 										}
 
@@ -267,6 +297,7 @@ public class Profile extends Activity {
 															mListaSuperiori);
 													listSuperiori
 															.setAdapter(mAdapter);
+													mAdapter.notifyDataSetChanged();
 													listSuperiori
 															.setOnItemClickListener(new OnItemClickListener() {
 
@@ -280,13 +311,13 @@ public class Profile extends Activity {
 																	// Auto-generated
 																	// method
 																	// stub
-																	final Utente mUtente = mListaSuperiori
+																	final UtenteSuperiore mUtente = mListaSuperiori
 																			.get(arg2);
 
 																	if (mUtente
 																			.getNumeroTelefonico()
 																			.equalsIgnoreCase(
-																					"")) {
+																					"null")) {
 																		AlertDialog.Builder builder = new AlertDialog.Builder(
 																				Profile.this);
 																		builder.setTitle(getString(R.string.CONTATTO));
@@ -307,10 +338,13 @@ public class Profile extends Activity {
 																		AlertDialog.Builder builder = new AlertDialog.Builder(
 																				Profile.this);
 																		builder.setTitle(getString(R.string.CONTATTO));
-																		builder.setMessage("Vuoi chiamare "
+																		builder.setMessage(getString(R.string.PROFILO_PHONE1)
+																				+ " "
 																				+ mUtente
 																						.getNome()
-																				+ " al numero "
+																				+ " "
+																				+ getString(R.string.PROFILO_PHONE2)
+																				+ " "
 																				+ mUtente
 																						.getNumeroTelefonico());
 																		builder.setCancelable(false);
@@ -440,11 +474,23 @@ public class Profile extends Activity {
 		 */
 	}
 
-	private class RowVolontario extends ArrayAdapter<Utente> {
-		private final Context context;
-		private final ArrayList<Utente> values;
+	private boolean containsUserInArray(
+			ArrayList<UtenteSuperiore> mListaSuperiori, UtenteSuperiore user) {
+		for (int i = 0; i < mListaSuperiori.size(); i++)
+			if (mListaSuperiori.get(i).getNome()
+					.equalsIgnoreCase(user.getNome())
+					&& mListaSuperiori.get(i).getCognome()
+							.equalsIgnoreCase(user.getCognome()))
+				return true;
 
-		public RowVolontario(Context context, ArrayList<Utente> values) {
+		return false;
+	}
+
+	private class RowVolontario extends ArrayAdapter<UtenteSuperiore> {
+		private final Context context;
+		private final ArrayList<UtenteSuperiore> values;
+
+		public RowVolontario(Context context, ArrayList<UtenteSuperiore> values) {
 			super(context, R.layout.row_volontari, values);
 			this.context = context;
 			this.values = values;
@@ -460,11 +506,14 @@ public class Profile extends Activity {
 					false);
 
 			((TextView) rowView.findViewById(R.id.text_anagrafiche_volontario))
-					.setText(values.get(position).getNome());
+					.setText(values.get(position).getNome() + " "
+							+ values.get(position).getCognome());
 			((TextView) rowView.findViewById(R.id.text_categoria_volontario))
-					.setText("Categoria: " + values.get(position).getAmbito());
+					.setText(getString(R.string.PROFILO_CATEGORIA) + " "
+							+ values.get(position).getRuolo());
 			((TextView) rowView.findViewById(R.id.text_ruolo_volontario))
-					.setText("Ruolo: " + values.get(position).getRuolo());
+					.setText(getString(R.string.PROFILO_RUOLO) + " "
+							+ values.get(position).getAmbito());
 
 			return rowView;
 		}
@@ -492,17 +541,18 @@ public class Profile extends Activity {
 				ViewGroup parent) {
 			// TODO Auto-generated method stub
 			return getCustomView(position, convertView, parent,
-					Color.parseColor("#3294ad"));
+					Color.parseColor("#3294ad"), false);
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 
-			return getCustomView(position, convertView, parent, Color.WHITE);
+			return getCustomView(position, convertView, parent, Color.WHITE,
+					true);
 		}
 
 		public View getCustomView(int position, View convertView,
-				ViewGroup parent, int color) {
+				ViewGroup parent, int color, boolean dropDown) {
 			// TODO Auto-generated method stub
 			// return super.getView(position, convertView, parent);
 			LayoutInflater inflater = (LayoutInflater) context
@@ -520,7 +570,7 @@ public class Profile extends Activity {
 					.setTypeface(Typeface.createFromAsset(
 							getApplicationContext().getAssets(),
 							"PatuaOne-Regular.otf"));
-			if (values.get(position).getFunzione().length() > 13)
+			if (values.get(position).getFunzione().length() > 13 && dropDown)
 				((TextView) rowView.findViewById(android.R.id.text1))
 						.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 

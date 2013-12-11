@@ -24,7 +24,7 @@ import smartcampus.android.template.standalone.Utilities.ElementDescRoute;
 import smartcampus.android.template.standalone.Utilities.MapUtilities;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ErrorType;
 import smartcampus.android.template.standalone.Utilities.MapUtilities.ILocation;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -50,7 +50,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.Window;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -82,7 +87,7 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 
 	private boolean fromSearch;
 
-	private ArrayList<ElementDescRoute> mRouteText;
+	private ArrayList<ElementDescRoute> mRouteText = new ArrayList<ElementDescRoute>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -209,14 +214,20 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 				if (mEvento.getLatGPS() != 0 && mEvento.getLngGPS() != 0) {
 					mMarkerEvento = new LatLng(mEvento.getLatGPS(),
 							mEvento.getLngGPS());
-					mMarkerUser = new LatLng(mMapUtilities
-							.getLastKnownLocation().getLatitude(),
-							mMapUtilities.getLastKnownLocation().getLongitude());
+					if (mMapUtilities.getLastKnownLocation() != null)
+						mMarkerUser = new LatLng(mMapUtilities
+								.getLastKnownLocation().getLatitude(),
+								mMapUtilities.getLastKnownLocation()
+										.getLongitude());
 
-					mRouteText = parseGoogleDescRoute(new double[] {
-							mMarkerUser.latitude, mMarkerUser.longitude },
-							new double[] { mMarkerEvento.latitude,
-									mMarkerEvento.longitude });
+					if (mMarkerUser != null)
+						mRouteText = parseGoogleDescRoute(new double[] {
+								mMarkerUser.latitude, mMarkerUser.longitude },
+								new double[] { mMarkerEvento.latitude,
+										mMarkerEvento.longitude });
+					else
+						mRouteText.add(new ElementDescRoute("", "",
+								getString(R.string.NESSUNA_ROUTE), -1));
 				}
 				return null;
 			}
@@ -271,68 +282,112 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 								Locale.getDefault());
 
 						Address adrs;
+						String address = "";
 						try {
 							adrs = coder.getFromLocation(
 									mMarkerEvento.latitude,
 									mMarkerEvento.longitude, 1).get(0);
-							mMappa.addMarker(new MarkerOptions()
-									.position(mMarkerEvento)
-									.icon(BitmapDescriptorFactory
-											.fromBitmap(drawMarkerWithTitleAndAddress(
-													mEvento.getNome(),
-													adrs.getAddressLine(0)
-															+ " - "
-															+ adrs.getAddressLine(1))))
-									.anchor(0.5f, 1));
-							mMappa.setOnMarkerClickListener(new OnMarkerClickListener() {
-
-								@Override
-								public boolean onMarkerClick(Marker marker) {
-									// TODO Auto-generated method stub
-									if (mMapUtilities.getLastKnownLocation() != null) {
-										Intent intent = new Intent(
-												android.content.Intent.ACTION_VIEW,
-												Uri.parse("http://maps.google.com/maps?saddr="
-														+ mMapUtilities
-																.getLastKnownLocation()
-																.getLatitude()
-														+ ","
-														+ mMapUtilities
-																.getLastKnownLocation()
-																.getLongitude()
-														+ "&daddr="
-														+ marker.getPosition().latitude
-														+ ","
-														+ marker.getPosition().longitude));
-										startActivity(intent);
-										return true;
-									}
-									return false;
-								}
-
-							});
+							address = adrs.getAddressLine(0) + " - "
+									+ adrs.getAddressLine(1);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							address = "";
 						}
+						mMappa.addMarker(new MarkerOptions()
+								.position(mMarkerEvento)
+								.title(mEvento.getNome() + "\n\n" + address)
+								.icon(BitmapDescriptorFactory
+										.fromResource(R.drawable.marker_search))
+								/*
+								 * .icon(BitmapDescriptorFactory .fromBitmap(
+								 * drawMarkerWithTitleAndAddress(
+								 * mEvento.getNome(), adrs.getAddressLine(0) +
+								 * " - " + adrs.getAddressLine(1))))
+								 */
+								.anchor(0.5f, 1));
+						mMappa.setOnMarkerClickListener(new OnMarkerClickListener() {
 
-						if (mMarkerEvento != null) {
+							@Override
+							public boolean onMarkerClick(final Marker marker) {
+								// TODO Auto-generated method stub
+								final Dialog dialog = new Dialog(
+										InfoEventi.this);
+								dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+								dialog.setContentView(R.layout.dialog_detail_event_sport_poi);
+								dialog.getWindow()
+										.setBackgroundDrawableResource(
+												R.drawable.dialog_rounded_corner);
 
-							LatLngBounds.Builder builder = new LatLngBounds.Builder();
-							builder.include(mMarkerUser);
+								((TextView) dialog
+										.findViewById(R.id.text_indirizzo_detail_event_poi))
+										.setText(marker.getTitle() + "\n");
+
+								((ImageView) dialog
+										.findViewById(R.id.btn_go_event))
+										.setOnTouchListener(new OnTouchListener() {
+
+											@Override
+											public boolean onTouch(View v,
+													MotionEvent event) {
+												// TODO Auto-generated
+												// method stub
+												if (event.getAction() == MotionEvent.ACTION_DOWN) {
+													((ImageView) dialog
+															.findViewById(R.id.btn_go_event))
+															.setImageResource(R.drawable.btn_eventi_poi_press);
+													return true;
+												}
+												if (event.getAction() == MotionEvent.ACTION_UP) {
+													((ImageView) dialog
+															.findViewById(R.id.btn_go_event))
+															.setImageResource(R.drawable.btn_eventi_poi);
+
+													if (mMapUtilities
+															.getLastKnownLocation() != null) {
+														Intent intent = new Intent(
+																android.content.Intent.ACTION_VIEW,
+																Uri.parse("http://maps.google.com/maps?saddr="
+																		+ mMapUtilities
+																				.getLastKnownLocation()
+																				.getLatitude()
+																		+ ","
+																		+ mMapUtilities
+																				.getLastKnownLocation()
+																				.getLongitude()
+																		+ "&daddr="
+																		+ marker.getPosition().latitude
+																		+ ","
+																		+ marker.getPosition().longitude));
+														startActivity(intent);
+														return true;
+													}
+
+													return true;
+												}
+
+												return false;
+											}
+										});
+
+								dialog.show();
+								return true;
+							}
+
+						});
+
+						LatLngBounds.Builder builder = new LatLngBounds.Builder();
+						if (mMarkerEvento != null)
 							builder.include(mMarkerEvento);
-							LatLngBounds bounds = builder.build();
-							mMappa.animateCamera(CameraUpdateFactory
-									.newLatLngBounds(bounds, 50));
+						if (mMarkerUser != null)
+							builder.include(mMarkerUser);
+						LatLngBounds bounds = builder.build();
+						mMappa.animateCamera(CameraUpdateFactory
+								.newLatLngBounds(bounds, 50));
 
-							// mDesc.setText(parseGoogleDescRoute(descRoute.get()));
-							mAdapter.fragments.add(new PageInfoEventi(1,
-									mRouteText));
-							mAdapter.notifyDataSetChanged();
-						} else
-							mMappa.animateCamera(CameraUpdateFactory
-									.newLatLng(new LatLng(mMarkerUser.latitude,
-											mMarkerUser.longitude)));
+						// mDesc.setText(parseGoogleDescRoute(descRoute.get()));
+						mAdapter.fragments
+								.add(new PageInfoEventi(1, mRouteText));
+						mAdapter.notifyDataSetChanged();
 
 					}
 				}
@@ -361,51 +416,51 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 		return null;
 	}
 
-	private Bitmap drawMarkerWithTitleAndAddress(String title, String add) {
-
-		Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-		// Create text
-		Paint color = new Paint();
-		color.setAntiAlias(true);
-		color.setTextAlign(Align.CENTER);
-		color.setTextSize(20);
-		color.setColor(Color.WHITE);
-		int measureText = (int) ((color.measureText(add) >= color
-				.measureText(title)) ? color.measureText(add) + 20 : color
-				.measureText(title)) + 20;
-		if (measureText > 230 && measureText <= 460) {
-			color.setTextSize(15);
-			measureText = (int) ((color.measureText(add) >= color
-					.measureText(title)) ? color.measureText(add) + 20 : color
-					.measureText(title)) + 20;
-		} else if (measureText > 460) {
-			color.setTextSize(15);
-			int lastChar = color.breakText(add, true, 460, null);
-			add = add.substring(0, lastChar);
-			measureText = (int) ((color.measureText(add) >= color
-					.measureText(title)) ? color.measureText(add) + 20 : color
-					.measureText(title)) + 20;
-		}
-
-		Bitmap bmpLabel = Bitmap.createBitmap(measureText + 20, 60, conf);
-		Canvas canvasLabel = new Canvas(bmpLabel);
-		bmpLabel.eraseColor(Color.argb(255, 50, 148, 173));
-		canvasLabel.drawText(title, measureText / 2, 25, color);
-		canvasLabel.drawText(add, measureText / 2, 50, color);
-		// Create arrow
-		Bitmap arrow = BitmapFactory.decodeResource(getResources(),
-				R.drawable.marker);
-		// Create all label
-		Bitmap bmpBackground = Bitmap.createBitmap(measureText,
-				40 + arrow.getWidth(), conf);
-		Canvas canvasBackGround = new Canvas(bmpBackground);
-		// Merge Canvas and Bitmap
-		canvasBackGround.drawBitmap(bmpLabel, 0, 0, null);
-		canvasBackGround.drawBitmap(arrow, measureText / 2 - arrow.getWidth()
-				/ 2, 60, null);
-
-		return bmpBackground;
-	}
+	// private Bitmap drawMarkerWithTitleAndAddress(String title, String add) {
+	//
+	// Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+	// // Create text
+	// Paint color = new Paint();
+	// color.setAntiAlias(true);
+	// color.setTextAlign(Align.CENTER);
+	// color.setTextSize(20);
+	// color.setColor(Color.WHITE);
+	// int measureText = (int) ((color.measureText(add) >= color
+	// .measureText(title)) ? color.measureText(add) + 20 : color
+	// .measureText(title)) + 20;
+	// if (measureText > 230 && measureText <= 460) {
+	// color.setTextSize(15);
+	// measureText = (int) ((color.measureText(add) >= color
+	// .measureText(title)) ? color.measureText(add) + 20 : color
+	// .measureText(title)) + 20;
+	// } else if (measureText > 460) {
+	// color.setTextSize(15);
+	// int lastChar = color.breakText(add, true, 460, null);
+	// add = add.substring(0, lastChar);
+	// measureText = (int) ((color.measureText(add) >= color
+	// .measureText(title)) ? color.measureText(add) + 20 : color
+	// .measureText(title)) + 20;
+	// }
+	//
+	// Bitmap bmpLabel = Bitmap.createBitmap(measureText + 20, 60, conf);
+	// Canvas canvasLabel = new Canvas(bmpLabel);
+	// bmpLabel.eraseColor(Color.argb(255, 50, 148, 173));
+	// canvasLabel.drawText(title, measureText / 2, 25, color);
+	// canvasLabel.drawText(add, measureText / 2, 50, color);
+	// // Create arrow
+	// Bitmap arrow = BitmapFactory.decodeResource(getResources(),
+	// R.drawable.marker);
+	// // Create all label
+	// Bitmap bmpBackground = Bitmap.createBitmap(measureText,
+	// 40 + arrow.getWidth(), conf);
+	// Canvas canvasBackGround = new Canvas(bmpBackground);
+	// // Merge Canvas and Bitmap
+	// canvasBackGround.drawBitmap(bmpLabel, 0, 0, null);
+	// canvasBackGround.drawBitmap(arrow, measureText / 2 - arrow.getWidth()
+	// / 2, 60, null);
+	//
+	// return bmpBackground;
+	// }
 
 	private ArrayList<ElementDescRoute> parseGoogleDescRoute(
 			double[] gpsSource, double[] gpsDest) {
@@ -525,7 +580,9 @@ public class InfoEventi extends FragmentActivity implements ILocation {
 		builder.include(mMyMarker);
 		LatLngBounds bounds = builder.build();
 
-		mMappa.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+		if (mMappa != null)
+			mMappa.animateCamera(CameraUpdateFactory
+					.newLatLngBounds(bounds, 50));
 		// mMappa.animateCamera(CameraUpdateFactory.newLatLng(new
 		// LatLng(location
 		// .getLatitude(), location.getLongitude())));

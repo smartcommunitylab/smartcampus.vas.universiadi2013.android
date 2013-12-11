@@ -38,6 +38,17 @@ public class POI implements Serializable {
 	}
 
 	public POI(Long id, String nome, String categoria, String descrizione,
+			Double latGPS, Double lngGPS,String indirizzo) {
+		this.id = id;
+		this.nome = nome;
+		this.categoria = categoria;
+		this.latGPS = latGPS;
+		this.lngGPS = lngGPS;
+		this.descrizione = descrizione;
+		this.indirizzo=indirizzo;
+	}
+	
+	public POI(Long id, String nome, String categoria, String descrizione,
 			Double latGPS, Double lngGPS) {
 		this.id = id;
 		this.nome = nome;

@@ -6,19 +6,19 @@ package android.smartcampus.template.standalone;
  */
 public class Utente {
 
-    private String nome;
-    private String cognome;
-    private String ruolo;
-    private String ambito;
-    private byte[] foto;
-    private String numeroTelefonico;
-    private String mail;
-    private String id;
-    private String uuid;
-    
+	private String nome;
+	private String cognome;
+	private String ruolo;
+	private String ambito;
+	private byte[] foto;
+	private String numeroTelefonico;
+	private String mail;
+	private String uuid;
+	private String id;
+
 	public Utente(String nome, String cognome, String ruolo, String ambito,
-			byte[] foto, String numeroTelefonico, String mail, String id,
-			String uuid) {
+			byte[] foto, String numeroTelefonico, String mail, String uuid,
+			String id) {
 		super();
 		this.nome = nome;
 		this.cognome = cognome;
@@ -27,8 +27,8 @@ public class Utente {
 		this.foto = foto;
 		this.numeroTelefonico = numeroTelefonico;
 		this.mail = mail;
-		this.id = id;
 		this.uuid = uuid;
+		this.id = id;
 	}
 
 	public String getNome() {
@@ -87,19 +87,19 @@ public class Utente {
 		this.mail = mail;
 	}
 
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
 	public String getUuid() {
 		return uuid;
 	}
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }

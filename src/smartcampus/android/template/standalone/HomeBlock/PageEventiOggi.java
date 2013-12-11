@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import smartcampus.android.template.standalone.Utilities.FontTextView;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.annotation.SuppressLint;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;

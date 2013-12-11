@@ -16,7 +16,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.4"
             android:gravity="center|bottom"
-            android:text="TextView"
+            android:text=""
             android:textColor="#3294ad" 
             android:textSize="20sp"/>
 
@@ -27,7 +27,7 @@
             android:layout_weight="0.4"
             android:gravity="center|top"
             android:maxLines="2"
-            android:text="TextView"
+            android:text=""
             android:textColor="#79ba28"
              />
 
@@ -61,7 +61,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:gravity="center|top"
-            android:text="TextView"
+            android:text=""
             android:textColor="#3294ad" />
     </LinearLayout>
 

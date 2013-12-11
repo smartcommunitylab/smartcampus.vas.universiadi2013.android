@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import smartcampus.android.template.standalone.Activity.EventiBlock.InfoEventi;
 import smartcampus.android.template.standalone.Utilities.FontTextView;
-import smartcampus.android.template.universiadi.R;
+import eu.trentorise.smartcampus.universiade.R;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;

@@ -5,9 +5,9 @@ import java.io.Serializable;
 public class FunzioneObj implements Serializable {
 
 	private String funzione;
-	private int id;
+	private String id;
 
-	public FunzioneObj(String funzione, int id) {
+	public FunzioneObj(String funzione, String id) {
 		super();
 		this.funzione = funzione;
 		this.id = id;
@@ -21,11 +21,11 @@ public class FunzioneObj implements Serializable {
 		this.funzione = funzione;
 	}
 
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 }
