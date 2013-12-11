@@ -16,8 +16,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="eu.trentorise.smartcampus.universiade"
-    android:versionCode="9"
-    android:versionName="1.1.3" >
+    android:versionCode="14"
+    android:versionName="1.2.1" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -42,6 +42,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    
+     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
     <permission
         android:name="smartcampus.android.template.standalone.permission.MAPS_RECEIVE"
@@ -78,9 +80,9 @@
             android:value="SmartCampus Android Template" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="" />
+            android:value="AIzaSyAYMob8Ipl_ykdVq9hkQTvFVSQMNSXn3aA" />
           <!-- "AIzaSyAYMob8Ipl_ykdVq9hkQTvFVSQMNSXn3aA"-->
-             <!-- ""-->
+         
 
         <!--
         Notification Metadata 
