@@ -290,8 +290,7 @@ public class Calendario extends Activity implements ScrollViewListener {
 											final Utente mUtente = turno
 													.getVolontari().get(arg2);
 
-											if (mUtente.getNumeroTelefonico()
-													.equalsIgnoreCase("null")) {
+											if (mUtente.getNumeroTelefonico()==null || mUtente.getNumeroTelefonico().compareTo("null")==0) {
 												AlertDialog.Builder builder = new AlertDialog.Builder(
 														Calendario.this);
 												builder.setTitle(getString(R.string.CONTATTO));

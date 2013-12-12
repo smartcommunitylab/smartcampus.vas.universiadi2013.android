@@ -21,7 +21,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.2"
             android:gravity="center"
-            android:text=""
+            android:text="        "
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#3294ad" />
 
@@ -37,7 +37,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"
                 android:gravity="center"
-                android:text=""
+                android:text="        "
                 android:textColor="#3294ad" />
 
             <smartcampus.android.template.standalone.Utilities.FontTextView
@@ -46,7 +46,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"
                 android:gravity="center"
-                android:text=""
+                android:text="        "
                 android:textColor="#3294ad" />
         </LinearLayout>
 

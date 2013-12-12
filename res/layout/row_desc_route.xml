@@ -30,7 +30,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"
                 android:gravity="center"
-                android:text=""
+                android:text="        "
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 
@@ -53,7 +53,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:gravity="center"
-                android:text="" />
+                android:text="        " />
 
             <TextView
                 android:id="@+id/text_duration"
@@ -61,7 +61,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:gravity="center"
-                android:text="" />
+                android:text="        " />
         </LinearLayout>
 
     </RelativeLayout>

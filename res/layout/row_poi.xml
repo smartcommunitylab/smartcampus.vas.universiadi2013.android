@@ -8,7 +8,7 @@
         android:id="@+id/TextView01"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=""
+        android:text="        "
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#0fff" />
 
@@ -67,7 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/image_logo_row_eventi"
-        android:text=""
+        android:text="        "
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#0fff" />
 

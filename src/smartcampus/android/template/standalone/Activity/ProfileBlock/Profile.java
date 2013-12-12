@@ -313,11 +313,12 @@ public class Profile extends Activity {
 																	// stub
 																	final UtenteSuperiore mUtente = mListaSuperiori
 																			.get(arg2);
-
+																	boolean blockcategory=mUtente.getRuolo().compareTo("International Department")==0 && (mUtente.getAmbito().compareTo("Head")==0 || mUtente.getAmbito().compareTo("Vice Head")==0);
+																	 blockcategory= (mUtente.getRuolo().compareTo("Sport & Venue Operations")==0 && (mUtente.getAmbito().compareTo("Head")==0 || mUtente.getAmbito().compareTo("Vice Head")==0)) ||blockcategory;
 																	if (mUtente
 																			.getNumeroTelefonico()
 																			.equalsIgnoreCase(
-																					"null")) {
+																					"null") || blockcategory) {
 																		AlertDialog.Builder builder = new AlertDialog.Builder(
 																				Profile.this);
 																		builder.setTitle(getString(R.string.CONTATTO));

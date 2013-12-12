@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:layout_weight="0.8"
         android:gravity="center"
-        android:text=""
+        android:text="        "
         android:background="@drawable/stroke_all_around"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#fff" />
