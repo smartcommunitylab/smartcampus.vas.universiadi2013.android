@@ -133,7 +133,7 @@ class RestRequest {
 			// HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.addRequestProperty("Authorization", juniperToken);
 			con.setRequestMethod("GET");
-			con.setConnectTimeout(5000);
+		
 			// con.connect();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					con.getInputStream()));
@@ -184,7 +184,7 @@ class RestRequest {
 			}
 			con.addRequestProperty("Authorization", juniperToken);
 			con.setRequestMethod("GET");
-			con.setConnectTimeout(5000);
+	
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					con.getInputStream()));
 			String line = "";
@@ -229,38 +229,38 @@ class RestRequest {
 			mReturn.put("params", callPOSTRequest(params));
 			return mReturn;
 		default:
-			return null;
+			return mReturn;
 		}
 	}
 
-	private String callGETRequest(String[] params) {
-		URL url;
-		try {
-			String path = mContext.getString(R.string.URL_BACKEND) + params[0];
-			url = new URL(path);
-			Log.d("1", path);
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.addRequestProperty("Authorization", juniperToken);
-			con.setRequestMethod("GET");
-			con.setConnectTimeout(5000);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					con.getInputStream()));
-			String line = "";
+	 private String callGETRequest(String[] params) {
+			URL url;
 			String response = "";
-			while ((line = reader.readLine()) != null) {
-				response = response + line;
+			try {
+				String path = mContext.getString(R.string.URL_BACKEND) + params[0];
+				url = new URL(path);
+				Log.d("1", path);
+				HttpURLConnection con = (HttpURLConnection) url.openConnection();
+				con.addRequestProperty("Authorization", juniperToken);
+				con.setRequestMethod("GET");
+				BufferedReader reader = new BufferedReader(new InputStreamReader(
+						con.getInputStream()));
+				String line = "";
+				response = "";
+				while ((line = reader.readLine()) != null) {
+					response = response + line;
+				}
+				return response;
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			return response;
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		return "";
-	}
-
+	 
 	private String login(String username, String password) {
 
 		HttpClient httpClient = new DefaultHttpClient();
